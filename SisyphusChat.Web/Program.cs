@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Web.Data;
+using SisyphusChat.Infrastructure
 using SisyphusChat.Web.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
