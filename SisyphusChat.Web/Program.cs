@@ -1,5 +1,25 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SisyphusChat.Web.Data;
+using SisyphusChat.Web.Areas.Identity.Data;
 
+var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("SisyphusChatWebContextConnection") ?? throw new InvalidOperationException("Connection string 'SisyphusChatWebContextConnection' not found.");
+
+builder.Services.AddDbContext<SisyphusChatWebContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<SisyphusChatWebUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SisyphusChatWebContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -17,7 +37,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.MapRazorPages();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
