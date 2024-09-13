@@ -11,15 +11,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using SisyphusChat.Web.Areas.Identity.Data;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<SisyphusChatWebUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ConfirmEmailModel(UserManager<SisyphusChatWebUser> userManager)
+        public ConfirmEmailModel(UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
         }

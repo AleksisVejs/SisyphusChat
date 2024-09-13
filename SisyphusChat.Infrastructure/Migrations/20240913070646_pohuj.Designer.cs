@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SisyphusChat.Web.Data;
+using SisyphusChat.Infrastructure.Data;
 
 #nullable disable
 
-namespace SisyphusChat.Web.Migrations
+namespace SisyphusChat.Infrastructure.Migrations
 {
-    [DbContext(typeof(SisyphusChatWebContext))]
-    [Migration("20240910101223_InitialIdentityMigration")]
-    partial class InitialIdentityMigration
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20240913070646_pohuj")]
+    partial class pohuj
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,7 +162,99 @@ namespace SisyphusChat.Web.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SisyphusChat.Web.Areas.Identity.Data.SisyphusChatWebUser", b =>
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.Chat", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.ChatOwner", b =>
+                {
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChatId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("OwnerId", "ChatId");
+
+                    b.HasIndex("ChatId")
+                        .IsUnique();
+
+                    b.ToTable("ChatOwners");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.ChatUser", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChatId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "ChatId");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("ChatUsers");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.Message", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChatId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -181,6 +273,12 @@ namespace SisyphusChat.Web.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastLoginAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -196,7 +294,7 @@ namespace SisyphusChat.Web.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
@@ -224,6 +322,10 @@ namespace SisyphusChat.Web.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("UserName", "Email", "PasswordHash")
+                        .IsUnique()
+                        .HasFilter("[UserName] IS NOT NULL AND [Email] IS NOT NULL AND [PasswordHash] IS NOT NULL");
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -238,7 +340,7 @@ namespace SisyphusChat.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SisyphusChat.Web.Areas.Identity.Data.SisyphusChatWebUser", null)
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -247,7 +349,7 @@ namespace SisyphusChat.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SisyphusChat.Web.Areas.Identity.Data.SisyphusChatWebUser", null)
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -262,7 +364,7 @@ namespace SisyphusChat.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SisyphusChat.Web.Areas.Identity.Data.SisyphusChatWebUser", null)
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -271,11 +373,90 @@ namespace SisyphusChat.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SisyphusChat.Web.Areas.Identity.Data.SisyphusChatWebUser", null)
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.Chat", b =>
+                {
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", null)
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.ChatOwner", b =>
+                {
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.Chat", "Chat")
+                        .WithOne("Owner")
+                        .HasForeignKey("SisyphusChat.Infrastructure.Entities.ChatOwner", "ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.ChatUser", b =>
+                {
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.Chat", "Chat")
+                        .WithMany("Members")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.Message", b =>
+                {
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SisyphusChat.Infrastructure.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.Chat", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("Messages");
+
+                    b.Navigation("Owner")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SisyphusChat.Infrastructure.Entities.User", b =>
+                {
+                    b.Navigation("Chats");
                 });
 #pragma warning restore 612, 618
         }

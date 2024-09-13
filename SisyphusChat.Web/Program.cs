@@ -1,26 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SisyphusChat.Web.Data;
-using SisyphusChat.Infrastructure
-using SisyphusChat.Web.Areas.Identity.Data;
+using SisyphusChat.Infrastructure;
+using SisyphusChat.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("SisyphusChatWebContextConnection") ?? throw new InvalidOperationException("Connection string 'SisyphusChatWebContextConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
-builder.Services.AddDbContext<SisyphusChatWebContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<SisyphusChatWebUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<SisyphusChatWebContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    // Cookie settings
-    options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.SlidingExpiration = true;
-});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

@@ -1,8 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using SisyphusChat.Web.Areas.Identity.Data
-
-@inject SignInManager<SisyphusChatWebUser> SignInManager
-@inject UserManager<SisyphusChatWebUser> UserManager
+@using SisyphusChat.Infrastructure.Entities;
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))

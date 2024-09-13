@@ -11,19 +11,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using SisyphusChat.Web.Areas.Identity.Data;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {
-        private readonly SignInManager<SisyphusChatWebUser> _signInManager;
-        private readonly UserManager<SisyphusChatWebUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<LoginWith2faModel> _logger;
 
         public LoginWith2faModel(
-            SignInManager<SisyphusChatWebUser> signInManager,
-            UserManager<SisyphusChatWebUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            UserManager<IdentityUser> userManager,
             ILogger<LoginWith2faModel> logger)
         {
             _signInManager = signInManager;

@@ -11,20 +11,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SisyphusChat.Web.Areas.Identity.Data;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
 {
     public class ExternalLoginsModel : PageModel
     {
-        private readonly UserManager<SisyphusChatWebUser> _userManager;
-        private readonly SignInManager<SisyphusChatWebUser> _signInManager;
-        private readonly IUserStore<SisyphusChatWebUser> _userStore;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IUserStore<IdentityUser> _userStore;
 
         public ExternalLoginsModel(
-            UserManager<SisyphusChatWebUser> userManager,
-            SignInManager<SisyphusChatWebUser> signInManager,
-            IUserStore<SisyphusChatWebUser> userStore)
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            IUserStore<IdentityUser> userStore)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -70,7 +69,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 .ToList();
 
             string passwordHash = null;
-            if (_userStore is IUserPasswordStore<SisyphusChatWebUser> userPasswordStore)
+            if (_userStore is IUserPasswordStore<IdentityUser> userPasswordStore)
             {
                 passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
             }
