@@ -7,14 +7,14 @@ namespace SisyphusChat.Infrastructure.Entities;
 public class ChatUser
 {
     [Required]
-    public string ChatId { get; set; }
+    public Guid ChatId { get; set; }
     
     [Required]
     [ForeignKey(nameof(ChatId))]
     public Chat Chat { get; set; }
     
     [Required]
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
     
     [Required]
     [ForeignKey(nameof(UserId))]

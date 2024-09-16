@@ -7,17 +7,19 @@ namespace SisyphusChat.Infrastructure.Entities;
 public class Chat : BaseEntity
 {
     [Required]
-    [MaxLength(200)]
+    [MaxLength(50)]
     public string Name { get; set; }
     
     [Required]
-    public ChatType Type { get; set; }
-    
-    // Navigation properties
-    
-    public ChatOwner Owner { get; set; } 
+    public Enum Type { get; set; }
 
-    public ICollection<ChatUser> Members { get; set; } 
+    [Required]
+    public Guid OwnerID { get; set; }
     
-    public ICollection<Message> Messages { get; set; } 
+    [Required]
+    [ForeignKey(nameof(OwnerID))]
+    public User Owner { get; set; } 
+
+    [Required]
+    public bool IsReported { get; set; }
 }
