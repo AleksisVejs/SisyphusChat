@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
+/*using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Exceptions;
@@ -72,3 +72,4 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         return user;
     }
 }
+*/

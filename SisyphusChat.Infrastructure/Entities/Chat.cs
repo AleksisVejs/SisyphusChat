@@ -11,10 +11,10 @@ public class Chat : BaseEntity
     public string Name { get; set; }
     
     [Required]
-    public Enum Type { get; set; }
+    public ChatType Type { get; set; }
 
     [Required]
-    public Guid OwnerID { get; set; }
+    public string OwnerID { get; set; }
     
     [Required]
     [ForeignKey(nameof(OwnerID))]

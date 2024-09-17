@@ -11,19 +11,21 @@ namespace SisyphusChat.Infrastructure.Data
         {
         }
 
+        public DbSet<Attachment> Attachments { get; set; }
+
         public DbSet<Chat> Chats { get; set; }
 
         public DbSet<ChatUser> ChatUsers { get; set; }
-
-        public DbSet<ChatOwner> ChatOwners { get; set; }
-
+        
+        public DbSet<Friend> Friends { get; set; }
+        
         public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             modelBuilder.Entity<ChatUser>().HasKey(ur => new { ur.UserId, ur.ChatId });
-            modelBuilder.Entity<ChatOwner>().HasKey(ur => new { ur.OwnerId, ur.ChatId });
+            modelBuilder.Entity<Friend>().HasKey(fr => new { fr.ReqSenderID, fr.ReqReceiverID });
 
             base.OnModelCreating(modelBuilder);
         }

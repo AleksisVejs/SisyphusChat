@@ -9,7 +9,7 @@ namespace SisyphusChat.Infrastructure.Entities;
 [Index(nameof(UserName), nameof(Email), nameof(PasswordHash), IsUnique = true)]
 public class User : IdentityUser
 {
-    public Blob Picture { get; set; }
+    public byte[] Picture { get; set; }
 
     [Required]
     public bool IsOnline { get; set; }
