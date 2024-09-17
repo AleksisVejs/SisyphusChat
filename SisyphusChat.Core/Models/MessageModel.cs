@@ -1,5 +1,4 @@
 ﻿using SisyphusChat.Infrastructure.Entities;
-using System.Reflection.Metadata;
 
 namespace SisyphusChat.Core.Models
 {
@@ -9,7 +8,9 @@ namespace SisyphusChat.Core.Models
         
         public UserModel Sender { get; set; }
         
-        public Blob Content { get; set; }
+        public string Content { get; set; }
+
+        public Attachment MessageAttachment { get; set; }
 
         public MessageStatus Status { Sent, Delivered, Read }
         
