@@ -4,7 +4,7 @@ namespace SisyphusChat.Core.Models
 {
     public class UserModel
     {
-        public Guid ID { get; set; }
+        public string ID { get; set; }
 
         public string UserName { get; set; }
 
