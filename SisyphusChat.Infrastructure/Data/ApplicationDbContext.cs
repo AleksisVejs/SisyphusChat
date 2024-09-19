@@ -27,6 +27,43 @@ namespace SisyphusChat.Infrastructure.Data
             modelBuilder.Entity<ChatUser>().HasKey(ur => new { ur.UserId, ur.ChatId });
             modelBuilder.Entity<Friend>().HasKey(fr => new { fr.ReqSenderID, fr.ReqReceiverID });
 
+            modelBuilder.Entity<Friend>()
+                .HasOne(f => f.ReqSender)
+                .WithMany()
+                .HasForeignKey(f => f.ReqSenderID)
+                .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(f => f.ReqReceiver)
+                .WithMany()
+                .HasForeignKey(f => f.ReqReceiverID)
+                .OnDelete(DeleteBehavior.Cascade);  // Cascade delete for receiver
+
+            modelBuilder.Entity<ChatUser>()
+                .HasOne(cu => cu.Chat)
+                .WithMany(c => c.ChatUsers)
+                .HasForeignKey(cu => cu.ChatId)
+                .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
+
+            modelBuilder.Entity<ChatUser>()
+                .HasOne(cu => cu.User)
+                .WithMany(u => u.ChatUsers)
+                .HasForeignKey(cu => cu.UserId)
+                .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Chat)
+                .WithMany(c => c.Messages)  // Add this collection property in Chat class
+                .HasForeignKey(m => m.ChatId)
+                .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.Messages)  // Add this collection property in User class
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
+
+
             base.OnModelCreating(modelBuilder);
         }
     }
