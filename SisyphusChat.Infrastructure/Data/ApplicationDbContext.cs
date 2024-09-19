@@ -31,7 +31,7 @@ namespace SisyphusChat.Infrastructure.Data
                 .HasOne(f => f.ReqSender)
                 .WithMany()
                 .HasForeignKey(f => f.ReqSenderID)
-                .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+                .OnDelete(DeleteBehavior.Restrict);  // Disable cascade delete
 
             modelBuilder.Entity<Friend>()
                 .HasOne(f => f.ReqReceiver)
@@ -53,13 +53,13 @@ namespace SisyphusChat.Infrastructure.Data
 
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Chat)
-                .WithMany(c => c.Messages)  // Add this collection property in Chat class
+                .WithMany(c => c.Messages) 
                 .HasForeignKey(m => m.ChatId)
                 .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
 
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Sender)
-                .WithMany(u => u.Messages)  // Add this collection property in User class
+                .WithMany(u => u.Messages) 
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
 
