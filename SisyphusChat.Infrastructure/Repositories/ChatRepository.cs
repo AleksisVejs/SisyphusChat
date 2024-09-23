@@ -1,4 +1,4 @@
-﻿using SisyphusChat.Infrastructure.Data;
+﻿/*using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Exceptions;
@@ -10,8 +10,10 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 {
     public async Task AddAsync(Chat entity)
     {
-        entity.Id = Guid.NewGuid().ToString();
-        entity.CreatedAt = DateTime.Now;
+        entity.ID = Guid.NewGuid(); // Assuming Id is of type Guid in BaseEntity
+        entity.TimeCreated = DateTime.Now;
+        entity.IsReported = false; // Assuming a default value for IsReported
+
         await context.Chats.AddAsync(entity);
         await context.SaveChangesAsync();
     }
@@ -19,7 +21,6 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
     public async Task<ICollection<Chat>> GetAllAsync()
     {
         var chats = await context.Chats
-            .Include(chat => chat.Members)
             .ToListAsync();
 
         return chats;
@@ -85,3 +86,4 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
         return chat;
     }
 }
+*/

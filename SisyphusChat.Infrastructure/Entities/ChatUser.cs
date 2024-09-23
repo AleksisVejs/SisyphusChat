@@ -14,7 +14,7 @@ public class ChatUser
     public Chat Chat { get; set; }
     
     [Required]
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
     
     [Required]
     [ForeignKey(nameof(UserId))]

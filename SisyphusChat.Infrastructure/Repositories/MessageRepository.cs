@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
@@ -10,8 +10,8 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 {
     public async Task AddAsync(Message entity)
     {
-        entity.Id = Guid.NewGuid().ToString();
-        entity.CreatedAt = DateTime.Now;
+        entity.ID = Guid.NewGuid().ToString();
+        entity.TimeCreated = DateTime.Now;
         entity.Status = MessageStatus.Sent;
 
         await context.Messages.AddAsync(entity);
@@ -59,3 +59,4 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
         await context.SaveChangesAsync();
     }
 }
+*/
