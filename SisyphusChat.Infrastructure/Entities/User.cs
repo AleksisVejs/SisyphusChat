@@ -15,5 +15,11 @@ namespace SisyphusChat.Infrastructure.Entities
         public ICollection<ChatUser> ChatUsers { get; set; } = new List<ChatUser>();
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
+
+        [Required]
+        public DateTime TimeCreated { get; set; }
+
+        [Required]
+        public DateTime LastUpdated { get; set; }
     }
 }
