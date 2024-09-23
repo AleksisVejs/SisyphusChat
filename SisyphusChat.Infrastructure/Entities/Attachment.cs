@@ -11,4 +11,6 @@ public class Attachment : BaseEntity
 
     [Required]
     public string FileName { get; set; }
+
+    public Message Message { get; set; }
 }

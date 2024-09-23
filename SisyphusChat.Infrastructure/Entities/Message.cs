@@ -28,6 +28,4 @@ public class Message : BaseEntity
     
     [Required]
     public bool IsReported { get; set; }
-
-    public Attachment MessageAttachment { get; set; }
 }

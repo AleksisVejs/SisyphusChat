@@ -4,7 +4,7 @@ using SisyphusChat.Infrastructure.Entities;
 
 namespace SisyphusChat.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
