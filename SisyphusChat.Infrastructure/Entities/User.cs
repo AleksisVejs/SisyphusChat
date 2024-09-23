@@ -9,7 +9,7 @@ namespace SisyphusChat.Infrastructure.Entities
     [Table("User")]
     public class User : IdentityUser
     {
-        public byte[] Picture { get; set; }
+        public byte[]? Picture { get; set; }
 
         [Required]
         public bool IsOnline { get; set; }
