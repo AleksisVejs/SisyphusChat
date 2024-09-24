@@ -12,7 +12,7 @@ namespace SisyphusChat.Core.Models
 
         public Attachment MessageAttachment { get; set; }
 
-        public MessageStatus Status { Sent, Delivered, Read }
+        public MessageStatus Status { get; set; }
         
         public bool IsReported { get; set; }
     }
