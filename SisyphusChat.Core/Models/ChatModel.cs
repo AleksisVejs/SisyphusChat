@@ -10,8 +10,12 @@ namespace SisyphusChat.Core.Models
         
         public ChatType Type { get; set; }
 
-        public UserModel Owner { get; set; } 
+        public UserModel OwnerID { get; set; } 
 
         public bool IsReported { get; set; }
+
+        public DateTime TimeCreated { get; set; }
+
+        public DateTime LastUpdated { get; set; }
     }
 }

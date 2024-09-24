@@ -7,10 +7,14 @@ namespace SisyphusChat.Infrastructure.Entities;
 public class Attachment : BaseEntity
 {
     [Required]
+    public string MessageID { get; set; }
+
+    [ForeignKey(nameof(MessageID))]
+    public Message Message { get; set; }
+
+    [Required]
     public byte[] Content { get; set; }
 
     [Required]
     public string FileName { get; set; }
-
-    public Message Message { get; set; }
 }

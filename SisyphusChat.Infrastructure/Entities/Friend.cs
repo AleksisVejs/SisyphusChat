@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SisyphusChat.Infrastructure.Entities;
 
 [Table("Friends")]
-public class Friend : BaseEntity
+public class Friend
 {
     [Required]
     public string ReqSenderID { get; set; }
