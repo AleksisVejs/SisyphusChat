@@ -1,5 +1,4 @@
-﻿
-/*using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Exceptions;
@@ -17,13 +16,13 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
     public async Task<ICollection<User>> GetAllAsync()
     {
-        return await context.Users.Include(u => u.Chats).ThenInclude(c => c.Members).ToListAsync();
+        return await context.Users.Include(u => u.Messages).ThenInclude(m => m.Sender).ToListAsync();
     }
 
     public async Task<User> GetByIdAsync(string id)
     {
         var user = await context.Users
-            .Include(u => u.Chats)
+            .Include(u => u.Messages)
             .FirstOrDefaultAsync(g => g.Id == id);
 
         if (user == null)
@@ -61,7 +60,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
     public async Task<User> GetUserByChatIdAsync(string chatId)
     {
         var user = await context.Users
-            .Where(u => u.Chats.Any(c => c.Id == chatId))
+            .Where(u => u.Messages.Any(c => c.ID.ToString() == chatId))
             .FirstOrDefaultAsync();
 
         if (user == null)
@@ -72,4 +71,3 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         return user;
     }
 }
-*/
