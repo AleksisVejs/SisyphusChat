@@ -7,7 +7,7 @@ namespace SisyphusChat.Infrastructure.Entities;
 public class Attachment : BaseEntity
 {
     [Required]
-    public string MessageID { get; set; }
+    public Guid MessageID { get; set; }
 
     [ForeignKey(nameof(MessageID))]
     public Message Message { get; set; }

@@ -44,7 +44,7 @@ namespace SisyphusChat.Infrastructure.Repositories
         public async Task<ICollection<Attachment>> GetAllByMessageIdAsync(string messageId)
         {
             return await _context.Attachments
-                .Where(a => a.MessageID == messageId)
+                .Where(a => a.MessageID.ToString() == messageId)
                 .ToListAsync();
         }
     }
