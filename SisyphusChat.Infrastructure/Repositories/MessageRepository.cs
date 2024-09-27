@@ -1,8 +1,9 @@
-﻿/*using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Exceptions;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace SisyphusChat.Infrastructure.Repositories;
 
@@ -10,7 +11,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 {
     public async Task AddAsync(Message entity)
     {
-        entity.ID = Guid.NewGuid().ToString();
+        entity.ID = Guid.NewGuid();
         entity.TimeCreated = DateTime.Now;
         entity.Status = MessageStatus.Sent;
 
@@ -25,7 +26,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 
     public async Task<Message> GetByIdAsync(string id)
     {
-        var message = await context.Messages.FirstOrDefaultAsync(g => g.Id == id);
+        var message = await context.Messages.FirstOrDefaultAsync(g => g.ID.ToString() == id);
 
         if (message == null)
         {
@@ -59,4 +60,3 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
         await context.SaveChangesAsync();
     }
 }
-*/

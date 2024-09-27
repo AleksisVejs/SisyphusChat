@@ -1,4 +1,4 @@
-﻿/*using SisyphusChat.Infrastructure.Data;
+﻿using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Exceptions;
@@ -10,9 +10,9 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 {
     public async Task AddAsync(Chat entity)
     {
-        entity.ID = Guid.NewGuid(); // Assuming Id is of type Guid in BaseEntity
+        entity.ID = Guid.NewGuid(); 
         entity.TimeCreated = DateTime.Now;
-        entity.IsReported = false; // Assuming a default value for IsReported
+        entity.IsReported = false;
 
         await context.Chats.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -29,14 +29,13 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
     public async Task<Chat> GetByIdAsync(string id)
     {
         var chat = await context.Chats
-            .Include(c => c.Members)
+            .Include(c => c.ChatUsers)
             .ThenInclude(m => m.User)
             .Include(c => c.Owner)
-            .ThenInclude(o => o.Owner)
             .Include(c => c.Messages
-            .OrderBy(m => m.SentAt))
+            .OrderBy(m => m.TimeCreated))
             .ThenInclude(m => m.Sender)
-            .FirstOrDefaultAsync(g => g.Id == id);
+            .FirstOrDefaultAsync(g => g.ID.ToString() == id);
 
         if (chat == null)
         {
@@ -73,10 +72,10 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
     public async Task<Chat> GetPrivateChatAsync(string currentUserId, string recipientUserId)
     {
         var chat = await context.Chats
-            .Include(c => c.Members)
+            .Include(c => c.ChatUsers)
             .FirstOrDefaultAsync(c => c.Type == ChatType.Private &&
-                                      c.Members.Any(m => m.UserId == currentUserId) &&
-                                      c.Members.Any(m => m.UserId == recipientUserId));
+                                      c.ChatUsers.Any(m => m.UserId.ToString() == currentUserId) &&
+                                      c.ChatUsers.Any(m => m.UserId.ToString() == recipientUserId));
 
         if (chat == null)
         {
@@ -86,4 +85,3 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
         return chat;
     }
 }
-*/

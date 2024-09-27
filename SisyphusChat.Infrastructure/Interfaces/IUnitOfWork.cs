@@ -11,6 +11,8 @@ namespace SisyphusChat.Core.Interfaces
 
         IChatRepository ChatRepository { get; }
 
+        IAttachmentRepository AttachmentRepository { get; } 
+
         Task SaveAsync();
     }
 }
