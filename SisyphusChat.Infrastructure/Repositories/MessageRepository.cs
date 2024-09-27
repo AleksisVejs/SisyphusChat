@@ -11,7 +11,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 {
     public async Task AddAsync(Message entity)
     {
-        entity.ID = Guid.NewGuid();
+        entity.Id = Guid.NewGuid();
         entity.TimeCreated = DateTime.Now;
         entity.Status = MessageStatus.Sent;
 
@@ -26,7 +26,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 
     public async Task<Message> GetByIdAsync(string id)
     {
-        var message = await context.Messages.FirstOrDefaultAsync(g => g.ID.ToString() == id);
+        var message = await context.Messages.FirstOrDefaultAsync(g => g.Id.ToString() == id);
 
         if (message == null)
         {

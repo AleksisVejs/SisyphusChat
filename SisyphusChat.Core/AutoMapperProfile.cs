@@ -21,7 +21,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Chat, ChatModel>()
             .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
             .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
-            .ForMember(x => x.OwnerId, opt => opt.MapFrom(x => x.OwnerID))
+            .ForMember(x => x.OwnerId, opt => opt.MapFrom(x => x.Owner))
             .ForMember(x => x.ChatUsers, opt => opt.MapFrom(x => x.ChatUsers))
             .ForMember(x => x.Messages, opt => opt.MapFrom(x => x.Messages))
             .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))

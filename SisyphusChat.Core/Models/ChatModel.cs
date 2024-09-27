@@ -4,13 +4,13 @@ namespace SisyphusChat.Core.Models
 {
     public class ChatModel
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
-        public string Name { get; set; }
-        
+        public string Name { get; set; } = string.Empty;
+
         public ChatType Type { get; set; }
 
-        public UserModel OwnerId { get; set; } 
+        public UserModel OwnerId { get; set; }
 
         public bool IsReported { get; set; }
 
@@ -21,6 +21,5 @@ namespace SisyphusChat.Core.Models
         public ICollection<ChatUser> ChatUsers { get; set; }
 
         public ICollection<Message> Messages { get; set; }
-
     }
 }

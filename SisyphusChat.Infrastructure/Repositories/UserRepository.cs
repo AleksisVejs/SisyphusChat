@@ -60,7 +60,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
     public async Task<User> GetUserByChatIdAsync(string chatId)
     {
         var user = await context.Users
-            .Where(u => u.Messages.Any(c => c.ID.ToString() == chatId))
+            .Where(u => u.Messages.Any(c => c.Id.ToString() == chatId))
             .FirstOrDefaultAsync();
 
         if (user == null)

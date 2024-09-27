@@ -22,7 +22,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        var chat = await unitOfWork.ChatRepository.GetByIdAsync(model.Id);
+        var chat = await unitOfWork.ChatRepository.GetByIdAsync(model.Id.ToString());
 
         await unitOfWork.ChatRepository.UpdateAsync(chat);
         await unitOfWork.SaveAsync();
@@ -46,7 +46,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        var chat = await unitOfWork.ChatRepository.GetByIdAsync(model.Id);
+        var chat = await unitOfWork.ChatRepository.GetByIdAsync(model.Id.ToString());
 
         chat.Name = model.Name;
 
