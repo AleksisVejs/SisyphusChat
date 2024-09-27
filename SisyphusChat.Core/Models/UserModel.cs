@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace SisyphusChat.Core.Models
+﻿namespace SisyphusChat.Core.Models
 {
     public class UserModel
     {
@@ -8,10 +6,16 @@ namespace SisyphusChat.Core.Models
 
         public string UserName { get; set; }
 
-        public Blob Picture { get; set; }
+        public string Email { get; set; }
+
+        public string PasswordHash { get; set; }
+
+        public byte[]? Picture { get; set; }
 
         public bool IsOnline { get; set; }
 
-        
+        public DateTime TimeCreated { get; set; }
+
+        public DateTime LastUpdated { get; set; }
     }
 }

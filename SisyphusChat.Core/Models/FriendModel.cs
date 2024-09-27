@@ -4,13 +4,9 @@ namespace SisyphusChat.Core.Models
 {
     public class FriendModel
     {
-        public string ReqSenderID { get; set; }
-
-        public UserModel ReqSender { get; set; }
+        public UserModel ReqSenderID { get; set; }
         
-        public string ReqReceiverID { get; set; }
-        
-        public UserModel ReqReceiver { get; set; }
+        public UserModel ReqReceiverID { get; set; }
 
         public bool IsAccepted { get; set; }
     }
