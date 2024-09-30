@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
@@ -14,7 +15,7 @@ namespace SisyphusChat.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Attachment> GetByIdAsync(Guid id)
+        public async Task<Attachment> GetByIdAsync(string id)
         {
             return await _context.Attachments.FindAsync(id);
         }
@@ -31,7 +32,7 @@ namespace SisyphusChat.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteByIdAsync(string id)
         {
             var attachment = await _context.Attachments.FindAsync(id);
             if (attachment != null)
@@ -47,5 +48,10 @@ namespace SisyphusChat.Infrastructure.Repositories
                 .Where(a => a.MessageID.ToString() == messageId)
                 .ToListAsync();
         }
+        public async Task<ICollection<Attachment>> GetAllAsync()
+        {
+            return await _context.Attachments.ToListAsync();
+        }
+
     }
 }

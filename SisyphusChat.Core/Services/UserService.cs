@@ -6,7 +6,7 @@ using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
 using SisyphusChat.Infrastructure.Entities;
 
-namespace Hermes.Core.Services;
+namespace SisyphusChat.Core.Services;
 
 public class UserService(
     IUnitOfWork unitOfWork,

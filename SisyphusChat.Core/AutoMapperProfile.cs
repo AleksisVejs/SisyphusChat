@@ -2,46 +2,45 @@
 using SisyphusChat.Core.Models;
 using SisyphusChat.Infrastructure.Entities;
 
-
-namespace Hermes.Core;
-
-public class AutoMapperProfile : Profile
+namespace SisyphusChat.Core
 {
-    public AutoMapperProfile()
+    public class AutoMapperProfile : Profile
     {
-        CreateMap<User, UserModel>()
-            .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-            .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.UserName))
-            .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.LastUpdated))
-            .ForMember(x => x.IsOnline, opt => opt.MapFrom(x => x.IsOnline))
-            .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.UserName))
-            .ForMember(x => x.ChatUsers, opt => opt.MapFrom(x => x.ChatUsers))
-            .ReverseMap();
+        public AutoMapperProfile()
+        {
+            CreateMap<User, UserModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(src => src.LastUpdated))
+                .ForMember(dest => dest.IsOnline, opt => opt.MapFrom(src => src.IsOnline))
+                .ForMember(dest => dest.ChatUsers, opt => opt.MapFrom(src => src.ChatUsers))
+                .ReverseMap();
 
-        CreateMap<Chat, ChatModel>()
-            .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-            .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
-            .ForMember(x => x.OwnerId, opt => opt.MapFrom(x => x.Owner))
-            .ForMember(x => x.ChatUsers, opt => opt.MapFrom(x => x.ChatUsers))
-            .ForMember(x => x.Messages, opt => opt.MapFrom(x => x.Messages))
-            .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
-            .ReverseMap();
+            CreateMap<Chat, ChatModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id)) // Mapping owner entity to OwnerId
+                .ForMember(dest => dest.ChatUsers, opt => opt.MapFrom(src => src.ChatUsers))
+                .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ReverseMap();
 
-        CreateMap<Message, MessageModel>()
-            .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-            .ForMember(x => x.ChatId, opt => opt.MapFrom(x => x.ChatId))
-            .ForMember(x => x.Chat, opt => opt.MapFrom(x => x.Chat))
-            .ForMember(x => x.SenderId, opt => opt.MapFrom(x => x.SenderId))
-            .ForMember(x => x.Content, opt => opt.MapFrom(x => x.Content))
-            .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.LastUpdated))
-            .ForMember(x => x.Status, opt => opt.MapFrom(x => x.Status))
-            .ReverseMap();
+            CreateMap<Message, MessageModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.ChatId))
+                .ForMember(dest => dest.Chat, opt => opt.MapFrom(src => src.Chat))
+                .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.SenderId))
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(src => src.LastUpdated))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ReverseMap();
 
-        CreateMap<ChatUser, ChatUserModel>()
-            .ForMember(x => x.ChatId, opt => opt.MapFrom(x => x.ChatId))
-            .ForMember(x => x.UserId, opt => opt.MapFrom(x => x.UserId))
-            .ForMember(x => x.Chat, opt => opt.MapFrom(x => x.Chat))
-            .ForMember(x => x.User, opt => opt.MapFrom(x => x.User))
-            .ReverseMap();
+            CreateMap<ChatUser, ChatUserModel>()
+                .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.ChatId))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.Chat, opt => opt.MapFrom(src => src.Chat))
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+                .ReverseMap();
+        }
     }
 }

@@ -4,7 +4,7 @@ using SisyphusChat.Core.Models;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Exceptions;
 
-namespace Hermes.Core.Services;
+namespace SisyphusChat.Core.Services;
 
 public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 {
