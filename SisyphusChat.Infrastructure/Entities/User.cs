@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 namespace SisyphusChat.Infrastructure.Entities
 {
     [Index(nameof(UserName), nameof(Email), nameof(PasswordHash), IsUnique = true)]
-    [Table("User")]
     public class User : IdentityUser
     {
         public byte[]? Picture { get; set; }
