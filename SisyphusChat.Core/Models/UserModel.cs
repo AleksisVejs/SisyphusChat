@@ -1,14 +1,12 @@
-﻿namespace SisyphusChat.Core.Models
+﻿using SisyphusChat.Infrastructure.Entities;
+
+namespace SisyphusChat.Core.Models
 {
     public class UserModel
     {
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public string UserName { get; set; }
-
-        public string Email { get; set; }
-
-        public string PasswordHash { get; set; }
 
         public byte[]? Picture { get; set; }
 
@@ -17,5 +15,9 @@
         public DateTime TimeCreated { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public ICollection<ChatUser> ChatUsers { get; set; }
+
+        public ICollection<Message> Messages { get; set; }
     }
 }

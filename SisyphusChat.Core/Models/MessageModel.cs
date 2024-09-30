@@ -4,11 +4,11 @@ namespace SisyphusChat.Core.Models
 {
     public class MessageModel
     {
-        public string ID { get; set; }
+        public string Id { get; set; }
 
-        public ChatModel ChatID { get; set; }
+        public ChatModel ChatId { get; set; }
         
-        public UserModel SenderID { get; set; }
+        public UserModel SenderId { get; set; }
         
         public string Content { get; set; }
 
@@ -19,5 +19,7 @@ namespace SisyphusChat.Core.Models
         public DateTime TimeCreated { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public Chat Chat { get; set; }
     }
 }
