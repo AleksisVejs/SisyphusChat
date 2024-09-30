@@ -8,7 +8,7 @@ namespace SisyphusChat.Core.Interfaces
 {
     public interface IAttachmentService : ICrud<Attachment>
     {
-        Task<Attachment> GetByIdAsync(Guid id);
+        Task<Attachment> GetByIdAsync(string id);
         Task<ICollection<Attachment>> GetAllByMessageIdAsync(string messageId);
     }
 }

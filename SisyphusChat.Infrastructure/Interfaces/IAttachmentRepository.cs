@@ -9,10 +9,11 @@ namespace SisyphusChat.Infrastructure.Interfaces
 {
     public interface IAttachmentRepository
     {
-        Task<Attachment> GetByIdAsync(Guid id);
+        Task<Attachment> GetByIdAsync(string id);
         Task AddAsync(Attachment attachment);
+        Task<ICollection<Attachment>> GetAllAsync();
         Task UpdateAsync(Attachment attachment);
-        Task DeleteAsync(Guid id);
-        Task<ICollection<Attachment>> GetAllByMessageIdAsync(string messageId);
+        Task DeleteByIdAsync(string id);
+        Task<ICollection<Attachment>> GetAllByMessageIdAsync(string id);
     }
 }
