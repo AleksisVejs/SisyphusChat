@@ -4,73 +4,60 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SisyphusChat.Infrastructure.Entities;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
         public IndexModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string Username { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
+        public string Avatar { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "New Username")]
+            [StringLength(15, MinimumLength = 5, ErrorMessage = "Username should be between 5 and 15 characters.")]
+            [RegularExpression(@"^[a-zA-Z0-9._-]+$", ErrorMessage = "Username can only contain letters, digits, hyphens, underscores, and periods.")]
+            public string NewUsername { get; set; }
+
+            public byte[] Picture { get; set; }
+            public IFormFile ProfilePicture { get; set; }
+            // Any future properties for the input model
         }
 
-        private async Task LoadAsync(IdentityUser user)
+        private async Task LoadAsync(User user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
             Username = userName;
-
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
+            Input = new InputModel {
+                NewUsername = "",
+                Picture = user.Picture ?? GetDefaultAvatar()
             };
+        }
+        private byte[] GetDefaultAvatar()
+        {
+            return System.IO.File.ReadAllBytes("wwwroot/images/default_pfp.jpg");
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -93,26 +80,54 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            // Check if NewUsername is provided and validate uniqueness
+            if (!string.IsNullOrWhiteSpace(Input.NewUsername))
+            {
+                var taken = await _userManager.FindByNameAsync(Input.NewUsername);
+                if (taken != null && taken.Id != user.Id) // Ensure it's not the same user
+                {
+                    ModelState.AddModelError(string.Empty, "Username is already taken.");
+                    await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                    return Page();
+                }
+
+                // Update the username if it's unique
+                user.UserName = Input.NewUsername;
+            }
+
+            // Process the uploaded profile picture
+            if (Input.ProfilePicture != null && Input.ProfilePicture.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await Input.ProfilePicture.CopyToAsync(memoryStream);
+                    user.Picture = memoryStream.ToArray();
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                foreach (var error in result.Errors)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
+                await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                return Page();
             }
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
+
     }
 }
