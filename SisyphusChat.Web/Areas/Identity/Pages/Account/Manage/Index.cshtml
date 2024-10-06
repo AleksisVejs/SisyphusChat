@@ -58,6 +58,9 @@
             const targetWidth = 150;  // Target width for resizing
             const targetHeight = 150; // Target height for resizing
 
+            // Store the current image source
+            const originalImageSrc = profileImage.src;
+
             if (uploadBtn && fileInput && profileImage) {
                 uploadBtn.addEventListener('click', function () {
                     fileInput.click();
@@ -69,7 +72,7 @@
                         if (file.size > maxSizeBytes) {
                             alert(`File size exceeds ${maxSizeMB} MB. Please choose a smaller file.`);
                             fileInput.value = ''; // Reset file input
-                            profileImage.src = "~/images/default_pfp.jpg"; // Reset the image preview
+                            profileImage.src = originalImageSrc; // Reset the image preview to original
                             return;
                         }
 
