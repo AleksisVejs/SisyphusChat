@@ -80,6 +80,21 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            // Check if NewUsername is provided and validate uniqueness
+            if (!string.IsNullOrWhiteSpace(Input.NewUsername))
+            {
+                var taken = await _userManager.FindByNameAsync(Input.NewUsername);
+                if (taken != null && taken.Id != user.Id) // Ensure it's not the same user
+                {
+                    ModelState.AddModelError(string.Empty, "Username is already taken.");
+                    await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                    return Page();
+                }
+
+                // Update the username if it's unique
+                user.UserName = Input.NewUsername;
+            }
+
             // Process the uploaded profile picture
             if (Input.ProfilePicture != null && Input.ProfilePicture.Length > 0)
             {
@@ -90,7 +105,12 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            user.UserName = Input.NewUsername;
+            if (!ModelState.IsValid)
+            {
+                await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                return Page();
+            }
+
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
@@ -99,6 +119,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+                await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
                 return Page();
             }
 
@@ -106,6 +127,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
 
     }
 }

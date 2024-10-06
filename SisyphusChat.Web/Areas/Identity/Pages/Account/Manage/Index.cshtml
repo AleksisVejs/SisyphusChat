@@ -29,11 +29,11 @@
                     {
                         var base64Image = Convert.ToBase64String(Model.Input.Picture);
                         var imgSrc = $"data:image/jpeg;base64,{base64Image}";
-                        <img id="profileImage" src="@imgSrc" alt="User Avatar" />
+                        <img id="profileImage" src="@imgSrc" alt="User Avatar" style="width: 150px; height: 150px;" />
                     }
                     else
                     {
-                        <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
+                        <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" style="width: 150px; height: 150px;" />
                     }
                 </button>
             </div>
