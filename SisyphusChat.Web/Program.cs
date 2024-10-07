@@ -4,7 +4,6 @@ using SisyphusChat.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Core.Interfaces;
-using SisyphusChat.Infrastructure;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
