@@ -9,6 +9,7 @@ using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Repositories;
+using SisyphusChat.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -21,6 +22,7 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
@@ -62,10 +64,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 app.MapControllerRoute(
     name: "default",
