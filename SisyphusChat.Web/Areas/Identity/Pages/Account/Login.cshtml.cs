@@ -85,14 +85,15 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
                 // Use FindByEmailAsync to find the user by email
                 var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email); // Ensure you are looking for email
 
-                // I got this error for a valid email
-                /*if (user == null || !user.EmailConfirmed)
+                //bad thing
+                if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "The email does not exist.");
-                    return Page();
-                */
 
-                // Attempt to sign in the user
+                    return Page();
+                }
+
+                
                 var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)

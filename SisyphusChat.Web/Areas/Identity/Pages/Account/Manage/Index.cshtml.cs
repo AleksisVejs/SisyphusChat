@@ -55,11 +55,12 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 Picture = user.Picture ?? GetDefaultAvatar()
             };
         }
+        
         private byte[] GetDefaultAvatar()
         {
             return System.IO.File.ReadAllBytes("wwwroot/images/default_pfp.jpg");
         }
-
+        
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
