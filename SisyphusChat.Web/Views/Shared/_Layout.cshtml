@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SisyphusChat.Web.styles.css" asp-append-version="true" />
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
-   
-
+    <link id="theme-link" rel="stylesheet" href="/css/light-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
 </head>
 <body>
     <header>
@@ -54,6 +54,11 @@
                     </ul>
                 </div>
             </div>
+            <button id="theme-switcher">
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
         </nav>
     </header>
     <div class="container">

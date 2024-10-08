@@ -1,0 +1,27 @@
+body {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.form-floating {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+#registerSubmit {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+input {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.form-label {
+  color: #000000;
+}
+
+.placeholder {
+  color: #000000;
+}
