@@ -8,11 +8,6 @@ body {
   color: #ffffff;
 }
 
-#registerSubmit {
-  background-color: #000000;
-  color: #ffffff;
-}
-
 input {
   background-color: #000000;
   color: #ffffff;
@@ -24,4 +19,20 @@ input {
 
 .placeholder {
   color: #000000;
+}
+
+.navbar {
+  background-color: #000000 !important;
+} 
+
+.navbar-light .navbar-nav .nav-link {
+  color: #ffffff !important;
+}
+
+.navbar-brand {
+  color: #ffffff !important;
+}
+
+#moon-icon {
+  stroke: #ffffff;
 }

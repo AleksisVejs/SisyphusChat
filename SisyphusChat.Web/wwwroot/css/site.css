@@ -32,23 +32,30 @@ button#theme-switcher {
 }
 
 .toggle-password {
-  position: absolute; /* Position it absolutely within the parent element */
-  right: 10px; /* Adjusts the position from the right edge */
-  top: 50%; /* Centers it vertically */
-  transform: translateY(-50%); /* Adjusts the position to truly center it */
-  color: #000; /* Black color for the icon */
-  text-decoration: none; /* Removes underline */
-  cursor: pointer; /* Changes cursor to pointer to indicate clickability */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .toggle-password:hover {
-  color: #007bff; /* Changes color on hover (Bootstrap primary color) */
+  color: #007bff;
 }
 
 .toggle-password:focus {
-  outline: none; /* Removes the default focus outline */
+  outline: none; 
 }
 
 .toggle-password i {
-  font-size: 1.2em; /* Adjusts the icon size */
+  font-size: 1.2em;
+}
+
+.text-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
