@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /SisyphusChat.Infrastructure/Migrations
+SisyphusChat.Infrastructure/SisyphusChat.Infrastructure.csproj
+SisyphusChat.Infrastructure/Data/ApplicationDbContext.cs
+SisyphusChat.Web/appsettings.json
