@@ -1,15 +1,29 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace SisyphusChat.Infrastructure.Data
 {
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    {
+        public ApplicationDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            optionsBuilder.UseSqlServer("Server=DESKTOP-QI49APH\\SQLEXPRESS;Database=SisyphusChatDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+
+            return new ApplicationDbContext(optionsBuilder.Options);
+        }
+    }
+
     public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+
+        
 
         public DbSet<Attachment> Attachments { get; set; }
 

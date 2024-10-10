@@ -24,18 +24,23 @@
                 <label asp-for="Input.NewUsername" class="form-label"></label>
             </div>
             <div class="form-floating mb-3">
-                <button type="button" id="uploadBtn" style="border: none; background: transparent; padding: 0;">
-                    @if (Model?.Input?.Picture != null && Model.Input.Picture.Length > 0)
-                    {
-                        var base64Image = Convert.ToBase64String(Model.Input.Picture);
-                        var imgSrc = $"data:image/jpeg;base64,{base64Image}";
-                        <img id="profileImage" src="@imgSrc" alt="User Avatar" style="width: 150px; height: 150px;" />
-                    }
-                    else
-                    {
-                        <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" style="width: 150px; height: 150px;" />
-                    }
-                </button>
+                <div class="image-container">
+                    <button type="button" id="uploadBtn" style="border: none; background: transparent; padding: 0;">
+                        @if (Model?.Input?.Picture != null && Model.Input.Picture.Length > 0)
+                        {
+                            var base64Image = Convert.ToBase64String(Model.Input.Picture);
+                            var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                            <img id="profileImage" src="@imgSrc" alt="User Avatar" />
+                        }
+                        else
+                        {
+                            <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
+                        }
+                    </button>
+                    <div class="overlay" id="uploadBtn-overlay">
+                        <div class="text">Change profile picture</div>
+                    </div>
+                </div>
             </div>
             <input asp-for="Input.ProfilePicture" type="file" id="fileInput" style="display: none;" accept="image/*" />
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
@@ -46,17 +51,71 @@
     </div>
 </div>
 
+<style>
+    .image-container {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        overflow: hidden; /* Ensure overflow is hidden for round image */
+        border-radius: 50%; /* Make the container round */
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%; /* Make the image round */
+        object-fit: cover; /* Ensure image covers the area without distortion */
+    }
+
+    .image-container .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        transition: .5s ease;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .image-container:hover .overlay {
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    .text {
+        color: white;
+        font-size: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    #profileImage {
+        border-color: #007bff;
+        cursor: pointer;
+    }
+
+    #profileImage:hover {
+        opacity: 0.8;
+    }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadBtn = document.getElementById('uploadBtn-overlay');
             const fileInput = document.getElementById('fileInput');
             const profileImage = document.getElementById('profileImage');
+            const profileForm = document.getElementById('profile-form');
+
             const maxSizeMB = 2;
             const maxSizeBytes = maxSizeMB * 1024 * 1024;
-            const targetWidth = 150;  // Target width for resizing
-            const targetHeight = 150; // Target height for resizing
 
             // Store the current image source
             const originalImageSrc = profileImage.src;
@@ -78,25 +137,7 @@
 
                         const reader = new FileReader();
                         reader.onload = function (e) {
-                            const img = new Image();
-                            img.src = e.target.result;
-                            img.onload = function () {
-                                const canvas = document.createElement('canvas');
-                                const ctx = canvas.getContext('2d');
-
-                                // Set canvas size to target width/height
-                                canvas.width = targetWidth;
-                                canvas.height = targetHeight;
-
-                                // Draw the image in the canvas to fit within the box size
-                                ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-                                // Get the resized image data from the canvas
-                                const resizedImage = canvas.toDataURL('image/jpeg');
-
-                                // Display the resized image in the profileImage element
-                                profileImage.src = resizedImage;
-                            };
+                            profileImage.src = e.target.result; // Set the profile image directly to the uploaded file
                         };
                         reader.readAsDataURL(file);
                     }
@@ -105,4 +146,3 @@
         });
     </script>
 }
-
