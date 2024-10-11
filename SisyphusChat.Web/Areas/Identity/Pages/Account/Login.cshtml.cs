@@ -84,7 +84,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
             {
                 // Use FindByEmailAsync to find the user by email
                 var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email); // Ensure you are looking for email
-
+                ///gg
                 //bad thing
                 if (user == null)
                 {
