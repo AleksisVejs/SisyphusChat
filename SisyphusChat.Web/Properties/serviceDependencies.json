@@ -1,8 +1,12 @@
 {
   "dependencies": {
     "secrets1": {
-      "type": "secrets",
-      "connectionId": null
+      "type": "secrets"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:ApplicationDbContextConnection",
+      "dynamicId": null
     }
   }
 }
