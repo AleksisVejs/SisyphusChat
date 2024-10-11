@@ -10,12 +10,14 @@ public class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(
         ApplicationDbContext context,
+        IReportRepository reportRepository,
         IUserRepository userRepository,
         IMessageRepository messageRepository,
         IChatRepository chatRepository,
         IAttachmentRepository attachmentRepository)
     {
         _context = context;
+        ReportRepository = reportRepository;
         UserRepository = userRepository;
         MessageRepository = messageRepository;
         ChatRepository = chatRepository;
@@ -23,6 +25,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public IUserRepository UserRepository { get; }
+    public IReportRepository ReportRepository { get; }
 
     public IMessageRepository MessageRepository { get; }
 
