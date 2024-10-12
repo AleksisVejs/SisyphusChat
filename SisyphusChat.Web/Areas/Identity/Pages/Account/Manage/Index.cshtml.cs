@@ -123,6 +123,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             }
 
             var result = await _userManager.UpdateAsync(user);
+            user.LastUpdated = DateTime.Now;
 
             if (!result.Succeeded)
             {

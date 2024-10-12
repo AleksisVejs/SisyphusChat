@@ -9,6 +9,8 @@ namespace SisyphusChat.Infrastructure.Entities
     public class User : IdentityUser
     {
         public byte[]? Picture { get; set; }
+        public bool IsAdmin { get; set; }
+
 
         [Required]
         public bool IsOnline { get; set; }
@@ -22,5 +24,7 @@ namespace SisyphusChat.Infrastructure.Entities
 
         [Required]
         public DateTime LastUpdated { get; set; }
+
+        public DateTime? LastLogin { get; set; }
     }
 }

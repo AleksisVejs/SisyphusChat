@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Infrastructure.DTO;
 
 namespace SisyphusChat.Infrastructure.Repositories
 {
@@ -18,9 +19,106 @@ namespace SisyphusChat.Infrastructure.Repositories
 
         public async Task<List<Message>> GetMessages() => await context.Messages.ToListAsync();
         public async Task<List<User>> GetUsers() => await context.Users.ToListAsync();
- 
+        public async Task<List<UserWithLastMessageDto>> GetUsersWithLastMessage()
+        {
+            var usersWithLastMessage = await context.Users
+                .Select(user => new UserWithLastMessageDto
+                {
+                    UserId = user.Id.ToString(),
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    LastMessageContent = context.Messages
+                        .Where(m => m.SenderId == user.Id)
+                        .OrderByDescending(m => m.LastUpdated)
+                        .Select(m => m.Content)
+                        .FirstOrDefault(),
+                    LastMessageSenderId = context.Messages
+                        .Where(m => m.SenderId == user.Id)
+                        .OrderByDescending(m => m.LastUpdated)
+                        .Select(m => m.SenderId)
+                        .FirstOrDefault(),
+                    LastMessageDate = context.Messages
+                        .Where(m => m.SenderId == user.Id)
+                        .OrderByDescending(m => m.LastUpdated)
+                        .Select(m => m.LastUpdated)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            return usersWithLastMessage;
+        }
+        public async Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport()
+        {
+            var attachmentReport = await context.Attachments
+                .Select(a => new AttachmentUsageReportDto
+                {
+                    AttachmentId = a.Id,
+                    UserName = a.Message.Sender.UserName, // Get the sender's username from the related Message
+                    FileName = a.FileName,
+                    DateUploaded = a.TimeCreated, // Assuming TimeCreated tracks the upload date
+                    RelatedMessageContent = a.Message.Content // Get the content of the associated Message
+                })
+                .ToListAsync();
+
+            return attachmentReport;
+
+        }
+        public async Task<List<ChatParticipationReportDto>> GetChatParticipationReports()
+        {
+            var chatParticipationReport = await context.ChatUsers
+                .Select(cu => new ChatParticipationReportDto
+                {
+                    ChatId = cu.ChatId,
+                    ChatTitle = cu.Chat.Name,
+                    UserName = cu.User.UserName,
+                    UserRole = cu.Chat.OwnerID == cu.UserId ? "Owner" : "Member",
+                })
+                .ToListAsync();
+
+            return chatParticipationReport;
+        }
+        public async Task<List<MessageReportDto>> GetMessagesReport()
+        {
+            var messageReports = await context.Messages
+                .SelectMany(m =>
+                    m.Chat.ChatUsers.Select(cu => new MessageReportDto
+                    {
+                        MessageId = m.Id,
+                        SenderUserName = m.Sender.UserName,
+                        ReceiverUserName = cu.User.UserName, // Get the UserName for each ChatUser
+                        MessageContent = m.Content,
+                        DateSent = m.LastUpdated != DateTime.MinValue ? m.LastUpdated : m.TimeCreated,
+                        Status = m.Status.ToString()
+                    }))
+                .ToListAsync();
+
+            return messageReports;
+        }
+        public async Task<List<UserActivityReportDto>> GetUsersActivityReport()
+        {
+            var userActivityReport = await context.Users
+             .Select(u => new UserActivityReportDto
+             {
+                 UserName = u.UserName,
+                 LastLogin = u.LastLogin,
+                 LastUpdated = u.LastUpdated,
+                 IsOnline = u.IsOnline,
+                 TotalMessagesSent = context.Messages
+                     .Where(m => m.SenderId == u.Id)
+                     .Count()
+             })
+             .ToListAsync();
+
+            return userActivityReport;
 
 
 
+
+
+
+
+        }
     }
 }
+
+

@@ -41,9 +41,15 @@
                                     <button type="submit" class="nav-link btn btn-link">Logout</button>
                                 </form>
                             </li>
-                            <li>
-                                <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Admin</a>
-                            </li>
+                            @if (UserManager.GetUserAsync(User).Result.IsAdmin)
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Admin</a>
+                                </li>
+                            }
+
+                            // Check if user is admin
+
                         }
                         else
                         {
