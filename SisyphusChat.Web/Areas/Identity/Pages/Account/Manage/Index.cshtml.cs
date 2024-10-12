@@ -26,6 +26,8 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
         }
 
         public string Username { get; set; }
+        public string Email { get; set; }
+
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -44,6 +46,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             public byte[] Picture { get; set; }
             public IFormFile ProfilePicture { get; set; }
             // Any future properties for the input model
+            
         }
 
         private async Task LoadAsync(User user)
@@ -87,7 +90,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 var taken = await _userManager.FindByNameAsync(Input.NewUsername);
                 if (taken != null && taken.Id != user.Id) // Ensure it's not the same user
                 {
-                    ModelState.AddModelError(string.Empty, "Username is already taken.");
+                    ModelState.AddModelError(string.Empty, "Username gay is already taken.");
                     await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
                     return Page();
                 }
@@ -95,10 +98,17 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 // Update the username if it's unique
                 user.UserName = Input.NewUsername;
             }
+            
 
             // Process the uploaded profile picture
             if (Input.ProfilePicture != null && Input.ProfilePicture.Length > 0)
             {
+                if (Input.ProfilePicture.Length > 2 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(string.Empty, "The profile picture size cannot exceed 2MB.");
+                    await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                    return Page();
+                }
                 using (var memoryStream = new MemoryStream())
                 {
                     await Input.ProfilePicture.CopyToAsync(memoryStream);

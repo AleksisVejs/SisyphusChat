@@ -48,6 +48,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
     public async Task UpdateAsync(User entity)
     {
+        entity.LastUpdated = DateTime.Now;
         if (entity == null)
         {
             throw new EntityNotFoundException("Entity not found");
