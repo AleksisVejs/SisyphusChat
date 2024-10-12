@@ -15,6 +15,7 @@
     <div class="col-md-6">
         <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <span id="fileSizeError" class="text-danger"></span>
             <div class="form-floating mb-3">
                 <div class="image-container">
                     <button type="button" id="uploadBtn" style="border: none; background: transparent; padding: 0;">
@@ -35,6 +36,7 @@
                 </div>
             </div>
             <input asp-for="Input.ProfilePicture" type="file" id="fileInput" style="display: none;" accept="image/*" />
+            
             <div class="form-floating mb-3">
                 <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
                 <label asp-for="Username" class="form-label"></label>
@@ -43,7 +45,7 @@
                 <input asp-for="Input.NewUsername" class="form-control" placeholder="Please enter new username." />
                 <label asp-for="Input.NewUsername" class="form-label"></label>
             </div>
-            
+
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
@@ -61,30 +63,30 @@
         border-radius: 50%; /* Make the container round */
     }
 
-    .image-container img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%; /* Make the image round */
-        object-fit: cover; /* Ensure image covers the area without distortion */
-    }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Make the image round */
+            object-fit: cover; /* Ensure image covers the area without distortion */
+        }
 
-    .image-container .overlay {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        width: 100%;
-        opacity: 0;
-        transition: .5s ease;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
+        .image-container .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0;
+            transition: .5s ease;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
 
-    .image-container:hover .overlay {
-        opacity: 1;
-        cursor: pointer;
-    }
+        .image-container:hover .overlay {
+            opacity: 1;
+            cursor: pointer;
+        }
 
     .text {
         color: white;
@@ -101,9 +103,9 @@
         cursor: pointer;
     }
 
-    #profileImage:hover {
-        opacity: 0.8;
-    }
+        #profileImage:hover {
+            opacity: 0.8;
+        }
 </style>
 
 @section Scripts {
@@ -113,7 +115,7 @@
             const uploadBtn = document.getElementById('uploadBtn-overlay');
             const fileInput = document.getElementById('fileInput');
             const profileImage = document.getElementById('profileImage');
-            const profileForm = document.getElementById('profile-form');
+            const fileSizeError = document.getElementById('fileSizeError'); // Error message span
 
             const maxSizeMB = 2;
             const maxSizeBytes = maxSizeMB * 1024 * 1024;
@@ -129,14 +131,15 @@
                 fileInput.addEventListener('change', function (event) {
                     const file = event.target.files[0];
                     if (file) {
-                        
-                        if (file.size > maxSizeBytes) 
-                            alert(`File size exceeds ${maxSizeMB} MB. Please choose a smaller file.`);
+                        if (file.size > maxSizeBytes) {
+                            fileSizeError.textContent = `File size exceeds ${maxSizeMB} MB. Please choose a smaller file.`;
                             fileInput.value = ''; // Reset file input
                             profileImage.src = originalImageSrc; // Reset the image preview to original
                             return;
+                        } else {
+                            fileSizeError.textContent = ''; // Clear any previous error message
                         }
-                        
+
                         const reader = new FileReader();
                         reader.onload = function (e) {
                             profileImage.src = e.target.result; // Set the profile image directly to the uploaded file
