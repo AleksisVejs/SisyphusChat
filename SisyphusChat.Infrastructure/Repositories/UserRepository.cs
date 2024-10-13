@@ -16,7 +16,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
     public async Task<ICollection<User>> GetAllAsync()
     {
-        return await context.Users.Include(u => u.Messages).ThenInclude(m => m.Sender).ToListAsync();
+        return await context.Users.Include(u => u.Messages).ToListAsync();
     }
 
     public async Task<User> GetByIdAsync(string id)

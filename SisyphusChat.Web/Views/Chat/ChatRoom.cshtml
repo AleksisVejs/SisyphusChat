@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Chat Room";
+}
+<h2>Chat Room</h2>
+
+<div id="chatMessages"></div>
+
+<input type="text" id="messageInput" placeholder="Enter message" />
+<button onclick="sendMessage()">Send</button>
+
+@section Scripts {
+    <script src="~/js/signalr.min.js"></script>
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+        const chatId = "@ViewBag.ChatId";
+
+        connection.on("ReceiveMessage", function (user, message, timeCreated) {
+            const messageElement = document.createElement("div");
+            messageElement.innerHTML = `<strong>${user}</strong>: ${message} <span>(${new Date(timeCreated).toLocaleTimeString()})</span>`;
+            document.getElementById("chatMessages").appendChild(messageElement);
+        });
+
+        connection.start().then(function () {
+            connection.invoke("JoinChat", chatId);
+        });
+
+        function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", "@User.Identity.Name", message, chatId);
+        }
+    </script>
+}

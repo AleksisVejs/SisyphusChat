@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Chat\ChatRoom.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
@@ -26,6 +30,18 @@
   <ItemGroup>
     <ProjectReference Include="..\SisyphusChat.Core\SisyphusChat.Core.csproj" />
     <ProjectReference Include="..\SisyphusChat.Infrastructure\SisyphusChat.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Chat\ChatRoom.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Chat\ChatRoom.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Chat\ChatRoom.cshtml" />
   </ItemGroup>
 
 </Project>

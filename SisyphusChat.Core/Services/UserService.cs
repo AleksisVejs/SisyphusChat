@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Infrastructure.Data;
 
 namespace SisyphusChat.Core.Services;
 
@@ -16,6 +17,12 @@ public class UserService(
     : IUserService
 {
     private readonly ClaimsPrincipal _principal = httpContextAccessor.HttpContext.User;
+
+    public async Task<ICollection<UserModel>> GetAllUsersAsync()
+    {
+        var users = await unitOfWork.UserRepository.GetAllAsync();
+        return mapper.Map<ICollection<UserModel>>(users);
+    }
 
     public async Task CreateAsync(UserModel model)
     {

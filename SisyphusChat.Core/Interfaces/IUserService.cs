@@ -11,6 +11,8 @@ namespace SisyphusChat.Core.Interfaces
     {
         Task<UserModel> GetCurrentContextUserAsync();
 
+        Task<ICollection<UserModel>> GetAllUsersAsync();
+
         Task<ICollection<ChatUserModel>> GetUsersByUserNamesAsync(string[] userNamesArray);
 
         Task<ICollection<UserModel>> GetAllExceptCurrentUserAsync(UserModel currentUser);
