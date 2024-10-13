@@ -22,31 +22,36 @@ namespace SisyphusChat.Infrastructure.Repositories
         public async Task<List<UserWithLastMessageDto>> GetUsersWithLastMessage()
         {
             var usersWithLastMessage = await context.Users
-                .Select(user => new UserWithLastMessageDto
+                .GroupJoin(
+                    context.Messages,
+                    user => user.Id,
+                    message => message.SenderId,
+                    (user, messages) => new
+                    {
+                        User = user,
+                        LastMessage = messages
+                            .OrderByDescending(m => m.LastUpdated)
+                            .Select(m => new
+                            {
+                                Content = m.Content,
+                                LastUpdated = m.LastUpdated
+                            })
+                            .FirstOrDefault()
+                    })
+                .Select(result => new UserWithLastMessageDto
                 {
-                    UserId = user.Id.ToString(),
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    LastMessageContent = context.Messages
-                        .Where(m => m.SenderId == user.Id)
-                        .OrderByDescending(m => m.LastUpdated)
-                        .Select(m => m.Content)
-                        .FirstOrDefault(),
-                    LastMessageSenderId = context.Messages
-                        .Where(m => m.SenderId == user.Id)
-                        .OrderByDescending(m => m.LastUpdated)
-                        .Select(m => m.SenderId)
-                        .FirstOrDefault(),
-                    LastMessageDate = context.Messages
-                        .Where(m => m.SenderId == user.Id)
-                        .OrderByDescending(m => m.LastUpdated)
-                        .Select(m => m.LastUpdated)
-                        .FirstOrDefault()
+                    UserId = result.User.Id.ToString(),
+                    UserName = result.User.UserName,
+                    Email = result.User.Email,
+                    LastMessageContent = result.LastMessage != null ? result.LastMessage.Content : "No messages sent", // Handle null content
+                    LastMessageDate = result.LastMessage != null ? result.LastMessage.LastUpdated : (DateTime?)null // Leave null if no messages
                 })
                 .ToListAsync();
 
             return usersWithLastMessage;
         }
+
+
         public async Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport()
         {
             var attachmentReport = await context.Attachments

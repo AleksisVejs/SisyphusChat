@@ -20,7 +20,7 @@ namespace SisyphusChat.Core.Interfaces
         public Task<List<MessageReportDto>> GetMessageReport();
         public Task<List<UserActivityReportDto>> GetUserActivities();
         public Task<List<ChatParticipationReportDto>> GetChatParticipationReport();
-        public Task<MemoryStream> GeneratePdfAsync(string reportType);
+        public Task<byte[]> GeneratePdfAsync(string reportType);
 
     }
 }
