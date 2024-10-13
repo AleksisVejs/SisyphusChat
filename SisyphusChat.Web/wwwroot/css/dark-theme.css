@@ -1,0 +1,102 @@
+body {
+  background-color: #23272a;
+  color: #ffffff;
+}
+
+a {
+  color: #4f388a;
+  text-shadow: 0 0 10px #4f388a;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ffffff;
+}
+
+.form-floating {
+  background-color: #23272a;
+  color: #ffffff;
+}
+
+input {
+  background-color: #23272a;
+  color: #ffffff;
+}
+
+.form-label {
+  color: #23272a;
+}
+
+.placeholder {
+  color: #23272a;
+}
+
+.navbar {
+  color: #ffffff !important;
+  background-color: #23272a;
+}
+
+a.navbar-brand {
+  color: #976eff;
+}
+
+a.navbar-brand:hover {
+  color: #ffffff;
+  text-shadow: 0 0 10px #ffffff;
+}
+
+.navbar-light .navbar-nav .nav-link,
+a.nav-link,
+.navbar-light .navbar-nav .nav-link.active,
+button.nav-link {
+  color: #ffffff;
+  text-shadow: 0 0 10px #ffffff;
+}
+
+a.nav-link:hover,
+button.nav-link:hover {
+  color: #969494;
+}
+
+#moon-icon {
+  stroke: #ffffff;
+  fill: #23272a !important;
+  filter: drop-shadow(0 0 5px #ffffff);
+}
+
+#moon-icon:hover {
+  stroke: #4f388a;
+  filter: drop-shadow(0 0 5px #4f388a);
+}
+
+.border-top {
+  border-top: 1px solid #4f388a !important;
+  box-shadow: 0 0 20px #4f388a;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #4f388a !important;
+  box-shadow: 0 0 20px #4f388a;
+}
+
+footer {
+  background-color: #23272a;
+  color: #ffffff;
+}
+
+.btn-primary {
+  color: #ffffff;
+  background-color: #4f388a;
+  border-color: #4f388a;
+}
+
+.btn-primary:hover {
+  color: #ffffff;
+  background-color: #59506b;
+  border-color: #59506b;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #ffffff;
+  background-color: #4f388a;
+}

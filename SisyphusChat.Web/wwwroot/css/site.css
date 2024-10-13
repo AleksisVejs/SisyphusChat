@@ -8,8 +8,12 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #007bff;
 }
 
 html {
@@ -19,4 +23,39 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+button#theme-switcher {
+  margin-right: 10px;
+  border: none;
+  background-color: transparent;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  color: #007bff;
+}
+
+.toggle-password:focus {
+  outline: none; 
+}
+
+.toggle-password i {
+  font-size: 1.2em;
+}
+
+.text-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

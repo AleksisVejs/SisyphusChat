@@ -1,0 +1,97 @@
+body {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #dbc6ff;
+}
+
+.form-floating {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+input {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.form-label {
+  color: #000000;
+}
+
+.placeholder {
+  color: #000000;
+}
+
+.navbar {
+  color: #000000 !important;
+  background-color: #ffffff;
+}
+
+a.navbar-brand {
+  color: #000000;
+}
+
+a.navbar-brand:hover {
+  color: #dbc6ff;
+}
+
+.navbar-light .navbar-nav .nav-link,
+a.nav-link,
+.navbar-light .navbar-nav .nav-link.active,
+button.nav-link {
+  color: #000000;
+}
+
+a.nav-link:hover,
+button.nav-link:hover {
+  color: #dbc6ff;
+}
+
+#moon-icon {
+  stroke: #000000;
+  fill: #ffffff !important;
+}
+
+#moon-icon:hover {
+  stroke: #dbc6ff;
+}
+
+.border-top {
+  border-top: 1px solid #dbc6ff !important;
+  box-shadow: 0 0 20px #dbc6ff;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #dbc6ff !important;
+  box-shadow: 0 0 20px #dbc6ff;
+}
+
+footer {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-primary {
+  color: #000000;
+  background-color: #dbc6ff;
+  border-color: #dbc6ff;
+}
+
+.btn-primary:hover {
+  color: #000000;
+  background-color: #e9dbfe;
+  border-color: #e9dbfe;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #000000;
+  background-color: #dbc6ff;
+}
