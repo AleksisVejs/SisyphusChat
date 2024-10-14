@@ -50,7 +50,6 @@
         </form>
     </div>
     <div class="col-md-6">
-        <!-- Other content -->
     </div>
 </div>
 
@@ -59,34 +58,33 @@
         position: relative;
         width: 150px;
         height: 150px;
-        overflow: hidden; /* Ensure overflow is hidden for round image */
-        border-radius: 50%; /* Make the container round */
+        overflow: hidden;
+        border-radius: 50%;
     }
 
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%; /* Make the image round */
-            object-fit: cover; /* Ensure image covers the area without distortion */
-        }
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }   
 
-        .image-container .overlay {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            width: 100%;
-            opacity: 0;
-            transition: .5s ease;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+    .image-container .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        transition: .5s ease;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
 
-        .image-container:hover .overlay {
-            opacity: 1;
-            cursor: pointer;
-        }
+    .image-container:hover .overlay {
+        opacity: 1;
+        cursor: pointer;
+    }
 
     .text {
         color: white;
@@ -99,13 +97,14 @@
     }
 
     #profileImage {
-        border-color: #007bff;
-        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
-        #profileImage:hover {
-            opacity: 0.8;
-        }
+    #profileImage:hover {
+        opacity: 0.8;
+    }
 </style>
 
 @section Scripts {
