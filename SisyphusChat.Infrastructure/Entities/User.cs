@@ -11,7 +11,6 @@ namespace SisyphusChat.Infrastructure.Entities
         public byte[]? Picture { get; set; }
         public bool IsAdmin { get; set; }
 
-
         [Required]
         public bool IsOnline { get; set; }      
 
@@ -22,5 +21,13 @@ namespace SisyphusChat.Infrastructure.Entities
         public DateTime LastUpdated { get; set; }
 
         public DateTime? LastLogin { get; set; }
+
+        // Navigation properties for EF Core
+
+        public ICollection<Chat> Chats { get; set; } = new List<Chat>();
+
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
+
+        public ICollection<Friend> Friends { get; set; } = new List<Friend>();
     }
 }
