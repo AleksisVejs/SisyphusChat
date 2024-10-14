@@ -10,7 +10,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 {
     public async Task AddAsync(Chat entity)
     {
-        entity.Id = Guid.NewGuid(); 
+        entity.Id = Guid.NewGuid();
         entity.TimeCreated = DateTime.Now;
         entity.IsReported = false;
 
@@ -21,6 +21,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
     public async Task<ICollection<Chat>> GetAllAsync()
     {
         var chats = await context.Chats
+            .Include(chat => chat.ChatUsers)
             .ToListAsync();
 
         return chats;

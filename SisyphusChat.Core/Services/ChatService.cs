@@ -112,7 +112,8 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
                 {
                     new() { UserId = currentUserId},
                     new() { UserId = recipientUserId}
-                }
+                },
+                Owner = unitOfWork.UserRepository.GetByIdAsync(currentUserId).Result
             };
 
             await unitOfWork.ChatRepository.AddAsync(chatEntity);
