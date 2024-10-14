@@ -18,11 +18,7 @@ public class UserService(
 {
     private readonly ClaimsPrincipal _principal = httpContextAccessor.HttpContext.User;
 
-    public async Task<ICollection<UserModel>> GetAllUsersAsync()
-    {
-        var users = await unitOfWork.UserRepository.GetAllAsync();
-        return mapper.Map<ICollection<UserModel>>(users);
-    }
+    // CRUD methods
 
     public async Task CreateAsync(UserModel model)
     {
@@ -68,6 +64,8 @@ public class UserService(
         await unitOfWork.SaveAsync();
     }
 
+    // Service methods
+
     public async Task<UserModel> GetCurrentContextUserAsync()
     {
         var userEntity = await userManager.GetUserAsync(_principal);
@@ -78,6 +76,12 @@ public class UserService(
         }
 
         return mapper.Map<UserModel>(userEntity);
+    }
+
+    public async Task<ICollection<UserModel>> GetAllUsersAsync()
+    {
+        var users = await unitOfWork.UserRepository.GetAllAsync();
+        return mapper.Map<ICollection<UserModel>>(users);
     }
 
     public async Task<ICollection<ChatUserModel>> GetUsersByUserNamesAsync(string[] userNamesArray)

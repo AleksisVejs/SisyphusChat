@@ -9,6 +9,7 @@ namespace SisyphusChat.Infrastructure.Entities
     public class User : IdentityUser
     {
         public byte[]? Picture { get; set; }
+
         public bool IsAdmin { get; set; }
 
         [Required]
