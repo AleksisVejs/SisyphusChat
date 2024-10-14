@@ -4,32 +4,110 @@
 
 <div class="container mt-4">
     <div class="row">
-        <!-- Attachments Report Button -->
+        <!-- Attachments Report -->
         <div class="col-md-6 col-lg-3 mb-3">
-            <a href="/Report/DownloadReport?reportType=Attachments" class="btn btn-primary w-100">
-                <i class="fas fa-file-excel"></i> Download Attachments Report
+            <a href="/Report/DownloadReport?reportType=Attachments" class="btn btn-primary w-100 mb-2">
+                <i class="fas fa-download"></i> Download Attachments Report
             </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('Attachments')">
+                <i class="fas fa-eye"></i> Preview Attachments Report
+            </button>
         </div>
-        <!-- Chats Report Button -->
+
+        <!-- Chats Report -->
         <div class="col-md-6 col-lg-3 mb-3">
-            <a href="/Report/DownloadReport?reportType=Chats" class="btn btn-success w-100">
-                <i class="fas fa-file-excel"></i> Download Chats Report
+            <a href="/Report/DownloadReport?reportType=Chats" class="btn btn-success w-100 mb-2">
+                <i class="fas fa-download"></i> Download Chats Report
             </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('Chats')">
+                <i class="fas fa-eye"></i> Preview Chats Report
+            </button>
         </div>
-        <!-- Messages Report Button -->
+
+        <!-- Messages Report -->
         <div class="col-md-6 col-lg-3 mb-3">
-            <a href="/Report/DownloadReport?reportType=Messages" class="btn btn-warning w-100">
-                <i class="fas fa-file-excel"></i> Download Messages Report
+            <a href="/Report/DownloadReport?reportType=Messages" class="btn btn-warning w-100 mb-2">
+                <i class="fas fa-download"></i> Download Messages Report
             </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('Messages')">
+                <i class="fas fa-eye"></i> Preview Messages Report
+            </button>
         </div>
-        <!-- Users Report Button -->
+
+        <!-- Users Report -->
         <div class="col-md-6 col-lg-3 mb-3">
-            <a href="/Report/DownloadReport?reportType=Users" class="btn btn-info w-100">
-                <i class="fas fa-file-excel"></i> Download Users Report
+            <a href="/Report/DownloadReport?reportType=Users" class="btn btn-info w-100 mb-2">
+                <i class="fas fa-download"></i> Download Users Report
             </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('Users')">
+                <i class="fas fa-eye"></i> Preview Users Report
+            </button>
+        </div>
+        <!-- UserLastMessage Report -->
+        <div class="col-md-6 col-lg-3 mb-3">
+            <a href="/Report/DownloadReport?reportType=UsersWithLastMessage" class="btn btn-info w-100 mb-2">
+                <i class="fas fa-download"></i> Download Users with last message Report
+            </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('UsersWithLastMessage')">
+                <i class="fas fa-eye"></i> Preview Users with messages Report
+            </button>
+        </div>
+        <!-- UserActivity Report -->
+        <div class="col-md-6 col-lg-3 mb-3">
+            <a href="/Report/DownloadReport?reportType=UserActivityReport" class="btn btn-light w-100 mb-2">
+                <i class="fas fa-download"></i> Download User Activity Report
+            </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('UserActivityReport')">
+                <i class="fas fa-eye"></i> Preview User Activity Report
+            </button>
+        </div>
+
+        <!-- Attachments Usage Report -->
+        <div class="col-md-6 col-lg-3 mb-3">
+            <a href="/Report/DownloadReport?reportType=AttachmentsUsageReport" class="btn btn-dark w-100 mb-2">
+                <i class="fas fa-download"></i> Download Attachments Usage Report
+            </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('AttachmentsUsageReport')">
+                <i class="fas fa-eye"></i> Preview Attachments Usage Report
+            </button>
+        </div>
+
+        <!-- MessageReportDto Usage Report -->
+        <div class="col-md-6 col-lg-3 mb-3">
+            <a href="/Report/DownloadReport?reportType=MessageReportDto" class="btn btn-dark w-100 mb-2">
+                <i class="fas fa-download"></i> Download Message Report
+            </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('MessageReportDto')">
+                <i class="fas fa-eye"></i> Preview Message Report
+            </button>
+        </div>
+        <!-- ChatParticipationReports Usage Report -->
+        <div class="col-md-6 col-lg-3 mb-3">
+            <a href="/Report/DownloadReport?reportType=ChatParticipationReports" class="btn btn-dark w-100 mb-2">
+                <i class="fas fa-download"></i> Download ChatParticipationReports Report
+            </a>
+            <button class="btn btn-secondary w-100" onclick="previewReport('ChatParticipationReports')">
+                <i class="fas fa-eye"></i> Preview ChatParticipationReports Report
+            </button>
+        </div>
+
+
+    </div>
+
+    <!-- Preview IFrame you can make it popup elsewhere -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <iframe id="report-preview" class="w-100" style="height: 600px; border: 1px solid #ccc;" src=""></iframe>
         </div>
     </div>
 </div>
+
+<script>
+    function previewReport(reportType) {
+        // Set the iframe src to the preview report action URL
+        document.getElementById('report-preview').src = `/Report/PreviewReport?reportType=${reportType}`;
+    }
+</script>
 
 <!-- Add FontAwesome for icons (optional) -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

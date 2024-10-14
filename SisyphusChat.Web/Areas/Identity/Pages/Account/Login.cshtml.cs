@@ -19,6 +19,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<User> _signInManager;
+
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
@@ -95,9 +96,13 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
                 
                 var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                
 
                 if (result.Succeeded)
                 {
+                    user.LastLogin = DateTime.Now;
+                    user.IsOnline = true;
+                    await _signInManager.UserManager.UpdateAsync(user);
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect("/Home");
                 }

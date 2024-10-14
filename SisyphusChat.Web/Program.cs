@@ -38,6 +38,7 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
+
 // Map the AutoMapper profile
 
 var mapperConfig = new MapperConfiguration(mc =>

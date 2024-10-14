@@ -90,7 +90,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 var taken = await _userManager.FindByNameAsync(Input.NewUsername);
                 if (taken != null && taken.Id != user.Id) // Ensure it's not the same user
                 {
-                    ModelState.AddModelError(string.Empty, "Username gay is already taken.");
+                    ModelState.AddModelError(string.Empty, $"Username '{Input.NewUsername}' is already taken.");
                     await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
                     return Page();
                 }
@@ -123,6 +123,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             }
 
             var result = await _userManager.UpdateAsync(user);
+            user.LastUpdated = DateTime.Now;
 
             if (!result.Succeeded)
             {

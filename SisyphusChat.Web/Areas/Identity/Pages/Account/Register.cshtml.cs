@@ -134,6 +134,10 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    user.TimeCreated = DateTime.Now;
+                    user.IsOnline = true;
+                    await _userManager.UpdateAsync(user);
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
