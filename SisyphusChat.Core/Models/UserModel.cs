@@ -16,8 +16,10 @@ namespace SisyphusChat.Core.Models
 
         public DateTime LastUpdated { get; set; }
 
-        public ICollection<ChatUser> ChatUsers { get; set; }
+        public ICollection<Chat> Chats { get; set; }
 
         public ICollection<Message> Messages { get; set; }
+
+        public ICollection<Friend> Friends { get; set; }
     }
 }
