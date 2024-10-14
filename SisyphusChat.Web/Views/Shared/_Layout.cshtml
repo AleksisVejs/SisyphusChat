@@ -39,21 +39,17 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Account/Manage/Index" asp-area="Identity">Hello, @UserManager.GetUserName(User)</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Report" asp-action="Index">Admin</a>
-                            </li>
+                            if (currentUser.IsAdmin) // Check if user exists and is admin
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Report" asp-action="Index">Admin</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <form asp-area="Identity" asp-page="/Account/Logout" method="post" id="logoutForm" class="form-inline">
                                     <button type="submit" class="nav-link btn btn-link">Logout</button>
                                 </form>
                             </li>
-
-                            if (currentUser != null && currentUser.IsAdmin) // Check if user exists and is admin
-                            {
-                                <li>
-                                    <a class="nav-link text-dark" asp-controller="Report" asp-action="Index">Admin</a>
-                                </li>
-                            }
                         }
                         else
                         {
