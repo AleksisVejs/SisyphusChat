@@ -5,7 +5,6 @@ body {
 
 a {
   color: #4f388a;
-  text-shadow: 0 0 10px #4f388a;
   text-decoration: none;
 }
 
@@ -58,6 +57,10 @@ button.nav-link:hover {
   color: #969494;
 }
 
+.fas:hover  {
+  color: #4f388a;
+}
+
 #moon-icon {
   stroke: #ffffff;
   fill: #23272a !important;
@@ -90,13 +93,21 @@ footer {
   border-color: #4f388a;
 }
 
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #ffffff;
+  background-color: #59506b;
+  border-color: #59506b;
+}
+
 .btn-primary:hover {
   color: #ffffff;
   background-color: #59506b;
   border-color: #59506b;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
   color: #ffffff;
   background-color: #4f388a;
 }

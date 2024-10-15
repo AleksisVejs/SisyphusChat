@@ -55,6 +55,10 @@ button.nav-link:hover {
   color: #dbc6ff;
 }
 
+.fas:hover  {
+  color: #dbc6ff;
+}
+
 #moon-icon {
   stroke: #000000;
   fill: #ffffff !important;
@@ -85,13 +89,21 @@ footer {
   border-color: #dbc6ff;
 }
 
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #000000;
+  background-color: #dbc6ff;
+  border-color: #dbc6ff;
+}
+
 .btn-primary:hover {
   color: #000000;
   background-color: #e9dbfe;
   border-color: #e9dbfe;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
   color: #000000;
   background-color: #dbc6ff;
 }

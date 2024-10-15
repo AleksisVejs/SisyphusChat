@@ -8,6 +8,7 @@ namespace SisyphusChat.Infrastructure.DTO
 {
     public class MessageReportDto
     {
+        // Custom data transfer object for message reports for specific data
         public Guid MessageId { get; set; }
         public string SenderUserName { get; set; }
         public string ReceiverUserName { get; set; }
