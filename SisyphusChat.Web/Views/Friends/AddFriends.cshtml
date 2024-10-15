@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Add Friends Page";
+    var username = "";
+
+    // if()
+    // {
+    //     username = Request.Form["username"];
+    // }
+}
+
+<div>
+    <form id="add-friend-form" method="post">
+        <div class="form-floating mb-3">
+            <input class="form-control" aria-required="true" placeholder="Enter friends username." id="friend-name" value="" />
+            <label class="form-label">Username</label>
+        </div>
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Add Friend</button>
+    </form>
+</div>
