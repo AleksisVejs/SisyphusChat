@@ -16,8 +16,10 @@ namespace SisyphusChat.Core.Services
 {
     public class ReportService : IReportService
     {
+        // To inject the UnitOfWork dependency with readonly to ensure it is not changed
         private readonly IUnitOfWork _unitOfWork;
 
+        // To inject the UnitOfWork dependency in the constructor
         public ReportService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -72,17 +74,18 @@ namespace SisyphusChat.Core.Services
             return await _unitOfWork.ReportRepository.GetChatParticipationReports();
         }
 
-        // Generate PDF using iText 7
+        // To generate a PDF report table based on the report type asynchronously and the methods used are above
         public async Task<byte[]> GeneratePdfAsync(string reportType)
         {
+            // To create a memory stream to store the PDF using "using" to dispose of it properly after use and avoid memory leaks, errors
             using (var memoryStream = new MemoryStream())
             {
-                // Initialize PDF writer and document
+                // To initialize PDF writer and document
                 using (var writer = new PdfWriter(memoryStream))
                 using (var pdf = new PdfDocument(writer))
                 using (var document = new Document(pdf))
                 {
-                    // Add the title
+                    // To add the title
                     Paragraph title = new Paragraph($"{reportType} Report")
                         .SetFontSize(18)
                         .SetBold()
@@ -152,7 +155,7 @@ namespace SisyphusChat.Core.Services
                                 table.AddCell(user.UserName);
                                 table.AddCell(user.Email);
                                 table.AddCell(user.LastMessageContent);
-                                table.AddCell(user.LastMessageDate?.ToString("g") ?? "N/A");
+                                table.AddCell(user.LastMessageDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A");
                             }
                             break;
 
@@ -165,7 +168,7 @@ namespace SisyphusChat.Core.Services
                                 table.AddCell(attachment.AttachmentId.ToString());
                                 table.AddCell(attachment.UserName);
                                 table.AddCell(attachment.FileName);
-                                table.AddCell(attachment.DateUploaded.ToString("g"));
+                                table.AddCell(attachment.DateUploaded.ToString("dd/MM/yyyy HH:mm"));
                                 table.AddCell(attachment.RelatedMessageContent);
                             }
                             break;
@@ -193,20 +196,20 @@ namespace SisyphusChat.Core.Services
                                 table.AddCell(message.SenderUserName);
                                 table.AddCell(message.ReceiverUserName);
                                 table.AddCell(message.MessageContent);
-                                table.AddCell(message.DateSent.ToString("g"));
+                                table.AddCell(message.DateSent.ToString("dd/MM/yyyy HH:mm"));// Use european date format
                                 table.AddCell(message.Status);
                             }
                             break;
 
-                        case "UserActivityReport":
+                        case "UserActivityReport": //
                             table = new Table(UnitValue.CreatePercentArray(5)).UseAllAvailableWidth(); // 5 columns for UserActivityReport
                             AddTableHeaders(table, "UserName", "LastLogin", "LastUpdated", "IsOnline", "TotalMessagesSent");
                             var userActivityReport = await GetUserActivities();
                             foreach (var user in userActivityReport)
                             {
                                 table.AddCell(user.UserName);
-                                table.AddCell(user.LastLogin.ToString());
-                                table.AddCell(user.LastUpdated.ToString());
+                                table.AddCell(user.LastLogin?.ToString("dd/MM/yyyy HH:mm")); // Use european date format
+                                table.AddCell(user.LastUpdated.ToString("dd/MM/yyyy HH:mm"));
                                 table.AddCell(user.IsOnline ? "Online" : "Offline");
                                 table.AddCell(user.TotalMessagesSent.ToString());
                             }
@@ -222,7 +225,7 @@ namespace SisyphusChat.Core.Services
             }
         }
 
-        // Helper method to add table headers
+        // To help style the table headers and format it consistently and nicely
         private void AddTableHeaders(Table table, params string[] headers)
         {
             foreach (var header in headers)

@@ -8,10 +8,11 @@ namespace SisyphusChat.Infrastructure.DTO
 {
     public class UserActivityReportDto
     {
+        // Custom data transfer object for user activity reports for specific data
         public string UserName { get; set; }
         public int TotalMessagesSent { get; set; }
         public DateTime? LastLogin { get; set; }
-        public DateTime? LastUpdated { get; set; }
+        public DateTime LastUpdated { get; set; }
         public bool IsOnline { get; set; }
     }
 

@@ -23,7 +23,7 @@
                     </button>
                     <ul class="dropdown-menu w-100" aria-labelledby="@report.ReportType-@Guid.NewGuid()">
                         <li>
-                            <a class="dropdown-item" href="/Report/DownloadReport?reportType=@report.ReportType">
+                            <a class="dropdown-item" href="/Admin/DownloadReport?reportType=@report.ReportType">
                                 <i class="fas fa-download"></i> Download
                             </a>
                         </li>
@@ -41,7 +41,7 @@
 
 <script>
     function previewReport(reportType) {
-        window.open(`/Report/PreviewReport?reportType=${reportType}`, '_blank');
+        window.open(`/Admin/PreviewReport?reportType=${reportType}`, '_blank');
     }
 </script>
 
