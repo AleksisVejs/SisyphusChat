@@ -47,7 +47,6 @@ a.navbar-brand:hover {
 
 .navbar-light .navbar-nav .nav-link,
 a.nav-link,
-a.nav-link:hover,
 .navbar-light .navbar-nav .nav-link.active,
 button.nav-link {
   color: #ffffff;
