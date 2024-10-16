@@ -15,6 +15,8 @@ namespace SisyphusChat.Infrastructure.DTO
         public string MessageContent { get; set; }
         public DateTime DateSent { get; set; }
         public string Status { get; set; } // E.g., "Sent", "Delivered", "Read"
+
+        public string ChatType { get; set; }
     }
 
 }

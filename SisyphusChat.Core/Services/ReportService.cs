@@ -59,9 +59,9 @@ namespace SisyphusChat.Core.Services
             return await _unitOfWork.ReportRepository.GetAttachmentsUsageReport();
         }
 
-        public async Task<List<MessageReportDto>> GetMessageReport()
+        public async Task<List<MessageReportDto>> GetMessageReport(ChatType chatType)
         {
-            return await _unitOfWork.ReportRepository.GetMessagesReport();
+            return await _unitOfWork.ReportRepository.GetMessagesReport(chatType);
         }
 
         public async Task<List<UserActivityReportDto>> GetUserActivities()
@@ -186,11 +186,11 @@ namespace SisyphusChat.Core.Services
                             }
                             break;
 
-                        case "MessageReportDto":
+                        case "MessageReportPrivateChats":
                             table = new Table(UnitValue.CreatePercentArray(6)).UseAllAvailableWidth(); // 6 columns for MessageReportDto
-                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status");
-                            var messageReport = await GetMessageReport();
-                            foreach (var message in messageReport)
+                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status","ChatType");
+                            var privateMessageReport = await GetMessageReport(ChatType.Private);
+                            foreach (var message in privateMessageReport)
                             {
                                 table.AddCell(message.MessageId.ToString());
                                 table.AddCell(message.SenderUserName);
@@ -198,6 +198,22 @@ namespace SisyphusChat.Core.Services
                                 table.AddCell(message.MessageContent);
                                 table.AddCell(message.DateSent.ToString("dd/MM/yyyy HH:mm"));// Use european date format
                                 table.AddCell(message.Status);
+                                table.AddCell(message.ChatType);
+                            }
+                            break;
+                        case "MessageReportGroupChats":
+                            table = new Table(UnitValue.CreatePercentArray(6)).UseAllAvailableWidth(); // 6 columns for MessageReportDto
+                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status", "ChatType");
+                            var publicMessageReport = await GetMessageReport(ChatType.Group);
+                            foreach (var message in publicMessageReport)
+                            {
+                                table.AddCell(message.MessageId.ToString());
+                                table.AddCell(message.SenderUserName);
+                                table.AddCell(message.ReceiverUserName);
+                                table.AddCell(message.MessageContent);
+                                table.AddCell(message.DateSent.ToString("dd/MM/yyyy HH:mm"));// Use european date format
+                                table.AddCell(message.Status);
+                                table.AddCell(message.ChatType);
                             }
                             break;
 

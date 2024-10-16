@@ -111,23 +111,28 @@ namespace SisyphusChat.Infrastructure.Repositories
         // Asynchronously generates a report of messages, detailing each message's sender, receiver, and status.
         // This comprehensive report allows for thorough analysis of messaging patterns, which is essential for
         // understanding communication trends and addressing any issues that arise in messaging.
-        public async Task<List<MessageReportDto>> GetMessagesReport()
+        public async Task<List<MessageReportDto>> GetMessagesReport(ChatType chatType)
         {
             var messageReports = await context.Messages
+                .Where(m => m.Chat.Type == chatType) // Filter by chat type
                 .SelectMany(m =>
-                    m.Chat.ChatUsers.Select(cu => new MessageReportDto
+                    m.Chat.ChatUsers
+                    .Where(cu => cu.UserId != m.SenderId) // Exclude the sender from the receiver list
+                    .Select(cu => new MessageReportDto
                     {
                         MessageId = m.Id,
                         SenderUserName = m.Sender.UserName,
-                        ReceiverUserName = cu.User.UserName, // Get the UserName for each ChatUser
+                        ReceiverUserName = cu.User.UserName, // Get the UserName for each ChatUser (excluding sender)
                         MessageContent = m.Content,
                         DateSent = m.LastUpdated != DateTime.MinValue ? m.LastUpdated : m.TimeCreated,
-                        Status = m.Status.ToString() // Converts the message status to a string representation
+                        Status = m.Status.ToString(), // Converts the message status to a string representation
+                        ChatType = m.Chat.Type.ToString() // Converts enum ChatType to string (e.g., "Private", "Group")
                     }))
                 .ToListAsync();
 
             return messageReports; // Return the complete message report for insights on communication
         }
+
 
         // Asynchronously generates a report of user activity, including last login and total messages sent by each user.
         // Understanding user activity is crucial for engagement tracking and identifying active users versus inactive ones,
