@@ -112,7 +112,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
-
+        //
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -131,11 +131,12 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                
                 if (result.Succeeded)
                 {
                     user.TimeCreated = DateTime.Now;
                     user.IsOnline = true;
+                    user.LastUpdated = DateTime.Now;
                     await _userManager.UpdateAsync(user);
 
                     _logger.LogInformation("User created a new account with password.");

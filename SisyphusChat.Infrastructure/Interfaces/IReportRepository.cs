@@ -20,7 +20,7 @@ namespace SisyphusChat.Infrastructure.Interfaces
         Task<List<UserActivityReportDto>> GetUsersActivityReport();
         Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport();
         Task<List<ChatParticipationReportDto>> GetChatParticipationReports();
-        Task<List<MessageReportDto>> GetMessagesReport();
+        Task<List<MessageReportDto>> GetMessagesReport(ChatType chatType);
 
 
 
