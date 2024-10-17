@@ -44,12 +44,12 @@ public class ChatHub(
             ChatId = chatId,
             Content = message,
             SenderId = currentUserModel.Id,
-            TimeCreated = DateTime.Now,
+            TimeCreated = DateTime.UtcNow,
         };
 
         await messageService.CreateAsync(messageModel);
 
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, chatMembersUserNames, messageModel.TimeCreated);
+        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, messageModel.TimeCreated.ToString("o"));
     }
 
 }

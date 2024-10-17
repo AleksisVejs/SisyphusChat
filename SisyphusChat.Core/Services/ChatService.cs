@@ -97,31 +97,63 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
     {
         Chat chatEntity;
 
-        try
+        // checking if the user is trying to create a chat with themselves
+        if (currentUserId == recipientUserId)
         {
-            chatEntity = await unitOfWork.ChatRepository.GetPrivateChatAsync(currentUserId, recipientUserId);
-        }
-        catch (EntityNotFoundException)
-        {
-            chatEntity = new Chat
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = Guid.NewGuid().ToString(),
-                Type = ChatType.Private,
-                ChatUsers = new List<ChatUser>
-                {
-                    new() { UserId = currentUserId},
-                    new() { UserId = recipientUserId}
-                },
-                Owner = unitOfWork.UserRepository.GetByIdAsync(currentUserId).Result
-            };
+                chatEntity = await unitOfWork.ChatRepository.GetSelfChatAsync(currentUserId);
+            }
+            catch (EntityNotFoundException)
+            {
+                var currentUser = await unitOfWork.UserRepository.GetByIdAsync(currentUserId);
 
-            await unitOfWork.ChatRepository.AddAsync(chatEntity);
-            await unitOfWork.SaveAsync();
+                chatEntity = new Chat
+                {
+                    Id = Guid.NewGuid(),
+                    Name = $"{currentUser.UserName}",
+                    Type = ChatType.Private,
+                    ChatUsers = new List<ChatUser>
+                    {
+                        new() { UserId = currentUserId }
+                    },
+                    Owner = currentUser
+                };
+
+                await unitOfWork.ChatRepository.AddAsync(chatEntity);
+                await unitOfWork.SaveAsync();
+            }
+        }
+        else
+        {
+            try
+            {
+                chatEntity = await unitOfWork.ChatRepository.GetPrivateChatAsync(currentUserId, recipientUserId);
+            }
+            catch (EntityNotFoundException)
+            {
+                var currentUser = await unitOfWork.UserRepository.GetByIdAsync(currentUserId);
+                var recipientUser = await unitOfWork.UserRepository.GetByIdAsync(recipientUserId);
+
+                chatEntity = new Chat
+                {
+                    Id = Guid.NewGuid(),
+                    Name = $"{currentUser.UserName}, {recipientUser.UserName}",
+                    Type = ChatType.Private,
+                    ChatUsers = new List<ChatUser>
+                {
+                    new() { UserId = currentUserId },
+                    new() { UserId = recipientUserId }
+                },
+                    Owner = await unitOfWork.UserRepository.GetByIdAsync(currentUserId)
+                };
+
+                await unitOfWork.ChatRepository.AddAsync(chatEntity);
+                await unitOfWork.SaveAsync();
+            }
         }
 
         var user = await unitOfWork.UserRepository.GetByIdAsync(currentUserId);
-
         var chatUser = chatEntity.ChatUsers.FirstOrDefault(u => u.UserId == currentUserId);
 
         if (chatUser == null)
@@ -142,6 +174,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 
         return mapper.Map<ChatModel>(chatEntity);
     }
+
 
     public async Task<ICollection<ChatModel>> GetAssociatedChatsAsync(UserModel currentUser)
     {

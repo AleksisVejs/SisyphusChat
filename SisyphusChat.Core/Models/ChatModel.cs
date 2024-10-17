@@ -12,8 +12,6 @@ namespace SisyphusChat.Core.Models
 
         public string OwnerId { get; set; }
 
-        public UserModel Owner { get; set; }
-
         public bool IsReported { get; set; }
 
         public DateTime TimeCreated { get; set; }

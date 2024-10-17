@@ -3,27 +3,18 @@ using SisyphusChat.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Core.Services;
+using SisyphusChat.Web.Models;
 
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class ChatController : Controller
+    public class ChatController(IChatService chatService, IUserService userService) : Controller
     {
-        private readonly IChatService _chatService;
-        private readonly IUserService _userService;
-        private readonly UserManager<User> _userManager;
-
-        public ChatController(IChatService chatService, IUserService userService, UserManager<User> userManager)
-        {
-            _chatService = chatService;
-            _userService = userService;
-            _userManager = userManager;
-        }
-
         // Fetches list of all users for the dropdown
         public async Task<IActionResult> Index()
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await userService.GetAllUsersAsync();
             return View(users);
         }
 
@@ -31,15 +22,27 @@ namespace SisyphusChat.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrOpenChat(string recipientUserId)
         {
-            var currentUserId = _userManager.GetUserId(User);
-            var chat = await _chatService.OpenOrCreatePrivateChatAsync(currentUserId, recipientUserId);
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var chat = await chatService.OpenOrCreatePrivateChatAsync(currentUser.Id, recipientUserId);
             return RedirectToAction("ChatRoom", new { chatId = chat.Id });
         }
 
-        public IActionResult ChatRoom(Guid chatId)
+        public async Task<IActionResult> ChatRoom(Guid chatId)
         {
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var chat = await chatService.GetByIdAsync(chatId.ToString());
+            var users = await userService.GetAllExceptCurrentUserAsync(currentUser);
+            var chatViewModel = new ChatViewModel { Chat = chat };
+
+            if (chat == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.ChatName = chat.Name;
             ViewBag.ChatId = chatId;
-            return View();
+
+            return View(chatViewModel);
         }
     }
 }

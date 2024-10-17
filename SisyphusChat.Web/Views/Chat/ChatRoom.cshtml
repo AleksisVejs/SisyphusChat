@@ -1,23 +1,38 @@
-﻿@{
+﻿@model ChatViewModel
+
+@{
     ViewData["Title"] = "ChatRoom";
 }
 
-<h2>Chat Room</h2>
-
-<div id="chatMessages"></div>
+<h2>@ViewBag.ChatName</h2>
 
 <input type="text" id="messageInput" placeholder="Enter message" />
 <button onclick="sendMessage()">Send</button>
 
+<div class="chat-messages">
+    @foreach (var message in Model.Chat.Messages)
+    {
+        <div>
+            <strong>@message.Sender.UserName</strong>: @message.Content
+            <span>(@message.TimeCreated.ToString("dd MMMM yyyy 'at' HH:mm"))</span>
+        </div>
+    }
+</div>
+
+<div id="chatMessages"></div>
+
 @section Scripts {
-    <script src="~/js/signalr.min.js"></script>
-    <script type="text/javascript">
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script>
         const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
         const chatId = "@ViewBag.ChatId";
 
         connection.on("ReceiveMessage", function (user, message, timeCreated) {
             const messageElement = document.createElement("div");
-            messageElement.innerHTML = `<strong>${user}</strong>: ${message} <span>(${new Date(timeCreated).toLocaleTimeString()})</span>`;
+            const options = { year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+            const formattedTime = new Intl.DateTimeFormat('en-GB', options).format(new Date(timeCreated));
+
+            messageElement.innerHTML = `<strong>${user}</strong>: ${message} <span>(${formattedTime})</span>`;
             document.getElementById("chatMessages").appendChild(messageElement);
         });
 
@@ -26,8 +41,17 @@
         });
 
         function sendMessage() {
-            const message = document.getElementById("messageInput").value;
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+
+            if (message.length === 0) {
+                alert("Cannot send an empty message.");
+                return;
+            }
+
             connection.invoke("SendMessage", "@User.Identity.Name", message, chatId);
+
+            messageInput.value = "";  // clears the input field after sending
         }
     </script>
 }
