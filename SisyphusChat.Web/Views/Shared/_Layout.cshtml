@@ -13,8 +13,17 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SisyphusChat.Web.styles.css" asp-append-version="true" />
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
-    <link id="theme-link" rel="stylesheet" href="/css/light-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
+    <script>
+    (function() {
+        var savedTheme = localStorage.getItem("theme") || "light";
+        var themeLink = document.createElement("link");
+        themeLink.rel = "stylesheet";
+        themeLink.id = "theme-link";
+        themeLink.href = savedTheme === "dark" ? "/css/dark-theme.css" : "/css/light-theme.css";
+        document.head.appendChild(themeLink);
+    })();
+</script>
 </head>
 <body>
     <header>
