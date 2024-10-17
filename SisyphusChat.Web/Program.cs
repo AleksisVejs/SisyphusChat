@@ -9,6 +9,7 @@ using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Repositories;
+using SisyphusChat.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -27,6 +28,7 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddHttpContextAccessor();
@@ -36,6 +38,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 // Map the AutoMapper profile
@@ -68,6 +71,9 @@ app.MapRazorPages();
 app.UseAuthentication();
 app.UseAuthorization();
 
+builder.Services.AddSignalR();
+
+app.MapHub<NotificationHub>("/NotificationHub"); // Replace `YourHubClass` with your actual hub class name
 
 
 app.MapControllerRoute(

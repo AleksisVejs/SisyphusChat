@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SisyphusChat.Infrastructure.Interfaces;
+using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace SisyphusChat.Infrastructure.Repositories
+{
+    public class NotificationRepository(ApplicationDbContext context) : INotificationRepository
+    {
+        public async Task AddAsync(Notification notification)
+        {
+            await context.Notifications.AddAsync(notification);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<Notification>> GetAllAsync()
+        {
+            return await context.Notifications.ToListAsync();
+        }
+
+        public async Task<Notification> GetByIdAsync(string id)
+        {
+            var message = await context.Notifications.FirstOrDefaultAsync(g => g.Id.ToString() == id);
+            return message;
+        }
+
+        public async Task DeleteByIdAsync(string id)
+        {
+            var notification = await GetByIdAsync(id);
+            if (notification != null)
+            {
+                context.Notifications.Remove(notification);
+                await context.SaveChangesAsync();
+            }
+        }
+
+
+        public async Task UpdateAsync(Notification notification)
+        {
+            context.Notifications.Update(notification);
+            await context.SaveChangesAsync();
+        }
+    }
+}

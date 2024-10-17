@@ -14,6 +14,8 @@ namespace SisyphusChat.Core.Interfaces
 
         IAttachmentRepository AttachmentRepository { get; } 
 
+        INotificationRepository NotificationRepository { get; }
+
         Task SaveAsync();
     }
 }
