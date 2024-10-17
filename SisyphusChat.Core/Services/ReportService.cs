@@ -145,7 +145,7 @@ namespace SisyphusChat.Core.Services
                             }
                             break;
 
-                        case "UsersWithLastMessage":
+                        case "Users With Last Message":
                             table = new Table(UnitValue.CreatePercentArray(5)).UseAllAvailableWidth(); // 5 columns for UsersWithLastMessage
                             AddTableHeaders(table, "ID", "UserName", "Email", "Message", "Date");
                             var usersWithLastMessage = await GetUsersWithLastMessage();
@@ -159,7 +159,7 @@ namespace SisyphusChat.Core.Services
                             }
                             break;
 
-                        case "AttachmentsUsageReport":
+                        case "Attachments Usage":
                             table = new Table(UnitValue.CreatePercentArray(5)).UseAllAvailableWidth(); // 5 columns for AttachmentsUsageReport
                             AddTableHeaders(table, "AttachmentId", "UserName", "FileName", "DateUploaded", "RelatedMessageContent");
                             var attachmentReport = await GetAttachmentsUsageReport();
@@ -173,7 +173,7 @@ namespace SisyphusChat.Core.Services
                             }
                             break;
 
-                        case "ChatParticipationReports":
+                        case "Chat Participation":
                             table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth(); // 4 columns for ChatParticipationReports
                             AddTableHeaders(table, "ChatId", "ChatTitle", "UserName", "UserRole");
                             var chatParticipationReport = await GetChatParticipationReport();
@@ -186,9 +186,9 @@ namespace SisyphusChat.Core.Services
                             }
                             break;
 
-                        case "MessageReportPrivateChats":
+                        case "Message Private Chats Activity":
                             table = new Table(UnitValue.CreatePercentArray(6)).UseAllAvailableWidth(); // 6 columns for MessageReportDto
-                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status","ChatType");
+                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status");
                             var privateMessageReport = await GetMessageReport(ChatType.Private);
                             foreach (var message in privateMessageReport)
                             {
@@ -198,12 +198,11 @@ namespace SisyphusChat.Core.Services
                                 table.AddCell(message.MessageContent);
                                 table.AddCell(message.DateSent.ToString("dd/MM/yyyy HH:mm"));// Use european date format
                                 table.AddCell(message.Status);
-                                table.AddCell(message.ChatType);
                             }
                             break;
-                        case "MessageReportGroupChats":
+                        case "Message Group Chats Activity":
                             table = new Table(UnitValue.CreatePercentArray(6)).UseAllAvailableWidth(); // 6 columns for MessageReportDto
-                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status", "ChatType");
+                            AddTableHeaders(table, "MessageId", "SenderUserName", "ReceiverUsername", "MessageContent", "DateSent", "Status");
                             var publicMessageReport = await GetMessageReport(ChatType.Group);
                             foreach (var message in publicMessageReport)
                             {
@@ -213,11 +212,10 @@ namespace SisyphusChat.Core.Services
                                 table.AddCell(message.MessageContent);
                                 table.AddCell(message.DateSent.ToString("dd/MM/yyyy HH:mm"));// Use european date format
                                 table.AddCell(message.Status);
-                                table.AddCell(message.ChatType);
                             }
                             break;
 
-                        case "UserActivityReport": //
+                        case "User Activity": //
                             table = new Table(UnitValue.CreatePercentArray(5)).UseAllAvailableWidth(); // 5 columns for UserActivityReport
                             AddTableHeaders(table, "UserName", "LastLogin", "LastUpdated", "IsOnline", "TotalMessagesSent");
                             var userActivityReport = await GetUserActivities();

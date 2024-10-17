@@ -18,8 +18,10 @@ public class AdminController(IReportService reportService) : Controller
         }
         catch (Exception ex)
         {
-            // Log the exception
-            return StatusCode(500, "An error occurred while generating the report.");
+            Console.WriteLine(ex.ToString());
+
+            return StatusCode(500, $"An error occurred while generating the report: {reportType}."); // Fixed string interpolation
+
         }
 
     }
@@ -35,8 +37,10 @@ public class AdminController(IReportService reportService) : Controller
         }
         catch(Exception ex)
         {
-                   
-            return StatusCode(500, "An error occurred while generating the report.");
+
+            Console.WriteLine(ex.ToString());
+
+            return StatusCode(500, $"An error occurred while generating the report: {reportType}."); // Fixed string interpolation
 
         }
         
