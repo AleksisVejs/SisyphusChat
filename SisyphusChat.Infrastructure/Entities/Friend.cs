@@ -7,15 +7,15 @@ namespace SisyphusChat.Infrastructure.Entities;
 public class Friend
 {
     [Required]
-    public string ReqSenderID { get; set; }
+    public string ReqSenderId { get; set; }
 
-    [ForeignKey(nameof(ReqSenderID))]
+    [ForeignKey(nameof(ReqSenderId))]
     public User ReqSender { get; set; }
 
     [Required]
-    public string ReqReceiverID { get; set; }
+    public string ReqReceiverId { get; set; }
 
-    [ForeignKey(nameof(ReqReceiverID))]
+    [ForeignKey(nameof(ReqReceiverId))]
     public User ReqReceiver { get; set; }
 
     [Required]

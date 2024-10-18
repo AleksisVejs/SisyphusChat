@@ -5,15 +5,18 @@ namespace SisyphusChat.Core.Interfaces
 {
     public interface IUnitOfWork
     {
-        IReportRepository ReportRepository { get; }
-        IUserRepository UserRepository { get; }
+        IAttachmentRepository AttachmentRepository { get; } 
+        
+        IChatRepository ChatRepository { get; }
+
+        IFriendRepository FriendRepository { get; }
 
         IMessageRepository MessageRepository { get; }
 
-        IChatRepository ChatRepository { get; }
+        IReportRepository ReportRepository { get; }
 
-        IAttachmentRepository AttachmentRepository { get; } 
-
+        IUserRepository UserRepository { get; }
+        
         Task SaveAsync();
     }
 }
