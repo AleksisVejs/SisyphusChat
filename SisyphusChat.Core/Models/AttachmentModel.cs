@@ -4,9 +4,11 @@ namespace SisyphusChat.Core.Models
 {
     public class AttachmentModel
     {
-        public string ID { get; set; }
+        public string Id { get; set; }
 
-        public MessageModel MessageID { get; set; }
+        public string MessageId { get; set; }
+
+        public MessageModel Message { get; set; }
 
         public string FileName { get; set; }
 

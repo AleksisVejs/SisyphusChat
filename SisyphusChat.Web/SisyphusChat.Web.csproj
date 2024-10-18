@@ -28,4 +28,8 @@
     <ProjectReference Include="..\SisyphusChat.Infrastructure\SisyphusChat.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\Chat\ChatRoom.cshtml" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Chats";
+}
+
+@model ICollection<SisyphusChat.Core.Models.UserModel>
+
+<h2>Start a Chat</h2>
+
+<form asp-action="CreateOrOpenChat" method="post">
+    <label for="recipientUserId">Select a User:</label>
+    <select id="recipientUserId" name="recipientUserId" class="form-control">
+        @foreach (var user in Model)
+        {
+            <option value="@user.Id">@user.UserName</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-primary">Start Chat</button>
+</form>

@@ -10,7 +10,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 {
     public async Task AddAsync(Chat entity)
     {
-        entity.Id = Guid.NewGuid(); 
+        entity.Id = Guid.NewGuid();
         entity.TimeCreated = DateTime.Now;
         entity.IsReported = false;
 
@@ -21,6 +21,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
     public async Task<ICollection<Chat>> GetAllAsync()
     {
         var chats = await context.Chats
+            .Include(chat => chat.ChatUsers)
             .ToListAsync();
 
         return chats;
@@ -80,6 +81,22 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
         if (chat == null)
         {
             throw new EntityNotFoundException($"Chat with current user id: {currentUserId} and recipient user id: {recipientUserId} is not found");
+        }
+
+        return chat;
+    }
+
+    public async Task<Chat> GetSelfChatAsync(string userId)
+    {
+        var chat = await context.Chats
+            .Include(c => c.ChatUsers)
+            .FirstOrDefaultAsync(c => c.Type == ChatType.Private &&
+                                      c.ChatUsers.Count == 1 &&
+                                      c.ChatUsers.Any(m => m.UserId.ToString() == userId));
+
+        if (chat == null)
+        {
+            throw new EntityNotFoundException($"Self-chat for user id: {userId} is not found");
         }
 
         return chat;
