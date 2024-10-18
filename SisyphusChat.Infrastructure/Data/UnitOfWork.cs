@@ -14,6 +14,7 @@ public class UnitOfWork : IUnitOfWork
         IUserRepository userRepository,
         IMessageRepository messageRepository,
         IChatRepository chatRepository,
+        INotificationRepository notificationRepository,
         IAttachmentRepository attachmentRepository)
     {
         _context = context;
@@ -22,6 +23,7 @@ public class UnitOfWork : IUnitOfWork
         MessageRepository = messageRepository;
         ChatRepository = chatRepository;
         AttachmentRepository = attachmentRepository;
+        NotificationRepository = notificationRepository;
     }
 
     public IUserRepository UserRepository { get; }
@@ -30,6 +32,7 @@ public class UnitOfWork : IUnitOfWork
     public IMessageRepository MessageRepository { get; }
 
     public IChatRepository ChatRepository { get; }
+    public INotificationRepository NotificationRepository { get; }
 
     public IAttachmentRepository AttachmentRepository { get; }
 
