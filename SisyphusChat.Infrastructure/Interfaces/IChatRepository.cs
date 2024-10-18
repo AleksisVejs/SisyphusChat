@@ -6,4 +6,6 @@ namespace SisyphusChat.Infrastructure.Interfaces;
 public interface IChatRepository : IRepository<Chat>
 {
     Task<Chat> GetPrivateChatAsync(string currentUserId, string recipientUserId);
+
+    Task<Chat> GetSelfChatAsync(string userId);
 }

@@ -1,109 +1,131 @@
 body {
-  background-color: #ffffff;
-  color: #000000;
+  background: linear-gradient(135deg, #f9f9f9, #e1e1e1);
+  color: #333333;
 }
 
 a {
-  color: #000000;
+  color: #8c77d0;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #dbc6ff;
+  color: #333333;
 }
 
-.form-floating {
-  background-color: #ffffff;
-  color: #000000;
-}
-
+.form-floating,
 input {
-  background-color: #ffffff;
-  color: #000000;
+  color: #333333;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-label {
-  color: #000000;
+input:focus {
+  border-color: #7b6bc3;
+  box-shadow: 0 0 10px rgba(123, 107, 195, 0.5);
 }
 
+.form-label,
 .placeholder {
-  color: #000000;
+  color: #555555;
 }
 
 .navbar {
-  color: #000000 !important;
-  background-color: #ffffff;
+  color: #333333 !important;
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 a.navbar-brand {
-  color: #000000;
+  color: #8c77d0;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 a.navbar-brand:hover {
-  color: #dbc6ff;
+  color: #333333;
 }
 
 .navbar-light .navbar-nav .nav-link,
 a.nav-link,
 .navbar-light .navbar-nav .nav-link.active,
 button.nav-link {
-  color: #000000;
+  color: #333333;
+  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1);
+  transition: color 0.3s ease;
 }
 
 a.nav-link:hover,
 button.nav-link:hover {
-  color: #dbc6ff;
+  color: #8c77d0;
 }
 
-.fas:hover  {
-  color: #dbc6ff;
+.fas:hover {
+  color: #8c77d0;
+  transition: color 0.3s ease;
 }
 
 #moon-icon {
-  stroke: #000000;
-  fill: #ffffff !important;
+  stroke: #333333;
+  fill: #f9f9f9 !important;
+  filter: drop-shadow(0 0 5px rgba(51, 51, 51, 0.5));
 }
 
 #moon-icon:hover {
-  stroke: #dbc6ff;
+  stroke: #8c77d0;
+  filter: drop-shadow(0 0 10px rgba(140, 119, 208, 0.8));
 }
 
-.border-top {
-  border-top: 1px solid #dbc6ff !important;
-  box-shadow: 0 0 20px #dbc6ff;
-}
-
+.border-top,
 .border-bottom {
-  border-bottom: 1px solid #dbc6ff !important;
-  box-shadow: 0 0 20px #dbc6ff;
+  box-shadow: 0 0 20px rgba(140, 119, 208, 0.2);
 }
 
 footer {
-  background-color: #ffffff;
-  color: #000000;
+  background: linear-gradient(135deg, #f9f9f9, #e1e1e1);
+  color: #333333;
 }
 
 .btn-primary {
-  color: #000000;
-  background-color: #dbc6ff;
-  border-color: #dbc6ff;
+  border: none;
+  background-color: #8c77d0;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 10px 15px;
+  box-shadow: 0 0 5px rgba(140, 119, 208, 0.5);
+  transition: box-shadow 0.3s ease;
 }
 
 .btn-primary:focus,
-.btn-primary.focus {
-  color: #000000;
-  background-color: #dbc6ff;
-  border-color: #dbc6ff;
-}
-
+.btn-primary.focus,
 .btn-primary:hover {
-  color: #000000;
-  background-color: #e9dbfe;
-  border-color: #e9dbfe;
+  background-color: #7b6bc3;
+  border-color: #7b6bc3;
+  box-shadow: 0 0 10px rgba(123, 107, 195, 0.5);
 }
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-  color: #000000;
-  background-color: #dbc6ff;
+  color: #ffffff;
+  background-color: #8c77d0;
 }
+
+.form-check-input:checked {
+  background-color: #8c77d0;
+  border-color: #8c77d0;
+}
+
+input:focus {
+  outline: none !important;
+  border: 2px solid #8c77d0 !important;
+  box-shadow: 0 0 5px rgba(140, 119, 208, 0.5) !important;
+}
+
+a:focus {
+  outline: none !important;
+}
+
+#sisyphus-logo {
+  filter: invert(100%);
+}
+

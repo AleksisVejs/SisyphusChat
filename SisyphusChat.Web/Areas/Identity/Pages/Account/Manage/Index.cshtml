@@ -110,6 +110,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // To check if DOM is loaded and give user possibility to choose from files which one to upload no more than 2mb
         document.addEventListener("DOMContentLoaded", function () {
             const uploadBtn = document.getElementById('uploadBtn-overlay');
             const fileInput = document.getElementById('fileInput');
@@ -132,11 +133,11 @@
                     if (file) {
                         if (file.size > maxSizeBytes) {
                             fileSizeError.textContent = `File size exceeds ${maxSizeMB} MB. Please choose a smaller file.`;
-                            fileInput.value = ''; // Reset file input
-                            profileImage.src = originalImageSrc; // Reset the image preview to original
+                            fileInput.value = ''; //To Reset file input
+                            profileImage.src = originalImageSrc; //To reset the image preview to original
                             return;
                         } else {
-                            fileSizeError.textContent = ''; // Clear any previous error message
+                            fileSizeError.textContent = ''; //To clear any previous error message
                         }
 
                         const reader = new FileReader();

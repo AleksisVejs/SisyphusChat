@@ -47,12 +47,6 @@ namespace SisyphusChat.Infrastructure.Data
                 .HasForeignKey(cu => cu.ChatId)
                 .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
 
-            modelBuilder.Entity<ChatUser>()
-                .HasOne(cu => cu.User)
-                .WithMany(u => u.ChatUsers)
-                .HasForeignKey(cu => cu.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
-
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Chat)
                 .WithMany(c => c.Messages) 
