@@ -222,9 +222,9 @@ namespace SisyphusChat.Core.Services
                             foreach (var user in userActivityReport)
                             {
                                 table.AddCell(user.UserName);
-                                table.AddCell(user.LastLogin?.ToString("dd/MM/yyyy HH:mm")); // Use european date format
-                                table.AddCell(user.LastUpdated.ToString("dd/MM/yyyy HH:mm"));
-                                table.AddCell(user.IsOnline ? "Online" : "Offline");
+                                table.AddCell(user.LastLogin?.ToString("dd/MM/yyyy") ?? "No login data");
+                                table.AddCell(user.LastUpdated.ToString("dd/MM/yyyy"));
+                                table.AddCell(user.IsOnline.ToString()); // ? "Online" : "Offline"
                                 table.AddCell(user.TotalMessagesSent.ToString());
                             }
                             break;

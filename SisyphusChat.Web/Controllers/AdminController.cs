@@ -28,21 +28,12 @@ public class AdminController(IReportService reportService) : Controller
     [HttpGet]
     public async Task<IActionResult> PreviewReport(string reportType)
     {
-        try
-        {
+  
             // To generate a pdf report with specified parameter to preview instead of downloading
             byte[] stream = await reportService.GeneratePdfAsync(reportType);
             return File(stream, "application/pdf"); // return the pdf file to preview in browser instead of downloading
 
-        }
-        catch(Exception ex)
-        {
 
-            Console.WriteLine(ex.ToString());
-
-            return StatusCode(500, $"An error occurred while generating the report: {reportType}."); // Fixed string interpolation
-
-        }
         
 
     }

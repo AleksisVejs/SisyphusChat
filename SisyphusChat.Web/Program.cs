@@ -68,7 +68,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.MapRazorPages();
+
 app.MapHub<ChatHub>("/chatHub");
+
+app.MapHub<NotificationHub>("/notificationHub");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

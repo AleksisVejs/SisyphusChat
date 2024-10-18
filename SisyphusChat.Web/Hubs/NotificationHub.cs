@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SisyphusChat.Core.Models;
 using SisyphusChat.Core.Interfaces;
+using SisyphusChat.Infrastructure.Entities;
 
 namespace SisyphusChat.Web.Hubs
 {
@@ -45,5 +46,11 @@ namespace SisyphusChat.Web.Hubs
             await Clients.User(userId).SendAsync("ReceiveNewFriend", friendUser);
         }
 
+        public async Task RemoveNotification(string notificationid, string userid)
+        {
+
+            await notificationService.ClearNotificationsAsync(notificationid);
+            await Clients.User(userId).SendAsync("NotificationRemoved", notificationId);
+        }
     }
 }
