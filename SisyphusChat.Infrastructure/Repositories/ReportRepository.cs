@@ -101,7 +101,7 @@ namespace SisyphusChat.Infrastructure.Repositories
                     ChatId = cu.ChatId,
                     ChatTitle = cu.Chat.Name,
                     UserName = cu.User.UserName,
-                    UserRole = cu.Chat.OwnerID == cu.UserId ? "Owner" : "Member", // Distinguishing between roles
+                    UserRole = cu.Chat.OwnerId == cu.UserId ? "Owner" : "Member", // Distinguishing between roles
                 })
                 .ToListAsync();
 
@@ -124,7 +124,7 @@ namespace SisyphusChat.Infrastructure.Repositories
                         SenderUserName = m.Sender.UserName,
                         ReceiverUserName = cu.User.UserName, // Get the UserName for each ChatUser (excluding sender)
                         MessageContent = m.Content,
-                        DateSent = m.LastUpdated != DateTime.MinValue ? m.LastUpdated : m.TimeCreated,
+                        DateSent = m.TimeCreated,
                         Status = m.Status.ToString(), // Converts the message status to a string representation
                         ChatType = m.Chat.Type.ToString() // Converts enum ChatType to string (e.g., "Private", "Group")
                     }))

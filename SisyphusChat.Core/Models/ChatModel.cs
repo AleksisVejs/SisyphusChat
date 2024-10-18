@@ -12,14 +12,16 @@ namespace SisyphusChat.Core.Models
 
         public string OwnerId { get; set; }
 
+        public User Owner { get; set; }
+
         public bool IsReported { get; set; }
 
         public DateTime TimeCreated { get; set; }
 
         public DateTime LastUpdated { get; set; }
 
-        public ICollection<ChatUser> ChatUsers { get; set; }
+        public ICollection<ChatUserModel> ChatUsers { get; set; }
 
-        public ICollection<Message> Messages { get; set; }
+        public ICollection<MessageModel> Messages { get; set; }
     }
 }
