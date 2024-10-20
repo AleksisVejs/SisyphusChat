@@ -18,11 +18,13 @@ namespace SisyphusChat.Infrastructure.Entities
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
         public string Message { get; set; }
+
+        public string SenderUsername { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsRead { get; set; }
         //public string Type { get; set; }
 
         // You can add more fields if necessary, such as:
-        public string RelatedEntityId { get; set; } // to ID the related entity (e.g., MessageId, UserId)
+       // public string RelatedEntityId { get; set; } // to ID the related entity (e.g., MessageId, UserId)
     }
 }

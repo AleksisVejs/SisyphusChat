@@ -14,6 +14,8 @@ namespace SisyphusChat.Infrastructure.Repositories
     {
         public async Task AddAsync(Notification notification)
         {
+            notification.Id = Guid.NewGuid().ToString();
+
             await context.Notifications.AddAsync(notification);
             await context.SaveChangesAsync();
         }
@@ -27,6 +29,12 @@ namespace SisyphusChat.Infrastructure.Repositories
         {
             var message = await context.Notifications.FirstOrDefaultAsync(g => g.Id.ToString() == id);
             return message;
+        }
+        public async Task<ICollection<Notification>> GetUserNotificationsAsync(string userId)
+        {
+            return await context.Notifications
+                .Where(n => n.UserId == userId) // Filter notifications for the specified user
+                .ToListAsync();
         }
 
         public async Task DeleteByIdAsync(string id)

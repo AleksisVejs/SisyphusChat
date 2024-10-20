@@ -71,4 +71,18 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
         return user;
     }
+    public async Task<User> GetUserByUsernameAsync(string username)
+    {
+        var user = await context.Users
+            .FirstOrDefaultAsync(u => u.UserName == username);
+
+        if (user == null)
+        {
+            throw new EntityNotFoundException($"User with username: {username} is not found");
+        }
+
+        return user;
+    }
+
+
 }

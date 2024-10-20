@@ -1,88 +1,93 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SisyphusChat.Core.Interfaces;
-using SisyphusChat.Web.Hubs;
+using SisyphusChat.Core.Models;
+using SisyphusChat.Web.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using SisyphusChat.Infrastructure.Entities;
+using System.Security.Claims;
+using SisyphusChat.Core.Services;
 
 namespace SisyphusChat.Web.Controllers
 {
+    [ApiController]
+    [Route("Notification")]
     public class NotificationController : Controller
     {
         private readonly INotificationService _notificationService;
-        private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
 
-        public NotificationController(INotificationService notificationService, IHubContext<NotificationHub> hubContext)
+        public NotificationController(INotificationService notificationService, IUserService userService, UserManager<User> userManager)
         {
             _notificationService = notificationService;
-            _hubContext = hubContext;
+            _userManager = userManager;
+            _userService = userService;
         }
 
-        // Action to handle a new message notification
-        [HttpPost]
-        public async Task<IActionResult> NotifyNewMessage(string userId, string senderUsername)
+        [HttpGet("GetNotifications")]
+        public async Task<IActionResult> GetNotifications()
         {
-            // Use the service to create the notification
-            await _notificationService.AddNotificationAsync(userId, "UnseenMessage", senderUsername);
+            try
+            {
+                var currentUser = await _userService.GetCurrentContextUserAsync();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the logged-in user ID
 
-            // Notify the user via SignalR in real-time
-            await _hubContext.Clients.User(userId).SendAsync("ReceiveNewMessage", senderUsername);
+                // Fetch notifications using the user's ID
+                var notifications = await _notificationService.GetUserNotificationsAsync(currentUser.Id);
 
-            return Ok(new { success = true });
+                // Check if notifications are empty
+                if (notifications == null || !notifications.Any())
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "No notifications available.",
+                        notifications = new List<NotificationModel>() // Return an empty list
+                    });
+                }
+
+                // Return the notifications in a structured format
+                return Json(new
+                {
+                    success = true,
+                    message = "Notifications retrieved successfully.",
+                    notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (consider using a logging framework like Serilog or NLog)
+                System.Diagnostics.Debug.WriteLine($"Error fetching notifications: {ex.Message}");
+
+                // Return a structured error response
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while fetching notifications."
+                });
+            }
         }
 
-        // Action to handle a user mention notification
-        [HttpPost]
-        public async Task<IActionResult> NotifyUserMentioned(string userId, string mentionedBy)
+        [HttpPost("MarkAsRead")] // Specify the route for the post method
+        public async Task<IActionResult> MarkAsRead(string notificationId)
         {
-            // Use the service to create the notification
-            await _notificationService.AddNotificationAsync(userId, "Mentioned", mentionedBy);
-
-            // Notify the user via SignalR in real-time
-            await _hubContext.Clients.User(userId).SendAsync("ReceiveMention", mentionedBy);
-
-            return Ok(new { success = true });
+            try
+            {
+                await _notificationService.MarkAsReadAsync(notificationId);
+                return Ok();  // Return HTTP 200 OK if the operation succeeds
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);  // Return HTTP 404 if the notification was not found
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while marking the notification as read.");  // Return HTTP 500 for any other errors
+            }
         }
 
-        // Action to handle a system update notification
-        [HttpPost]
-        public async Task<IActionResult> NotifySystemUpdate(string userId, string systemUpdateInfo)
-        {
-            // Use the service to create the notification
-            await _notificationService.AddNotificationAsync(userId, "SystemUpdate", systemUpdateInfo);
-
-            // Notify the user via SignalR in real-time
-            await _hubContext.Clients.User(userId).SendAsync("SystemUpdate", systemUpdateInfo);
-
-            return Ok(new { success = true });
-        }
-
-        // Action to handle a new friend request notification
-        [HttpPost]
-        public async Task<IActionResult> NotifyNewFriendAdded(string userId, string friendUsername)
-        {
-            // Use the service to create the notification
-            await _notificationService.AddNotificationAsync(userId, "FriendRequest", friendUsername);
-
-            // Notify the user via SignalR in real-time
-            await _hubContext.Clients.User(userId).SendAsync("ReceiveNewFriend", friendUsername);
-
-            return Ok(new { success = true });
-        }
-
-        // Action to retrieve all notifications for a user
-        [HttpGet]
-        public async Task<IActionResult> GetUserNotifications(string userId)
-        {
-            var notifications = await _notificationService.GetUserNotificationsAsync(userId);
-            return Ok(notifications);
-        }
-        [HttpDelete]
-        public async Task<IActionResult> RemoveNotificationVergGood(string notificationId)
-        {
-            // Call the service to remove the notification
-            await _notificationService.ClearNotificationsAsync(notificationId);
-
-            return Ok(new { success = true });
-        }
     }
 }

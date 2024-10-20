@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisyphusChat.Web", "SisyphusChat.Web\SisyphusChat.Web.csproj", "{1C521368-F960-4A4E-97AD-4852E693E68B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SisyphusChat.Web", "SisyphusChat.Web\SisyphusChat.Web.csproj", "{1C521368-F960-4A4E-97AD-4852E693E68B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisyphusChat.Core", "SisyphusChat.Core\SisyphusChat.Core.csproj", "{74793DCE-BA16-4741-883A-0D521EAD8001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SisyphusChat.Core", "SisyphusChat.Core\SisyphusChat.Core.csproj", "{74793DCE-BA16-4741-883A-0D521EAD8001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisyphusChat.Infrastructure", "SisyphusChat.Infrastructure\SisyphusChat.Infrastructure.csproj", "{86CB545B-EB49-460B-A17E-7B3297DA7381}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SisyphusChat.Infrastructure", "SisyphusChat.Infrastructure\SisyphusChat.Infrastructure.csproj", "{86CB545B-EB49-460B-A17E-7B3297DA7381}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

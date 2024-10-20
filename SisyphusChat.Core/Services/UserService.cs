@@ -128,4 +128,10 @@ public class UserService(
             await unitOfWork.SaveAsync();
         }
     }
+    public async Task<UserModel> GetByUsernameAsync(string username)
+    {
+        var userEntity = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+
+        return mapper.Map<UserModel>(userEntity);
+    }
 }

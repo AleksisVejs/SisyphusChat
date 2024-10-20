@@ -4,4 +4,6 @@ namespace SisyphusChat.Infrastructure.Interfaces;
 public interface IUserRepository : IRepository<User>
 {
     Task<User> GetUserByChatIdAsync(string chatId);
+
+    Task<User> GetUserByUsernameAsync(string username);
 }

@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity;
+@using SisyphusChat.Core.Services
+@using Microsoft.AspNetCore.Mvc
 @using SisyphusChat.Infrastructure.Entities;
 @inject SignInManager<User> SignInManager;
 @inject UserManager<User> UserManager;
@@ -59,6 +61,21 @@
                                     <button type="submit" class="nav-link btn btn-link">Logout</button>
                                 </form>
                             </li>
+                            <li class="dropdown nav-item">
+                                <a class="nav-link dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge bg-danger" id="notificationCount">0</span> <!-- Notification count styled as a badge -->
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" id="notificationList">
+                                    <li><span class="dropdown-item-text">No notifications</span></li>
+                                </ul>
+                            </li>
+
+
+
+
+
+
                         }
                         else
                         {
@@ -91,10 +108,91 @@
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/Layout.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize SignalR connection
+            const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+            connection.start()
+                .then(() => {
+                    console.log("Connected to SignalR");
+                    // Invoke GetNotifications to load notifications on connect
+                    return connection.invoke("GetNotifications");
+                })
+                .catch(err => console.error('Connection error:', err.toString()));
+
+            // Handle loading existing notifications
+            connection.on("LoadNotifications", function (notifications) {
+                console.log("Received notifications:", notifications);  // Log the received notifications
+
+                const notificationList = document.getElementById('notificationList');
+                notificationList.innerHTML = ''; // Clear previous notifications
+
+                if (notifications.length === 0) {
+                    notificationList.innerHTML = '<li><span class="dropdown-item-text">No notifications</span></li>'; // Default message
+                } else {
+                    notifications.forEach(notification => {
+                        console.log("Notification item:", notification); // Log each notification
+                        const newNotification = `<li><a class="dropdown-item" data-notification-id="${notification.id}">${notification.message}</a></li>`;
+                        notificationList.insertAdjacentHTML('beforeend', newNotification);
+                    });
+                }
+
+                // Update notification count
+                document.getElementById('notificationCount').textContent = notifications.length;
+            });
+
+            // Handle receiving a new notification
+            connection.on("ReceiveNotification", function (notification) {
+                console.log("Received notification:", notification);  // Log the received notification
+
+                const notificationList = document.getElementById('notificationList');
+
+                // Create a new list item with the notification data
+                const newNotification = `<li><a class="dropdown-item" data-notification-id="${notification.id}">${notification.message}</a></li>`;
+
+                // Insert the new notification at the beginning of the list
+                notificationList.insertAdjacentHTML('afterbegin', newNotification);
+
+                // Update notification count
+                let countElement = document.getElementById('notificationCount');
+                let currentCount = parseInt(countElement.textContent);
+                countElement.textContent = currentCount + 1;
+            });
+
+
+            // Toggle dropdown visibility
+            document.getElementById("notificationDropdown").addEventListener("click", function (e) {
+                e.preventDefault();
+                const dropdownMenu = document.getElementById('notificationList');
+                dropdownMenu.classList.toggle('show');
+
+                const expanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !expanded);
+            });
+
+            // Close dropdown if clicking outside
+            document.addEventListener('click', function (event) {
+                const dropdownToggle = document.getElementById('notificationDropdown');
+                const dropdownMenu = document.getElementById('notificationList');
+                if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                    dropdownToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>
+
+

@@ -17,6 +17,8 @@ namespace SisyphusChat.Core.Interfaces
 
         Task<ICollection<UserModel>> GetAllExceptCurrentUserAsync(UserModel currentUser);
 
+        Task<UserModel> GetByUsernameAsync(string userName);
+
         Task SetUserOnlineAsync(string userId);
 
         Task SetUserOfflineAsync(string userId);

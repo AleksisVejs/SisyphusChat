@@ -35,19 +35,31 @@ namespace SisyphusChat.Core.Services
             var notificationModel = new NotificationModel
             {
                 UserId = userId,
+                SenderUsername = senderUsername, // Assign the sender's username here
                 Message = message,
                 NotificationType = notificationType,
                 Timestamp = DateTime.UtcNow,
                 IsRead = false
+                
             };
 
             // Map to entity
             var notificationEntity = mapper.Map<Notification>(notificationModel);
 
-            // Add the notification to the repository
-            await unitOfWork.NotificationRepository.AddAsync(notificationEntity);
-            await unitOfWork.SaveAsync();
+            try
+            {
+                await unitOfWork.NotificationRepository.AddAsync(notificationEntity);
+                Console.WriteLine($"Notification added for userId: {userId}");
+                await unitOfWork.SaveAsync();
+                Console.WriteLine("Notifications saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while saving notification: {ex.Message}");
+            }
+
         }
+
 
 
 
@@ -59,12 +71,13 @@ namespace SisyphusChat.Core.Services
             await unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<NotificationModel>> GetUserNotificationsAsync(string userId)
+        public async Task<List<NotificationModel>> GetUserNotificationsAsync(string userId)
         {
-            var notificationEntities = await unitOfWork.NotificationRepository.GetAllAsync();
+            var notificationEntities = await unitOfWork.NotificationRepository.GetUserNotificationsAsync(userId);
 
-            return mapper.Map<ICollection<Notification>, ICollection<NotificationModel>>(notificationEntities);
+            return [.. mapper.Map<ICollection<Notification>, List<NotificationModel>>(notificationEntities)];
         }
+
 
         public async Task MarkAsReadAsync(string notificationId)
         {
@@ -80,7 +93,7 @@ namespace SisyphusChat.Core.Services
             notificationEntity.IsRead = true;
 
             // Update the notification in the repository
-            await unitOfWork.NotificationRepository.DeleteByIdAsync(notificationId);
+            await unitOfWork.NotificationRepository.UpdateAsync(notificationEntity);
 
             // Save the changes to the database
             await unitOfWork.SaveAsync();

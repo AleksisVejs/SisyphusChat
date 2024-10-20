@@ -51,6 +51,7 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
                 .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
+                .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.SenderUsername))
                 .ReverseMap();
         }
     }

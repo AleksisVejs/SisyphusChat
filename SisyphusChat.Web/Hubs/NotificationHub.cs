@@ -5,52 +5,31 @@ using SisyphusChat.Infrastructure.Entities;
 
 namespace SisyphusChat.Web.Hubs
 {
-    public class NotificationHub : Hub
+    public class NotificationHub(INotificationService notificationService) : Hub
     {
-        private readonly INotificationService notificationService;
-
-        public NotificationHub(INotificationService notificationService)
-        {
-            this.notificationService = notificationService;
-        }
 
         public async Task NotifyNewMessage(string userId, string senderUsername)
         {
-            // To Create the notification
             await notificationService.AddNotificationAsync(userId, "UnseenMessage", senderUsername);
-
-            //To Notify the specific user about the new message
-            await Clients.User(userId).SendAsync("ReceiveNewMessage", senderUsername);
+            await Clients.User(userId).SendAsync("ReceiveNotification", $"New message from {senderUsername}");
         }
 
         public async Task NotifyUserMentioned(string userId, string mentionedBy)
         {
             await notificationService.AddNotificationAsync(userId, "Mentioned", mentionedBy);
-
-            // To Notify the specific user about being mentioned
-            await Clients.User(userId).SendAsync("ReceiveMention", mentionedBy);
+            await Clients.User(userId).SendAsync("ReceiveNotification", $"{mentionedBy} mentioned you");
         }
-        public async Task NotifySystemUpdate(string userId, string mentionedBy)
-        {
-            await notificationService.AddNotificationAsync(userId, "SystemUpdate", mentionedBy);
 
-            // To Notify the specific user about being mentioned
-            await Clients.User(userId).SendAsync("SystemUpdate", mentionedBy);
-        }
         public async Task NotifyNewFriendAdded(string userId, string friendUser)
         {
-            // To Create the notification
             await notificationService.AddNotificationAsync(userId, "FriendRequest", friendUser);
-
-            //To notify the specific user about the new friend added
-            await Clients.User(userId).SendAsync("ReceiveNewFriend", friendUser);
+            await Clients.User(userId).SendAsync("ReceiveNotification", $"Friend request from {friendUser}");
         }
 
-        public async Task RemoveNotification(string notificationid, string userid)
+        public async Task NotifySystemUpdate(string userId, string updateMessage)
         {
-
-            await notificationService.ClearNotificationsAsync(notificationid);
-            await Clients.User(userId).SendAsync("NotificationRemoved", notificationId);
+            await notificationService.AddNotificationAsync(userId, "SystemUpdate", updateMessage);
+            await Clients.User(userId).SendAsync("ReceiveNotification", $"System Update: {updateMessage}");
         }
     }
 }
