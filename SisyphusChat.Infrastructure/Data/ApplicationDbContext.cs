@@ -27,18 +27,18 @@ namespace SisyphusChat.Infrastructure.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             modelBuilder.Entity<ChatUser>().HasKey(ur => new { ur.UserId, ur.ChatId });
-            modelBuilder.Entity<Friend>().HasKey(fr => new { fr.ReqSenderID, fr.ReqReceiverID });
+            modelBuilder.Entity<Friend>().HasKey(fr => new { fr.ReqSenderId, fr.ReqReceiverId });
 
             modelBuilder.Entity<Friend>()
                 .HasOne(f => f.ReqSender)
                 .WithMany()
-                .HasForeignKey(f => f.ReqSenderID)
+                .HasForeignKey(f => f.ReqSenderId)
                 .OnDelete(DeleteBehavior.Restrict);  // Disable cascade delete
 
             modelBuilder.Entity<Friend>()
                 .HasOne(f => f.ReqReceiver)
                 .WithMany()
-                .HasForeignKey(f => f.ReqReceiverID)
+                .HasForeignKey(f => f.ReqReceiverId)
                 .OnDelete(DeleteBehavior.Cascade);  // Cascade delete for receiver
 
             modelBuilder.Entity<ChatUser>()

@@ -33,6 +33,20 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         return user;
     }
 
+    public async Task<User> GetByUsernameAsync(string userName)
+    {
+        var user = await context.Users
+            .Include(u => u.Messages)
+            .FirstOrDefaultAsync(g => g.UserName == userName);
+
+        if (user == null)
+        {
+            throw new EntityNotFoundException("Entity not found");
+        }
+
+        return user;
+    }
+
     public async Task DeleteByIdAsync(string id)
     {
         var user = await context.Users.FindAsync(id);

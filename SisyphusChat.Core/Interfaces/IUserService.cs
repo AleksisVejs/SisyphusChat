@@ -9,6 +9,8 @@ namespace SisyphusChat.Core.Interfaces
 {
     public interface IUserService : ICrud<UserModel>
     {
+        Task<UserModel> GetByUsernameAsync(string userName);
+
         Task<UserModel> GetCurrentContextUserAsync();
 
         Task<ICollection<UserModel>> GetAllUsersAsync();

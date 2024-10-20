@@ -6,6 +6,7 @@ using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Infrastructure.Data;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace SisyphusChat.Core.Services;
 
@@ -52,6 +53,15 @@ public class UserService(
         ArgumentException.ThrowIfNullOrEmpty(id);
 
         var userEntity = await unitOfWork.UserRepository.GetByIdAsync(id);
+
+        return mapper.Map<UserModel>(userEntity);
+    }
+
+    public async Task<UserModel> GetByUsernameAsync(string userName)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(userName);
+
+        var userEntity = await unitOfWork.UserRepository.GetByUsernameAsync(userName);
 
         return mapper.Map<UserModel>(userEntity);
     }

@@ -10,28 +10,34 @@ public class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(
         ApplicationDbContext context,
-        IReportRepository reportRepository,
-        IUserRepository userRepository,
-        IMessageRepository messageRepository,
+        IAttachmentRepository attachmentRepository,
         IChatRepository chatRepository,
-        IAttachmentRepository attachmentRepository)
+        IFriendRepository friendRepository,
+        IMessageRepository messageRepository,
+        IReportRepository reportRepository,
+        IUserRepository userRepository
+        )
     {
         _context = context;
+        AttachmentRepository = attachmentRepository;
+        ChatRepository = chatRepository;
+        FriendRepository = friendRepository;
+        MessageRepository = messageRepository;
         ReportRepository = reportRepository;
         UserRepository = userRepository;
-        MessageRepository = messageRepository;
-        ChatRepository = chatRepository;
-        AttachmentRepository = attachmentRepository;
     }
 
-    public IUserRepository UserRepository { get; }
-    public IReportRepository ReportRepository { get; }
-
-    public IMessageRepository MessageRepository { get; }
+    public IAttachmentRepository AttachmentRepository { get; }
 
     public IChatRepository ChatRepository { get; }
 
-    public IAttachmentRepository AttachmentRepository { get; }
+    public IFriendRepository FriendRepository { get; }
+
+    public IMessageRepository MessageRepository { get; }
+
+    public IReportRepository ReportRepository { get; }
+
+    public IUserRepository UserRepository { get; }
 
     public Task SaveAsync()
     {
