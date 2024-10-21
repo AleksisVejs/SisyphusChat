@@ -46,7 +46,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             public byte[] Picture { get; set; }
             public IFormFile ProfilePicture { get; set; }
             // Any future properties for the input model
-            
+            public string CroppedImage { get; set; }
         }
 
         private async Task LoadAsync(User user)
@@ -98,10 +98,14 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 // Update the username if it's unique
                 user.UserName = Input.NewUsername;
             }
-            
 
-            // Process the uploaded profile picture
-            if (Input.ProfilePicture != null && Input.ProfilePicture.Length > 0)
+            // Process the cropped image if provided
+            if (!string.IsNullOrWhiteSpace(Input.CroppedImage))
+            {
+                byte[] imageBytes = Convert.FromBase64String(Input.CroppedImage);
+                user.Picture = imageBytes;
+            }
+            else if (Input.ProfilePicture != null && Input.ProfilePicture.Length > 0)
             {
                 if (Input.ProfilePicture.Length > 2 * 1024 * 1024)
                 {
@@ -139,7 +143,5 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
-
-
     }
 }

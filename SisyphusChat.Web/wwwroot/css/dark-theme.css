@@ -98,12 +98,31 @@ footer {
   transition: box-shadow 0.3s ease; /* Add transition for hover */
 }
 
+.btn-secondary {
+  border: none;
+  background-color: #59506b;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 10px 15px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+} 
+
 .btn-primary:focus,
 .btn-primary.focus,
 .btn-primary:active,
 .btn-primary:hover {
   background-color: #59506b;
   border-color: #59506b;
+  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5);
+}
+
+.btn-secondary:focus,
+.btn-secondary.focus,
+.btn-secondary:active,
+.btn-secondary:hover {
+  background-color: #4f388a;
+  border-color: #4f388a;
   box-shadow: 0 0 10px rgba(79, 56, 138, 0.5);
 }
 
@@ -127,3 +146,16 @@ input:focus {
 a:focus {
   outline: none !important;
 }
+
+.modal-content {
+  background-color: #4f388a;
+  color: #e4e6eb;
+}
+
+.close {
+  color: #e4e6eb;
+}
+
+.close:hover {
+  color: #b197fc;
+} 

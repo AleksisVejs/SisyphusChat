@@ -12,10 +12,32 @@
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
+    <div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-labelledby="cropModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cropModalLabel">Crop Image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imageToCrop" src="" alt="Image to crop">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="cropButton">Crop</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-6">
         <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <span id="fileSizeError" class="text-danger"></span>
+            <input asp-for="Input.CroppedImage" type="hidden" id="croppedImageInput" />
             <div class="form-floating mb-3">
                 <div class="image-container">
                     <button type="button" id="uploadBtn" style="border: none; background: transparent; padding: 0;">
@@ -49,8 +71,7 @@
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
-    <div class="col-md-6">
-    </div>
+    <div class="col-md-6"></div>
 </div>
 
 <style>
@@ -60,13 +81,17 @@
         height: 150px;
         overflow: hidden;
         border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        background-color: #f1f1f1;
     }
 
     .image-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-    }   
+    }
+
 
     .image-container .overlay {
         position: absolute;
@@ -105,22 +130,46 @@
     #profileImage:hover {
         opacity: 0.8;
     }
+
+     .modal-dialog {
+        max-width: 600px; /* Max width for the modal */
+        width: auto;
+    }
+
+    .modal-body {
+        max-height: 500px; /* Max height for the modal body */
+        overflow: auto; /* Enable scrolling if content exceeds max height */
+    }
+
+    .img-container {
+        max-width: 100%; /* Ensure the image container does not exceed modal width */
+        max-height: 400px; /* Max height for the image */
+        overflow: hidden; /* Hide overflow */
+    }
+
+    #imageToCrop {
+        max-width: 100%; /* Make sure the image scales within the container */
+        max-height: 400px; /* Prevent image from exceeding container height */
+    }
 </style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // To check if DOM is loaded and give user possibility to choose from files which one to upload no more than 2mb
         document.addEventListener("DOMContentLoaded", function () {
             const uploadBtn = document.getElementById('uploadBtn-overlay');
             const fileInput = document.getElementById('fileInput');
             const profileImage = document.getElementById('profileImage');
-            const fileSizeError = document.getElementById('fileSizeError'); // Error message span
+            const fileSizeError = document.getElementById('fileSizeError');
+            const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+            const imageToCrop = document.getElementById('imageToCrop');
+            const croppedImageInput = document.getElementById('croppedImageInput');
+            const cropButton = document.getElementById('cropButton');
 
             const maxSizeMB = 2;
             const maxSizeBytes = maxSizeMB * 1024 * 1024;
+            let cropper;
 
-            // Store the current image source
             const originalImageSrc = profileImage.src;
 
             if (uploadBtn && fileInput && profileImage) {
@@ -133,19 +182,47 @@
                     if (file) {
                         if (file.size > maxSizeBytes) {
                             fileSizeError.textContent = `File size exceeds ${maxSizeMB} MB. Please choose a smaller file.`;
-                            fileInput.value = ''; //To Reset file input
-                            profileImage.src = originalImageSrc; //To reset the image preview to original
+                            fileInput.value = '';
+                            profileImage.src = originalImageSrc;
                             return;
                         } else {
-                            fileSizeError.textContent = ''; //To clear any previous error message
+                            fileSizeError.textContent = '';
                         }
 
                         const reader = new FileReader();
                         reader.onload = function (e) {
-                            profileImage.src = e.target.result; // Set the profile image directly to the uploaded file
+                            imageToCrop.src = e.target.result;
+                            cropModal.show();
+
+                            if (cropper) {
+                                cropper.destroy();
+                            }
+
+                            cropper = new Cropper(imageToCrop, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                            });
                         };
                         reader.readAsDataURL(file);
                     }
+                });
+
+                cropButton.addEventListener('click', function () {
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 150,
+                        height: 150,
+                    });
+
+                    canvas.toBlob(function (blob) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            profileImage.src = e.target.result;
+                            croppedImageInput.value = e.target.result.split(',')[1]; // Store base64 string
+                            cropModal.hide();
+                        };
+                        reader.readAsDataURL(blob);
+                    });
                 });
             }
         });
