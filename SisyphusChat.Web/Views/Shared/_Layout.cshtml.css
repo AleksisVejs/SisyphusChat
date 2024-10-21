@@ -1,7 +1,4 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-main {
+﻿main {
   margin-top: 20px;
 }
 
@@ -10,6 +7,13 @@ a.navbar-brand {
   text-align: center;
   word-break: break-all;
 }
+
+.navbar {
+  position: relative;
+  top: 0;
+  z-index: 1000;
+}
+
 
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
@@ -21,9 +25,10 @@ button.accept-policy {
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
-  white-space: nowrap;
+  height: 60px;
   line-height: 60px;
+  background-color: #f5f5f5;
 }
