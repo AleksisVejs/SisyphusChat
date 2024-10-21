@@ -13,7 +13,7 @@ namespace SisyphusChat.Core.Services
 {
     public class NotificationService(IUnitOfWork unitOfWork,IMapper mapper) : INotificationService
     {
-        public async Task AddNotificationAsync(string userId, string notificationType, string senderUsername)
+        public async Task AddNotificationAsync(string userId, string notificationType, string senderUsername, string chatId)
         {
             // Validate inputs
             ArgumentNullException.ThrowIfNull(userId);
@@ -39,6 +39,7 @@ namespace SisyphusChat.Core.Services
                 Message = message,
                 NotificationType = notificationType,
                 Timestamp = DateTime.UtcNow,
+                ChatId = chatId,
                 IsRead = false
                 
             };

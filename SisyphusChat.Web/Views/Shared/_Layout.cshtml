@@ -118,31 +118,63 @@
     <script src="~/js/Layout.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Initialize SignalR connection
-            const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+            // Initialize SignalR chatConnection
+            const chatConnection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-            connection.start()
+            const notificationConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationhub")
+                .build();
+
+            notificationConnection.start()
+                .then(() => {
+                    console.log("Connected to SignalR Notification Hub");
+                })
+                .catch(err => console.error('notificationConnection error:', err.toString()));
+
+            chatConnection.start()
                 .then(() => {
                     console.log("Connected to SignalR");
                     // Invoke GetNotifications to load notifications on connect
-                    return connection.invoke("GetNotifications");
+                    return chatConnection.invoke("GetNotifications");
                 })
-                .catch(err => console.error('Connection error:', err.toString()));
+                .catch(err => console.error('chatConnection error:', err.toString()));
 
             // Handle loading existing notifications
-            connection.on("LoadNotifications", function (notifications) {
-                console.log("Received notifications:", notifications);  // Log the received notifications
+            chatConnection.on("LoadNotifications", function (notifications) {
+                console.log("Received notifications:", notifications);
 
                 const notificationList = document.getElementById('notificationList');
                 notificationList.innerHTML = ''; // Clear previous notifications
 
                 if (notifications.length === 0) {
-                    notificationList.innerHTML = '<li><span class="dropdown-item-text">No notifications</span></li>'; // Default message
+                    notificationList.innerHTML = '<li><span class="dropdown-item-text">No notifications</span></li>';
                 } else {
                     notifications.forEach(notification => {
-                        console.log("Notification item:", notification); // Log each notification
-                        const newNotification = `<li><a class="dropdown-item" data-notification-id="${notification.id}">${notification.message}</a></li>`;
+                        const isUnreadClass = notification.isRead ? '' : 'fw-bold';
+                        const chatId = notification.chatId; // Include chatId for redirection
+
+                        const newNotification = `
+                        <li>
+                            <a href="#" class="dropdown-item ${isUnreadClass}" data-chat-id="${chatId}">
+                                ${notification.message}
+                            </a>
+                        </li>`;
                         notificationList.insertAdjacentHTML('beforeend', newNotification);
+                    });
+
+                    // Add click event listeners to each notification
+                    const notificationItems = document.querySelectorAll('.dropdown-item');
+                    notificationItems.forEach(item => {
+                        item.addEventListener('click', function () {
+                            const chatId = this.getAttribute('data-chat-id');
+                            if (chatId) {
+                                // Redirect to the chat page with the chatId
+                                window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
+
+
+                                removeNotification(notificationId);
+                            }
+                        });
                     });
                 }
 
@@ -150,8 +182,10 @@
                 document.getElementById('notificationCount').textContent = notifications.length;
             });
 
+
+
             // Handle receiving a new notification
-            connection.on("ReceiveNotification", function (notification) {
+            chatConnection.on("ReceiveNotification", function (notification) {
                 console.log("Received notification:", notification);  // Log the received notification
 
                 const notificationList = document.getElementById('notificationList');
@@ -168,15 +202,30 @@
                 countElement.textContent = currentCount + 1;
             });
 
+            // Mark notification as read when clicked
+            document.getElementById('notificationList').addEventListener('click', function (event) {
+                const target = event.target;
 
-            // Toggle dropdown visibility
-            document.getElementById("notificationDropdown").addEventListener("click", function (e) {
-                e.preventDefault();
-                const dropdownMenu = document.getElementById('notificationList');
-                dropdownMenu.classList.toggle('show');
+                // Check if the clicked element is a notification item
+                if (target && target.classList.contains('dropdown-item')) {
+                    event.stopPropagation(); // Prevent dropdown from closing
 
-                const expanded = this.getAttribute('aria-expanded') === 'true';
-                this.setAttribute('aria-expanded', !expanded);
+                    const notificationId = target.getAttribute('data-notification-id');
+
+                    // Mark as read by removing 'fw-bold' class
+                    target.classList.remove('fw-bold');
+
+                    // Ensure the notification connection is started before invoking MarkAsRead
+                    if (notificationConnection.state === signalR.HubConnectionState.Connected) {
+                        notificationConnection.invoke('MarkAsRead', notificationId)
+                            .then(() => {
+                                console.log("Notification marked as read:", notificationId);
+                            })
+                            .catch(err => console.error('Error marking notification as read:', err));
+                    } else {
+                        console.warn('Notification connection is not established. Cannot mark notification as read.');
+                    }
+                }
             });
 
             // Close dropdown if clicking outside
@@ -189,6 +238,32 @@
                 }
             });
         });
+
+        function removeNotification(notificationId) {
+            // Ensure the notification connection is started before invoking RemoveNotification
+            if (notificationConnection.state === signalR.HubConnectionState.Connected) {
+                notificationConnection.invoke('RemoveNotification', notificationId)
+                    .then(() => {
+                        console.log("Notification removed:", notificationId);
+
+                        // Remove the notification from the frontend
+                        const notificationElement = document.getElementById(`notification-${notificationId}`);
+                        if (notificationElement) {
+                            notificationElement.remove();
+
+                            // Update notification count
+                            let countElement = document.getElementById('notificationCount');
+                            let currentCount = parseInt(countElement.textContent);
+                            countElement.textContent = Math.max(0, currentCount - 1); // Prevent negative count
+                        }
+                    })
+                    .catch(err => console.error('Error removing notification:', err));
+            } else {
+                console.warn('Notification connection is not established. Cannot remove notification.');
+            }
+        }
+
+
     </script>
 
 

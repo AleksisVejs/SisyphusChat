@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Identity.Client;
 using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
 using SisyphusChat.Core.Services;
@@ -79,11 +80,12 @@ public class ChatHub(
                         SenderUsername = user, // The username of the sender
                         UserId = memberUser.Id, // The ID of the member receiving the notification
                         IsRead = false,
+                        ChatId = chatId,
                         NotificationType = "UnseenMessage"
                     };
 
                     // Now we can safely call AddNotificationAsync with the correct parameters
-                    await notificationService.AddNotificationAsync(memberUser.Id, "UnseenMessage", user); // user is the sender's username
+                    await notificationService.AddNotificationAsync(memberUser.Id, "UnseenMessage", user, chatId); // user is the sender's username
 
                     // Optionally, send a real-time notification to the user
                     await Clients.User(memberUser.Id).SendAsync("ReceiveNotification", notification);
@@ -101,6 +103,13 @@ public class ChatHub(
 
         // Send notifications to the connected client
         await Clients.Caller.SendAsync("LoadNotifications", notifications);
+    }
+
+    public async Task RemoveNotification(string notificationid)
+    {
+        var currentUser = await userService.GetCurrentContextUserAsync();
+        await notificationService.ClearNotificationsAsync(notificationid);
+
     }
 
 }

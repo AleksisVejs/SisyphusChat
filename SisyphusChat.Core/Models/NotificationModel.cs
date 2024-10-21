@@ -20,6 +20,8 @@ namespace SisyphusChat.Core.Models
         public string Message { get; set; }
         public DateTime Timestamp { get; set; }
         public bool IsRead { get; set; } // To track if the notification has been read
+
+        public string ChatId { get; set; }
     }
 
 }

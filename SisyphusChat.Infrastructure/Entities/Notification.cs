@@ -25,6 +25,6 @@ namespace SisyphusChat.Infrastructure.Entities
         //public string Type { get; set; }
 
         // You can add more fields if necessary, such as:
-       // public string RelatedEntityId { get; set; } // to ID the related entity (e.g., MessageId, UserId)
+        public string RelatedEntityId { get; set; } // to ID the related entity (e.g., MessageId, UserId)
     }
 }
