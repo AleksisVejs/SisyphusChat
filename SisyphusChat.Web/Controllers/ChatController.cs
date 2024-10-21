@@ -11,12 +11,22 @@ namespace SisyphusChat.Web.Controllers
     [Authorize]
     public class ChatController(IChatService chatService, IUserService userService) : Controller
     {
-        // Fetches list of all users for the dropdown
         public async Task<IActionResult> Index()
         {
-            var users = await userService.GetAllUsersAsync();
-            return View(users);
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var users = await userService.GetAllExceptCurrentUserAsync(currentUser);
+            var associatedChats = await chatService.GetAssociatedChatsAsync(currentUser);
+
+            var userViewModel = new UserViewModel
+            {
+                Users = users.ToList(),
+                CurrentUser = currentUser,
+                AssociatedChats = associatedChats.ToList()
+            };
+
+            return View(userViewModel);
         }
+
 
         // Creates or opens a private 1-on-1 chat
         [HttpPost]
