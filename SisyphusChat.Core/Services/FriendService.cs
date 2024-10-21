@@ -75,7 +75,14 @@ public class FriendService(IUnitOfWork unitOfWork, IMapper mapper) : IFriendServ
             try
             {
                 friendEntity = await unitOfWork.FriendRepository.GetByIdAsync(currentUserId + ' ' + receiverUserId);
-                throw new InvalidOperationException("Friendship request already sent");
+                if (friendEntity.IsAccepted)
+                {
+                    throw new InvalidOperationException("Already friends with user.");
+                }
+                else
+                {
+                    throw new InvalidOperationException("Friendship request already sent.");
+                }
             }
             catch (EntityNotFoundException)
             {
