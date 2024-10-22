@@ -1,29 +1,22 @@
 ﻿@{
-    ViewData["Title"] = "Friends Page";
+    ViewData["Title"] = "Friend Request Management Page";
 }
 
-@model ICollection<SisyphusChat.Core.Models.UserModel>
+@model SisyphusChat.Core.Models.FRequestModel
 
 <div>
     <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Index">Back</a>
     <div>
-        @foreach (var friends in Model)
+        <div>Sent Requests</div>
+        @foreach (var friends in Model.SentRequests)
         {
-            <div class="image-container">
-                @if (@friends.Picture != null && friends.Picture.Length > 0)
-                {
-                    var base64Image = Convert.ToBase64String(@friends.Picture);
-                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
-                    <img id="profileImage" src="@imgSrc" alt="User Avatar" />
-                }
-                else
-                {
-                    <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
-                }
-            </div>
             <div>
-                @friends.UserName
+                @friends.
             </div>
+            <button class="w-100 btn btn-lg btn-primary">Cancel Request</button>
         }
+    </div>
+    <div>
+        <div>Received Requests</div>
     </div>
 </div>

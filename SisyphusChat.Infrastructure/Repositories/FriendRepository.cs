@@ -84,4 +84,22 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
 
         return friends;
     }
+
+    public async Task<ICollection<Friend>> GetAllSentRequestsAsync(string currentUserId)
+    {
+        var friends = await context.Friends
+            .Where(u => u.ReqSenderId == currentUserId && !u.IsAccepted)
+            .ToListAsync();
+
+        return friends;
+    }
+
+    public async Task<ICollection<Friend>> GetAllReceivedRequestsAsync(string currentUserId)
+    {
+        var friends = await context.Friends
+            .Where(u => u.ReqReceiverId == currentUserId && !u.IsAccepted)
+            .ToListAsync();
+
+        return friends;
+    }
 }

@@ -8,6 +8,7 @@ using SisyphusChat.Web.Models;
 using NuGet.Protocol.Plugins;
 using SisyphusChat.Infrastructure.Exceptions;
 using SisyphusChat.Infrastructure.Migrations;
+using SisyphusChat.Core.Models;
 
 namespace SisyphusChat.Web.Controllers
 {
@@ -28,7 +29,11 @@ namespace SisyphusChat.Web.Controllers
 
         public async Task<IActionResult> Requests()
         {
-            return View();
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            FRequestModel requests = new FRequestModel();
+            requests.SentRequests = await friendService.GetAllSentRequestsAsync(currentUser.Id);
+            requests.ReceivedRequests = await friendService.GetAllReceivedRequestsAsync(currentUser.Id);
+            return View(requests);
         }
 
         // Creates a friendship request
