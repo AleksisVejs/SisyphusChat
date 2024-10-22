@@ -83,6 +83,8 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Username")]
+            [RegularExpression(@"^[^@\s]+$", ErrorMessage = "Username cannot be an email address or contain spaces.")]
+            [StringLength(32, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
 
             public string Username { get; set; }
 

@@ -29,6 +29,7 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IFriendRepository, FriendRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -37,6 +38,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IFriendService, FriendService>();
 
 
 // Map the AutoMapper profile
@@ -70,6 +72,12 @@ app.MapHub<ChatHub>("/chatHub");
 app.UseAuthentication();
 app.UseAuthorization();
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error"); // General error handler for production
+    app.UseStatusCodePagesWithReExecute("/Home/Error/{0}"); // Custom error handler
+}
+app.UseStatusCodePagesWithRedirects("/Home/Error?statusCode={0}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

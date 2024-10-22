@@ -1,25 +1,55 @@
 ﻿@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["ErrorMessage"] = "The page you're looking for cannot be found.";
+    ViewData["ErrorSubtitle"] = "It may have been moved, renamed, or deleted.";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<style>
+    body {
+        background-color: #D9CCF6;
+    }
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+    .error-content {
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+    .error-title {
+        color: #6F228A;
+    }
+
+    .error-text {
+        color: #9A4CAD;
+        font-weight: 400;
+    }
+
+    .btn-home {
+        background-color: #65558F;
+        border-color: #65558F;
+        color: white;
+        border-radius: 8px;
+    }
+
+        .btn-home:hover {
+            background-color: #8575AF;
+            border-color: #8575AF;
+            color: white;
+        }
+</style>
+
+<div class="container-fluid error-content">
+    <h1 class="error-title display-1 fw-bold">Oopsie!</h1>
+
+    <p class="error-text fs-2 mb-1">@ViewData["ErrorMessage"]</p>
+
+    <p class="error-text mb-4">@ViewData["ErrorSubtitle"]</p>
+
+    <div class="d-flex justify-content-center">
+        <a href="/" class="btn btn-home btn-lg px-4">
+            Return to homepage
+        </a>
+    </div>
+</div>

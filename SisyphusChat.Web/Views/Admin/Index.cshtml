@@ -5,10 +5,10 @@
 <div>
     <div class="row">
         @foreach (var report in new[] {
-            new { Title = "Attachments Report", ReportType = "Attachments"},
-            new { Title = "Chats Report", ReportType = "Chats"},
-            new { Title = "Messages Report", ReportType = "Messages"},
-            new { Title = "Users Report", ReportType = "Users"},
+        new { Title = "Attachments Report", ReportType = "Attachments"},
+        new { Title = "Chats Report", ReportType = "Chats"},
+        new { Title = "Messages Report", ReportType = "Messages"},
+        new { Title = "Users Report", ReportType = "Users"},
         new { Title = "User Last Message Report", ReportType = "Users With Last Message"},
         new { Title = "User Activity Report", ReportType = "User Activity"},
         new { Title = "Attachments Usage Report", ReportType = "Attachments Usage"},
@@ -24,10 +24,16 @@
                     </button>
                     <ul class="dropdown-menu w-100" aria-labelledby="@report.ReportType-@Guid.NewGuid()">
                         <li>
-                            <a class="dropdown-item" href="/Admin/DownloadReport?reportType=@report.ReportType">
-                                <i class="fas fa-download"></i> Download
+                            <a class="dropdown-item" href="/Admin/DownloadReport?reportType=@report.ReportType&format=pdf">
+                                <i class="fas fa-download"></i> Download PDF
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item" href="/Admin/DownloadReport?reportType=@report.ReportType&format=excel">
+                                <i class="fas fa-download"></i> Download Excel
+                            </a>
+                        </li>
+
                         <li>
                             <a class="dropdown-item" href="#" onclick="previewReport('@report.ReportType')">
                                 <i class="fas fa-eye"></i> Preview

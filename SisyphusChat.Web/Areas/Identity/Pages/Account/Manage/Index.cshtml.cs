@@ -39,13 +39,12 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Display(Name = "New Username")]
-            [StringLength(15, MinimumLength = 5, ErrorMessage = "Username should be between 5 and 15 characters.")]
+            [StringLength(32, MinimumLength = 6, ErrorMessage = "Username should be between 6 and 32 characters.")]
             [RegularExpression(@"^[a-zA-Z0-9._-]+$", ErrorMessage = "Username can only contain letters, digits, hyphens, underscores, and periods.")]
             public string NewUsername { get; set; }
 
             public byte[] Picture { get; set; }
             public IFormFile ProfilePicture { get; set; }
-            // Any future properties for the input model
             public string CroppedImage { get; set; }
         }
 

@@ -25,6 +25,6 @@ namespace SisyphusChat.Core.Interfaces
         public Task<List<UserActivityReportDto>> GetUserActivities(); // To track user activities, last login, last updated, and online status, messages sent all time
         public Task<List<ChatParticipationReportDto>> GetChatParticipationReport(); // To track user participation in chats by chat title, user name, and user role
         public Task<byte[]> GeneratePdfAsync(string reportType); // To generate a PDF report based on the report type, all of the above in byte array
-
+        public Task<byte[]> GenerateExcelAsync(string reportType); // To generate an Excel report based on the report type, all of the above in byte array
     }
 }
