@@ -56,45 +56,69 @@ public class FriendService(IUnitOfWork unitOfWork, IMapper mapper) : IFriendServ
         await unitOfWork.SaveAsync();
     }
 
+    public async Task<ICollection<FriendModel>> GetAllFriendsAsync(string currentUserId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(currentUserId);
+
+        var friendEntities = await unitOfWork.FriendRepository.GetAllFriendsAsync(currentUserId);
+
+        return mapper.Map<ICollection<Friend>, ICollection<FriendModel>>(friendEntities);
+    }
+
     public async Task SendRequestAsync(string currentUserId, string receiverUserId)
     {
         Friend friendEntity;
 
-        // Automatically accepts friend request if one was already sent by other party
-        try
+        if (currentUserId != receiverUserId)
         {
-            friendEntity = await unitOfWork.FriendRepository.GetByIdAsync(receiverUserId + ' ' + currentUserId);
-            friendEntity.IsAccepted = true;
-            await unitOfWork.FriendRepository.UpdateAsync(friendEntity);
-            await unitOfWork.SaveAsync();
-
-        }
-        // Creates new friendship request if one wasn't found
-        catch (EntityNotFoundException)
-        {
+            // Checks if friend request was already sent by other party
             try
             {
-                friendEntity = await unitOfWork.FriendRepository.GetByIdAsync(currentUserId + ' ' + receiverUserId);
+                friendEntity = await unitOfWork.FriendRepository.GetByIdAsync(receiverUserId + ' ' + currentUserId);
                 if (friendEntity.IsAccepted)
                 {
                     throw new InvalidOperationException("Already friends with user.");
                 }
+                // If not already friends with user, then accepts the request
                 else
                 {
-                    throw new InvalidOperationException("Friendship request already sent.");
+                    friendEntity.IsAccepted = true;
+                    await unitOfWork.FriendRepository.UpdateAsync(friendEntity);
+                    await unitOfWork.SaveAsync();
                 }
             }
+            // Creates new friendship request if one wasn't found
             catch (EntityNotFoundException)
             {
-                friendEntity = new Friend
+                try
                 {
-                    ReqSenderId = currentUserId,
-                    ReqReceiverId = receiverUserId
-                };
+                    friendEntity = await unitOfWork.FriendRepository.GetByIdAsync(currentUserId + ' ' + receiverUserId);
+                    if (friendEntity.IsAccepted)
+                    {
+                        throw new InvalidOperationException("Already friends with user.");
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Friendship request already sent.");
+                    }
+                }
+                catch (EntityNotFoundException)
+                {
+                    friendEntity = new Friend
+                    {
+                        ReqSenderId = currentUserId,
+                        ReqReceiverId = receiverUserId
+                    };
 
-                await unitOfWork.FriendRepository.AddAsync(friendEntity);
-                await unitOfWork.SaveAsync();
+                    await unitOfWork.FriendRepository.AddAsync(friendEntity);
+                    await unitOfWork.SaveAsync();
+                }
             }
         }
+        else
+        {
+            throw new InvalidOperationException("Bo has no friends :(");
+        }
+        
     }
 }

@@ -4,4 +4,10 @@
 
 <div>
     <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="AddFriends">Add Friends</a>
+    <div>
+        @foreach (var friends in Model)
+        {
+            <div class="image-container"></div>
+        }
+    </div>
 </div>

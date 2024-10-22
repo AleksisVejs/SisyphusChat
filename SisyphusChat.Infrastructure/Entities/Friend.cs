@@ -9,12 +9,14 @@ public class Friend
     [Required]
     public string ReqSenderId { get; set; }
 
+    [Required]
     [ForeignKey(nameof(ReqSenderId))]
     public User ReqSender { get; set; }
 
     [Required]
     public string ReqReceiverId { get; set; }
 
+    [Required]
     [ForeignKey(nameof(ReqReceiverId))]
     public User ReqReceiver { get; set; }
 

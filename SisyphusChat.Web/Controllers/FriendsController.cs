@@ -7,6 +7,7 @@ using SisyphusChat.Core.Services;
 using SisyphusChat.Web.Models;
 using NuGet.Protocol.Plugins;
 using SisyphusChat.Infrastructure.Exceptions;
+using SisyphusChat.Infrastructure.Migrations;
 
 namespace SisyphusChat.Web.Controllers
 {
@@ -15,7 +16,9 @@ namespace SisyphusChat.Web.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            return View();
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var friends = await friendService.GetAllFriendsAsync(currentUser.Id);
+            return View(friends);
         }
 
         public async Task<IActionResult> AddFriends()
@@ -25,11 +28,12 @@ namespace SisyphusChat.Web.Controllers
 
         // Creates a friendship request
         [HttpPost]
-        public async Task SendRequest(string receiverUsername)
+        public async Task<IActionResult> SendRequest(string receiverUsername)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             var receiverUser = await userService.GetByUsernameAsync(receiverUsername);
             await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
+            return RedirectToAction("AddFriends");
         }
 
         // Cancels friendship request

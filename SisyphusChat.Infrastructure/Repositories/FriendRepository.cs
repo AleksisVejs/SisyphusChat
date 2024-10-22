@@ -30,8 +30,9 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
         string[] ids = srid.Split(' ');
 
         var friend = await context.Friends
-            .Include(f => f.IsAccepted)
-            .FirstOrDefaultAsync(f => f.ReqSenderId.ToString() == ids[0] && f.ReqSenderId.ToString() == ids[1]);
+            .Include(u => u.ReqSender)
+            .Include(u => u.ReqReceiver)
+            .FirstOrDefaultAsync(f => f.ReqSenderId == ids[0] && f.ReqReceiverId == ids[1]);
 
         if (friend == null)
         {
@@ -66,5 +67,15 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
 
         context.Friends.Update(entity);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<ICollection<Friend>> GetAllFriendsAsync(string currentUserId)
+    {
+        var friends = await context.Friends
+            .Where(u => u.ReqSenderId == currentUserId || u.ReqReceiverId == currentUserId)
+            .Where(u => u.IsAccepted)
+            .ToListAsync();
+
+        return friends;
     }
 }
