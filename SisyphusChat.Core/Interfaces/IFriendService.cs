@@ -5,7 +5,7 @@ namespace SisyphusChat.Core.Interfaces
 {
     public interface IFriendService : ICrud<FriendModel>
     {
-        Task<ICollection<FriendModel>> GetAllFriendsAsync(string currentUserId);
+        Task<ICollection<UserModel>> GetAllFriendsAsync(string currentUserId);
 
         Task SendRequestAsync(string currentUserId, string recipientUserId);
     }

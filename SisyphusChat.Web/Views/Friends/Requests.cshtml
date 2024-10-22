@@ -5,8 +5,7 @@
 @model ICollection<SisyphusChat.Core.Models.UserModel>
 
 <div>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Add">Add Friends</a>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Requests">Manage Requests</a>
+    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Index">Back</a>
     <div>
         @foreach (var friends in Model)
         {

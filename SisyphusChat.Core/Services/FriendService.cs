@@ -56,13 +56,13 @@ public class FriendService(IUnitOfWork unitOfWork, IMapper mapper) : IFriendServ
         await unitOfWork.SaveAsync();
     }
 
-    public async Task<ICollection<FriendModel>> GetAllFriendsAsync(string currentUserId)
+    public async Task<ICollection<UserModel>> GetAllFriendsAsync(string currentUserId)
     {
         ArgumentException.ThrowIfNullOrEmpty(currentUserId);
 
         var friendEntities = await unitOfWork.FriendRepository.GetAllFriendsAsync(currentUserId);
 
-        return mapper.Map<ICollection<Friend>, ICollection<FriendModel>>(friendEntities);
+        return mapper.Map<ICollection<User>, ICollection<UserModel>>(friendEntities);
     }
 
     public async Task SendRequestAsync(string currentUserId, string receiverUserId)

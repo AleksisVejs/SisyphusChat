@@ -69,11 +69,17 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<ICollection<Friend>> GetAllFriendsAsync(string currentUserId)
+    public async Task<ICollection<User>> GetAllFriendsAsync(string currentUserId)
     {
-        var friends = await context.Friends
-            .Where(u => u.ReqSenderId == currentUserId || u.ReqReceiverId == currentUserId)
-            .Where(u => u.IsAccepted)
+        // Fetch friendships that are accepted for the current user
+        var friendships = await context.Friends
+            .Where(u => (u.ReqSenderId == currentUserId || u.ReqReceiverId == currentUserId) && u.IsAccepted)
+            .Select(f => f.ReqSenderId == currentUserId ? f.ReqReceiverId : f.ReqSenderId) // Get the friend's ID
+            .ToListAsync();
+
+        // Fetch the users who are in the friendships
+        var friends = await context.Users
+            .Where(u => friendships.Contains(u.Id)) // Use Contains for filtering
             .ToListAsync();
 
         return friends;

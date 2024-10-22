@@ -21,7 +21,12 @@ namespace SisyphusChat.Web.Controllers
             return View(friends);
         }
 
-        public async Task<IActionResult> AddFriends()
+        public async Task<IActionResult> Add()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Requests()
         {
             return View();
         }
