@@ -97,6 +97,11 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
     {
         Chat chatEntity;
 
+        if (recipientUserId == null)
+        {
+            throw new EntityNotFoundException($"User with ID {recipientUserId} not found");
+        }
+
         // checking if the user is trying to create a chat with themselves
         if (currentUserId == recipientUserId)
         {

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Core.Services;
 using SisyphusChat.Web.Models;
+using SisyphusChat.Infrastructure.Exceptions;
 
 namespace SisyphusChat.Web.Controllers
 {
@@ -29,30 +30,47 @@ namespace SisyphusChat.Web.Controllers
 
 
         // Creates or opens a private 1-on-1 chat
-        [HttpPost]
         public async Task<IActionResult> CreateOrOpenChat(string recipientUserId)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
+            if (recipientUserId == null)
+            {
+                throw new EntityNotFoundException($"User with AAAAAAA {recipientUserId} not found");
+            }
             var chat = await chatService.OpenOrCreatePrivateChatAsync(currentUser.Id, recipientUserId);
+
             return RedirectToAction("ChatRoom", new { chatId = chat.Id });
         }
 
-        public async Task<IActionResult> ChatRoom(Guid chatId)
+        public async Task<IActionResult> ChatRoom(string chatId)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
-            var chat = await chatService.GetByIdAsync(chatId.ToString());
+            var chat = await chatService.GetByIdAsync(chatId);
+            var associatedChats = await chatService.GetAssociatedChatsAsync(currentUser);
             var users = await userService.GetAllExceptCurrentUserAsync(currentUser);
             var chatViewModel = new ChatViewModel { Chat = chat };
+            var currentChatUserNames = chat.ChatUsers.Select(m => m.User.UserName).ToList();
 
-            if (chat == null)
+            var userViewModel = new UserViewModel
             {
-                return NotFound();
+                CurrentUser = currentUser,
+                Users = users.ToList(),
+                AssociatedChats = associatedChats.ToList()
+            };
+
+            var viewModel = new ChatPageViewModel
+            {
+                ChatId = chatId,
+                ChatViewModel = chatViewModel,
+                UserViewModel = userViewModel,
+            };
+
+            if (!currentChatUserNames.Contains(currentUser.UserName))
+            {
+                return RedirectToAction("Index");
             }
 
-            ViewBag.ChatName = chat.Name;
-            ViewBag.ChatId = chatId;
-
-            return View(chatViewModel);
+            return View(viewModel);
         }
     }
 }

@@ -1,57 +1,265 @@
-﻿@model ChatViewModel
+﻿@using SisyphusChat.Infrastructure.Entities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ChatPageViewModel
 
 @{
-    ViewData["Title"] = "ChatRoom";
+    ViewData["Title"] = "Chats";
 }
 
-<h2>@ViewBag.ChatName</h2>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
 
-<input type="text" id="messageInput" placeholder="Enter message" />
-<button onclick="sendMessage()">Send</button>
-
-<div class="chat-messages">
-    @foreach (var message in Model.Chat.Messages)
-    {
-        <div>
-            <strong>@message.Sender.UserName</strong>: @message.Content
-            <span>(@message.TimeCreated.ToString("dd MMMM yyyy 'at' HH:mm"))</span>
-        </div>
-    }
+<div id="errorMessage" class="alert alert-danger d-none" role="alert">
+    <div class="d-flex justify-content-between align-items-center">
+        <span id="errorMessageText"></span>
+    </div>
 </div>
 
-<div id="chatMessages"></div>
+<div id="chatPageContainer">
+    <div id="sidebar">
+        <div id="userProfile" class="flex items-center gap-3 py-3 px-4">
+            <div class="icon-container-large">
+                <i class="fas fa-user user-icon-large"></i>
+            </div>
+            <span class="username-large text-purple-600 font-bold">@Model.UserViewModel.CurrentUser.UserName</span>
+        </div>
+        <div class="profile-divider"></div>
+
+        <!-- Search bar with button-->
+        <div class="search-container flex items-center gap-2">
+            <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" />
+            <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" class="create-group-button">
+                <i class="fas fa-comments"></i>
+            </a>
+        </div>
+
+
+        <!-- Combined list for users and group chats -->
+        <div id="listContainer" class="scrollable-container">
+            <ul id="chatList">
+                <!-- Group chats -->
+                @foreach (var chat in Model.UserViewModel.AssociatedChats)
+                {
+                    <li class="user-item" data-type="group">
+                        <div class="icon-container">
+                            <i class="fas fa-users group-icon"></i>
+                        </div>
+                        <a href="@Url.Action("OpenGroupChat", "Chat", new { chatId = chat.Id })">@chat.Name</a>
+                    </li>
+                }
+
+                <!-- Users (Private chats) -->
+                @foreach (var user in Model.UserViewModel.Users)
+                {
+                    <li class="user-item flex items-center gap-3" data-type="user">
+                        <div class="icon-container">
+                            <i class="fas fa-user user-icon"></i>
+                        </div>
+                        <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</a>
+                        <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div id="chatContainer">
+        <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")"
+        @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
+        {
+            <text>onclick="window.location.href='@Url.Action("Index", "ChatSettings", new { chatId = Model.ChatViewModel.Chat.Id })'"</text>
+        }>
+            <div class="header-content flex items-center gap-3 pb-3">
+                @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
+                {
+                        <!-- Group chat -->
+                        <div class="icon-container-large">
+                            <i class="fas fa-users group-icon-large"></i>
+                        </div>
+                        <div class="username-status flex flex-col">
+                            <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
+                            <span id="groupUsers">
+                            @{
+                                var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
+                                var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
+                            }
+                            @displayMembersList
+                            </span>
+                        </div>
+                }
+                else
+                {
+                        <!-- Private chat -->
+                        <div class="icon-container-large">
+                            <i class="fas fa-user user-icon-large"></i>
+                        </div>
+                        <div class="username-status flex flex-col">
+                            <span class="username-text">
+                            @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
+                            </span>
+                                <span class="status-text @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "text-green-500" : "text-gray-500")">
+                            @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "Online" : "Offline")
+                            </span>
+                        </div>
+                }
+            </div>
+        </div>
+
+        <!-- Chat messages container -->
+        <div class="chat-messages">
+            @foreach (var message in Model.ChatViewModel.Chat.Messages)
+            {
+                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")">
+                    @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
+                    {
+                        <span class="sender-name">@message.Sender.UserName</span>
+                    }
+                    <p>@message.Content</p>
+                    <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
+                </div>
+            }
+        </div>
+
+
+        <div class="chat-footer">
+            <input type="text" id="messageInput" placeholder="Type a message..." />
+            <button id="sendMessageButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>*
+    </div>
+</div>
+
 
 @section Scripts {
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
     <script>
-        const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-        const chatId = "@ViewBag.ChatId";
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
 
-        connection.on("ReceiveMessage", function (user, message, timeCreated) {
-            const messageElement = document.createElement("div");
-            const options = { year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-            const formattedTime = new Intl.DateTimeFormat('en-GB', options).format(new Date(timeCreated));
+        const chatId = "@Model.ChatId";
+        const currentUser = "@Model.UserViewModel.CurrentUser.UserName";
 
-            messageElement.innerHTML = `<strong>${user}</strong>: ${message} <span>(${formattedTime})</span>`;
-            document.getElementById("chatMessages").appendChild(messageElement);
+        // To show new messages when chat is opened
+        function scrollToBottom() {
+            const chatMessages = document.querySelector(".chat-messages");
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            scrollToBottom();
         });
 
-        connection.start().then(function () {
-            connection.invoke("JoinChat", chatId);
+        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt) => {
+            if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
+
+                // Create a span to hold the sender's username
+                const senderNameSpan = document.createElement("span");
+                senderNameSpan.classList.add("sender-name");
+                senderNameSpan.textContent = user;
+
+                // Create a paragraph to hold the message content
+                const messageContent = document.createElement("p");
+                messageContent.textContent = message;
+
+                // Create a span to hold the timestamp
+                const timestampSpan = document.createElement("span");
+                timestampSpan.classList.add("time");
+                timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+
+                // Append the sender's name, message content, and timestamp to the message div
+                messageDiv.appendChild(senderNameSpan);
+                messageDiv.appendChild(messageContent);
+                messageDiv.appendChild(timestampSpan);
+
+                // Append the message div to the chat messages container
+                document.querySelector(".chat-messages").appendChild(messageDiv);
+
+                // Scroll to the bottom to see the new message
+                document.querySelector(".chat-messages").scrollTop = document.querySelector(".chat-messages").scrollHeight;
+            } else {
+                const errorContainer = document.getElementById("errorMessage");
+                const errorMessageText = document.getElementById("errorMessageText");
+
+                errorMessageText.textContent = "You are no longer a member of this chat.";
+
+                errorContainer.classList.remove("d-none");
+
+                document.getElementById("messageInput").disabled = true;
+                document.getElementById("sendMessageButton").disabled = true;
+            }
         });
 
-        function sendMessage() {
-            const messageInput = document.getElementById("messageInput");
-            const message = messageInput.value.trim();
 
-            if (message.length === 0) {
-                alert("Cannot send an empty message.");
+        async function startConnection() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+                await connection.invoke("JoinChat", chatId);
+            } catch (err) {
+                console.error("SignalR Connection Error: ", err);
+                setTimeout(() => startConnection(), 5000);
+            }
+        }
+
+        startConnection();
+
+        connection.on("ReceiveError", (errorMessage) => {
+            const errorContainer = document.getElementById("errorMessage");
+            const errorMessageText = document.getElementById("errorMessageText");
+
+            errorMessageText.textContent = errorMessage;
+
+            errorContainer.classList.remove("d-none");
+
+            document.getElementById("messageInput").disabled = true;
+            document.getElementById("sendMessageButton").disabled = true;
+        });
+
+        document.getElementById("sendMessageButton").addEventListener("click", () => {
+            const message = document.getElementById("messageInput").value;
+            const errorContainer = document.getElementById("errorMessage");
+            const errorMessageText = document.getElementById("errorMessageText");
+
+            if (message.trim() === "") {
                 return;
             }
 
-            connection.invoke("SendMessage", "@User.Identity.Name", message, chatId);
+            if (message.length > 1000) {
+                errorMessageText.textContent = "Message cannot exceed 1000 characters.";
+                errorContainer.classList.remove("d-none");
+                return;
+            }
 
-            messageInput.value = "";  // clears the input field after sending
-        }
+            errorContainer.classList.add("d-none");
+
+            // Check if the connection is in the connected state before sending
+            if (connection.state === signalR.HubConnectionState.Connected) {
+                connection.invoke("SendMessage", currentUser, message, chatId)
+                    .catch(err => console.error("SendMessage Error: ", err));
+                document.getElementById("messageInput").value = "";
+            } else {
+                console.warn("Cannot send message. SignalR connection is not established.");
+            }
+        });
+
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const searchTerm = this.value.toLowerCase();
+            const items = document.querySelectorAll("#chatList .user-item");
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
     </script>
 }

@@ -1,53 +1,76 @@
-﻿@model SisyphusChat.Web.Models.UserViewModel
+﻿@model UserViewModel
 
 @{
     ViewData["Title"] = "Chats";
 }
 
-<h2>Start a Chat</h2>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Chats</title>
+</head>
 
-<!-- 1-on-1 Chat Form -->
-<form asp-action="CreateOrOpenChat" method="post">
-    <label for="recipientUserId">Select a User:</label>
-    <select id="recipientUserId" name="recipientUserId" class="form-control">
-        @foreach (var user in Model.Users)
-        {
-            <option value="@user.Id">@user.UserName</option>
-        }
-    </select>
-    <button type="submit" class="btn btn-primary">Start 1-on-1 Chat</button>
-</form>
+<div id="chatPageContainer">
+    <div id="sidebar">
+        <!-- Search bar with button -->
+        <div class="search-container flex items-center gap-2">
+            <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" />
+            <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" class="create-group-button">
+                <i class="fas fa-comments"></i>
+            </a>
+        </div>
 
-<hr />
+        <!-- Combined list for users and group chats -->
+        <div id="listContainer" class="scrollable-container">
+            <ul id="chatList">
+                <!-- Group chats -->
+                @foreach (var chat in Model.AssociatedChats)
+                {
+                    <li class="user-item" data-type="group">
+                        <div class="icon-container">
+                            <i class="fas fa-users group-icon"></i>
+                        </div>
+                        <a href="@Url.Action("OpenGroupChat", "Chat", new { recipientUserId = chat.Id })">@chat.Name</a>
+                    </li>
+                }
 
-<!-- Group Chat Form -->
-<h3>Create a Group Chat</h3>
-<form asp-action="CreateGroupChat" method="post">
-    <div class="form-group">
-        <label for="ChatName">Group Chat Name:</label>
-        <input type="text" id="ChatName" name="ChatName" class="form-control" required />
+                <!-- Users (Private chats) -->
+                @foreach (var user in Model.Users)
+                {
+                    <li class="user-item flex items-center gap-3" data-type="user">
+                        <div class="icon-container">
+                            <i class="fas fa-user user-icon"></i>
+                        </div>
+                        <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</a>
+                        <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="Users">Invite Users:</label>
-        <select id="Users" name="SelectedUserNames" class="form-control" multiple required>
-            @foreach (var user in Model.Users)
-            {
-                <option value="@user.UserName">@user.UserName</option>
-            }
-        </select>
+    <div id="chatContainer">
+        <!-- Welcome Message when no chat is selected -->
+        <div id="welcomeMessage" class="welcome-message">
+            <p>Welcome to SisyphusChat</p>
+        </div>
     </div>
+</div>
 
-    <button type="submit" class="btn btn-success">Create Group Chat</button>
-</form>
+@section Scripts {
+    <script>
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const searchTerm = this.value.toLowerCase();
+            const items = document.querySelectorAll("#chatList .user-item");
 
-<hr />
-
-<!-- Display Associated Chats -->
-<h3>Your Chats</h3>
-<ul>
-    @foreach (var chat in Model.AssociatedChats)
-    {
-        <li><a asp-action="ChatRoom" asp-route-chatId="@chat.Id">@chat.Name</a></li>
-    }
-</ul>
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+    </script>
+}
