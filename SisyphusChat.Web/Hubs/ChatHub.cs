@@ -105,10 +105,11 @@ public class ChatHub(
         await Clients.Caller.SendAsync("LoadNotifications", notifications);
     }
 
-    public async Task RemoveNotification(string notificationid)
+    public async Task RemoveNotificationsByUsername(string username)
     {
         var currentUser = await userService.GetCurrentContextUserAsync();
-        await notificationService.ClearNotificationsAsync(notificationid);
+        var userId = currentUser.Id;
+        await notificationService.DeleteNotificationsByUsername(userId, username);
 
     }
 

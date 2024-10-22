@@ -71,6 +71,13 @@ namespace SisyphusChat.Core.Services
             await unitOfWork.NotificationRepository.DeleteByIdAsync(id);
             await unitOfWork.SaveAsync();
         }
+        public async Task DeleteNotificationsByUsername(string userid,string username)
+        {
+            ArgumentNullException.ThrowIfNull(username);
+
+            await unitOfWork.NotificationRepository.DeleteByUsernameAsync(userid,username);
+            await unitOfWork.SaveAsync();
+        }
 
         public async Task<List<NotificationModel>> GetUserNotificationsAsync(string userId)
         {

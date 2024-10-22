@@ -13,6 +13,8 @@ namespace SisyphusChat.Core.Interfaces
         Task AddNotificationAsync(string userId, string notificationType, string senderUsername, string chatId);
         Task MarkAsReadAsync(string notificationId);
         Task ClearNotificationsAsync(string notificationId);
+
+        Task DeleteNotificationsByUsername(string userid, string username);   
     }
 
 }

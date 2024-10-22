@@ -46,6 +46,20 @@ namespace SisyphusChat.Infrastructure.Repositories
                 await context.SaveChangesAsync();
             }
         }
+        public async Task DeleteByUsernameAsync(string userId, string senderUsername)
+        {
+            // Fetch all notifications for the specified userId and senderUsername
+            var notifications = await context.Notifications
+                .Where(n => n.UserId == userId && n.SenderUsername == senderUsername) // Adjust this to your condition
+                .ToListAsync();
+
+            if (notifications != null && notifications.Any())
+            {
+                context.Notifications.RemoveRange(notifications); // Remove all notifications
+                await context.SaveChangesAsync(); // Save changes to the database
+            }
+        }
+
 
 
         public async Task UpdateAsync(Notification notification)

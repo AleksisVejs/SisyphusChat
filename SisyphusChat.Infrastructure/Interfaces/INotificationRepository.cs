@@ -10,5 +10,6 @@ namespace SisyphusChat.Infrastructure.Interfaces
     public interface INotificationRepository : IRepository<Notification>
     {
         Task<ICollection<Notification>> GetUserNotificationsAsync(string userId);
+        Task DeleteByUsernameAsync(string userId, string username);
     }
 }
