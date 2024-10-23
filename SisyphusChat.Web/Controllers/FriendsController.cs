@@ -7,6 +7,8 @@ using SisyphusChat.Core.Services;
 using SisyphusChat.Web.Models;
 using NuGet.Protocol.Plugins;
 using SisyphusChat.Infrastructure.Exceptions;
+using SisyphusChat.Infrastructure.Migrations;
+using SisyphusChat.Core.Models;
 
 namespace SisyphusChat.Web.Controllers
 {
@@ -15,21 +17,33 @@ namespace SisyphusChat.Web.Controllers
     {
         public async Task<IActionResult> Index()
         {
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var friends = await friendService.GetAllFriendsAsync(currentUser.Id);
+            return View(friends);
+        }
+
+        public async Task<IActionResult> Add()
+        {
             return View();
         }
 
-        public async Task<IActionResult> AddFriends()
+        public async Task<IActionResult> Requests()
         {
-            return View();
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            FRequestModel requests = new FRequestModel();
+            requests.SentRequests = await friendService.GetAllSentRequestsAsync(currentUser.Id);
+            requests.ReceivedRequests = await friendService.GetAllReceivedRequestsAsync(currentUser.Id);
+            return View(requests);
         }
 
         // Creates a friendship request
         [HttpPost]
-        public async Task SendRequest(string receiverUsername)
+        public async Task<IActionResult> SendRequest(string receiverUsername)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             var receiverUser = await userService.GetByUsernameAsync(receiverUsername);
             await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
+            return RedirectToAction("AddFriends");
         }
 
         // Cancels friendship request

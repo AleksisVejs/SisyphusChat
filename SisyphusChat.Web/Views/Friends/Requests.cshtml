@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Friend Request Management Page";
+}
+
+@model SisyphusChat.Core.Models.FRequestModel
+
+<div>
+    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Index">Back</a>
+    <div>
+        <div>Sent Requests</div>
+        @foreach (var friends in Model.SentRequests)
+        {
+            <div>
+                @friends.
+            </div>
+            <button class="w-100 btn btn-lg btn-primary">Cancel Request</button>
+        }
+    </div>
+    <div>
+        <div>Received Requests</div>
+    </div>
+</div>

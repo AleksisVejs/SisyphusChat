@@ -43,6 +43,14 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.Chat, opt => opt.MapFrom(src => src.Chat))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
                 .ReverseMap();
+
+            CreateMap<Friend, FriendModel>()
+                .ForMember(dest => dest.ReqSenderId, opt => opt.MapFrom((src) => src.ReqSenderId))
+                .ForMember(dest => dest.ReqSender, opt => opt.MapFrom(src => src.ReqSender))
+                .ForMember(dest => dest.ReqReceiverId, opt => opt.MapFrom(src => src.ReqReceiverId))
+                .ForMember(dest => dest.ReqReceiver, opt => opt.MapFrom(src => src.ReqReceiver))
+                .ForMember(dest => dest.IsAccepted, opt => opt.MapFrom(src => src.IsAccepted))
+                .ReverseMap();
         }
     }
 }

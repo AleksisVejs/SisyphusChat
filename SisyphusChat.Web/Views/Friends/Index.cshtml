@@ -2,6 +2,30 @@
     ViewData["Title"] = "Friends Page";
 }
 
+@model ICollection<SisyphusChat.Core.Models.UserModel>
+
 <div>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="AddFriends">Add Friends</a>
+    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Add">Add Friends</a>
+    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Requests">Manage Requests</a>
+    <div>
+        @foreach (var friends in Model)
+        {
+            <div class="image-container">
+                @if (friends.Picture.Length > 0)
+                {
+                    var base64Image = Convert.ToBase64String(@friends.Picture);
+                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                    <img id="profileImage" src="@imgSrc" alt="User Avatar" />
+                }
+                else
+                {
+                    <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
+                }
+            </div>
+            <div>
+                @friends.UserName
+            </div>
+            <button class="w-100 btn btn-lg btn-primary">Remove Friend</button>
+        }
+    </div>
 </div>
