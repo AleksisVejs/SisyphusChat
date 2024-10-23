@@ -127,3 +127,70 @@ input:focus {
 a:focus {
   outline: none !important;
 }
+
+/* Chat */
+#sidebar {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.user-item a {
+  color: #e4e6eb;
+  transition: background-color 0.3s ease;
+}
+
+.user-item a:hover {
+  background-color: #4f388a;
+}
+
+.search-container {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.chat-header {
+  background-color: #2c2f33;
+  color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.chat-messages {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.chat-footer {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.sent {
+  background-color: #4f388a;
+  color: white;
+}
+
+/* Received messages */
+.received {
+  background-color: #59506b;
+  color: white;
+}
+
+#messageInput {
+  background-color: #3A3A3A;
+  color: white;
+}
+
+#sendMessageButton {
+  background-color: #4f388a;
+  color: white;
+}
+
+#sendMessageButton:hover {
+  background-color: #59506b;
+  color: white;
+}
+
+#chatContainer-chat {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}

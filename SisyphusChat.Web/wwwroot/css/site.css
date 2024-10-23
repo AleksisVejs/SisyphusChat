@@ -59,3 +59,191 @@ button#theme-switcher {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+
+/* Chat */
+#chatPageContainer {
+  display: flex;
+  height: 91vh;
+  width: 100vw;
+}
+
+#sidebar {
+  width: 280px;
+  height: 88vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 18px;
+  margin: 1rem;
+}
+
+#chatContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  margin: 1rem;
+}
+
+.user-item {
+  list-style-type: none;
+}
+
+.user-item a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+.user-item a:hover {
+  border-radius: 8px;
+}
+
+.icon-container {
+  width: 40px;
+  height: 40px;
+  background-color: #353535;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.icon-container i {
+  color: #909090;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.search-container {
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.search-input {
+  background-color: transparent;
+  border: none;
+  width: 100%;
+}
+
+/* Chat header */
+.chat-header {
+  padding: 1rem 0 0 1rem;
+  border-radius: 18px 18px 0 0; 
+}
+
+.username-text {
+  font-size: 18px;
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+.status-text {
+  font-size: 14px;
+}
+
+/* Chat messages */
+.chat-messages {
+  padding: 1rem;
+  overflow-y: auto;
+  height: calc(100vh - 150px); /* Adjust height based on footer/header */
+  display: flex;
+  flex-direction: column; /* Ensures messages stack vertically */
+  gap: 10px; /* Adds space between messages */  
+}
+
+/* Individual message styles */
+.message {
+  max-width: 60%;
+  min-width: 10%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  position: relative; /* Allows positioning of time element */
+  word-wrap: break-word; /* Prevents long words from breaking layout */
+  word-break: break-all; /* Breaks long words */  
+  line-height: 1; /* Adjusts line height for readability */
+}
+
+/* Sent messages */
+.sent {
+  align-self: flex-start; /* Aligns sent messages to the left */
+  margin-left: auto; /* Pushes sent messages to the left */
+}
+
+/* Received messages */
+.received {
+  align-self: flex-end; /* Aligns received messages to the right */
+  margin-right: auto; /* Pushes received messages to the right */
+}
+
+/* Time stamp for messages */
+.time {
+  color: #a5a5a5;
+  font-size: 12px;
+  position: absolute; /* Position the time relative to the message box */
+  bottom: -15px; /* Adjusts position of time */
+  right: 0; /* Aligns time to the right of the message */
+  min-width: 60px; /* Set a minimum width for the time stamp */
+}
+
+/* Chat footer */
+.chat-footer {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  border-radius: 0 0 18px 18px;
+}
+
+#messageInput {
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  padding: 0.75rem;
+}
+
+#messageInput:focus {
+  outline: none;
+}
+
+#sendMessageButton {
+  padding: 0.75rem;
+  border-radius: 50%;
+  margin-left: 1rem;
+  border: none;
+}
+
+#sendMessageButton i {
+  font-size: 16px;
+}
+
+#chatList {
+  padding-left: 0 !important;
+}
+
+p {
+  margin-block-end: 0;  
+}
+
+#chatContainer-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  margin: 1rem;
+  align-items: center; /* Center contents horizontally */
+  justify-content: center; /* Center contents vertically */
+}

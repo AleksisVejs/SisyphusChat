@@ -27,7 +27,6 @@
             </a>
         </div>
 
-
         <!-- Combined list for users and group chats -->
         <div id="listContainer" class="scrollable-container">
             <ul id="chatList">
@@ -46,11 +45,13 @@
                 @foreach (var user in Model.UserViewModel.Users)
                 {
                     <li class="user-item flex items-center gap-3" data-type="user">
-                        <div class="icon-container">
-                            <i class="fas fa-user user-icon"></i>
-                        </div>
-                        <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</a>
-                        <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
+                        <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex items-center gap-3 w-full">
+                            <div class="icon-container">
+                                <i class="fas fa-user user-icon"></i>
+                            </div>
+                            <span class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</span>
+                            <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
+                        </a>
                     </li>
                 }
             </ul>
@@ -67,33 +68,34 @@
                 @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
                 {
                         <!-- Group chat -->
-                        <div class="icon-container-large">
+                        <div class="icon-container-large flex items-center">
                             <i class="fas fa-users group-icon-large"></i>
+                            <div class="username-status flex flex-col ml-2">
+                                <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
+                                <span id="groupUsers">
+                                    @{
+                                        var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
+                                        var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
+                                    }
+                                    @displayMembersList
+                                </span>
+                            </div>
                         </div>
-                        <div class="username-status flex flex-col">
-                            <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
-                            <span id="groupUsers">
-                            @{
-                                var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
-                                var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
-                            }
-                            @displayMembersList
-                            </span>
-                        </div>
+
                 }
                 else
                 {
                         <!-- Private chat -->
-                        <div class="icon-container-large">
+                        <div class="icon-container-large flex items-center">
                             <i class="fas fa-user user-icon-large"></i>
-                        </div>
-                        <div class="username-status flex flex-col">
-                            <span class="username-text">
-                            @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
-                            </span>
+                            <div class="username-status flex flex-col ml-2">
+                                <span class="username-text">
+                                    @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
+                                </span>
                                 <span class="status-text @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "text-green-500" : "text-gray-500")">
-                            @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "Online" : "Offline")
-                            </span>
+                                    @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "Online" : "Offline")
+                                </span>
+                            </div>
                         </div>
                 }
             </div>
@@ -255,3 +257,25 @@
         });
     </script>
 }
+
+<style scoped>
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.icon-container-large {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the center */
+}
+
+main[b-fefn0adsrq] {
+    margin: 0;
+}
+</style>

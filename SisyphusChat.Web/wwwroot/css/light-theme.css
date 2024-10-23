@@ -129,3 +129,70 @@ a:focus {
   filter: invert(100%);
 }
 
+/* Chat */
+#sidebar {
+  background-color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.user-item a {
+  color: #333333;
+  transition: background-color 0.3s ease;
+}
+
+.user-item a:hover {
+  background-color: #8c77d0;
+}
+
+.search-container {
+  background-color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.chat-header {
+  background-color: #e4e6eb;
+  color: #333333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.chat-messages {
+  background-color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.chat-footer {
+  background-color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.sent {
+  background-color: #8c77d0;
+  color: white;
+}
+
+/* Received messages */
+.received {
+  background-color: #333333;
+  color: white;
+}
+
+#messageInput {
+  background-color: #e4e6eb;
+  color:#333333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+}
+
+#sendMessageButton {
+  background-color: #8c77d0;
+  color: white;
+}
+
+#sendMessageButton:hover {
+  background-color: #7b6bc3;
+  color: white;
+}
+
+#chatContainer-chat {
+  background-color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+}
