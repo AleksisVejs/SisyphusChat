@@ -43,21 +43,21 @@ a.navbar-brand {
 }
 
 a.navbar-brand:hover {
-  color: #333333;
+  color: #333333 !important;  
 }
 
 .navbar-light .navbar-nav .nav-link,
 a.nav-link,
 .navbar-light .navbar-nav .nav-link.active,
 button.nav-link {
-  color: #333333;
-  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1);
+  color: #333333 !important;
+  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1) !important; 
   transition: color 0.3s ease;
 }
 
 a.nav-link:hover,
 button.nav-link:hover {
-  color: #8c77d0;
+  color: #8c77d0 !important;
 }
 
 .fas:hover {
@@ -96,12 +96,44 @@ footer {
   transition: box-shadow 0.3s ease;
 }
 
+.btn-secondary {
+  border: none;
+  background-color: #f9f9f9;
+  color: #333333;
+  border-radius: 5px;
+  padding: 10px 15px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+
 .btn-primary:focus,
 .btn-primary.focus,
+.btn-primary:active {
+  background-color: #7b6bc3 !important;
+  border-color: #7b6bc3 !important; 
+  box-shadow: 0 0 10px rgba(123, 107, 195, 0.5) !important;
+}
+
 .btn-primary:hover {
-  background-color: #7b6bc3;
-  border-color: #7b6bc3;
-  box-shadow: 0 0 10px rgba(123, 107, 195, 0.5);
+  background-color: #7867b3;
+  border-color: #7867b3;
+  box-shadow: 0 0 10px rgba(120, 103, 179, 0.5);  
+}
+
+.btn-secondary:focus,
+.btn-secondary.focus,
+.btn-secondary:active {
+  background-color: #e1e1e1 !important;
+  border-color: #e1e1e1 !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.btn-secondary:hover {
+  color:#333333;
+  background-color: #f0f0f0 !important;
+  border-color: #f0f0f0 !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
 }
 
 .nav-pills .nav-link.active,
@@ -132,5 +164,13 @@ a:focus {
 .modal-content {
   background-color: #f9f9f9;
   color: #333333;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8c77d0;
 }
 

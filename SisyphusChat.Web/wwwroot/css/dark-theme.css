@@ -43,22 +43,22 @@ a.navbar-brand {
 }
 
 a.navbar-brand:hover {
-  color: #e4e6eb;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  color: #e4e6eb !important;  
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important;
 }
 
 .navbar-light .navbar-nav .nav-link,
 a.nav-link,
 .navbar-light .navbar-nav .nav-link.active,
 button.nav-link {
-  color: #e4e6eb;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  color: #e4e6eb !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2) !important;  
   transition: color 0.3s ease;
 }
 
 a.nav-link:hover,
 button.nav-link:hover {
-  color: #b1b1b1;
+  color: #b1b1b1 !important;
 }
 
 .fas:hover {
@@ -89,13 +89,13 @@ footer {
 }
 
 .btn-primary {
-  border: none; /* No border */
+  border: none;
   background-color: #4f388a;
   color: #ffffff;
   border-radius: 5px;
   padding: 10px 15px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Soft shadow */
-  transition: box-shadow 0.3s ease; /* Add transition for hover */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
 }
 
 .btn-secondary {
@@ -110,20 +110,30 @@ footer {
 
 .btn-primary:focus,
 .btn-primary.focus,
-.btn-primary:active,
+.btn-primary:active{
+  background-color: #59506b !important;
+  border-color: #59506b !important; 
+  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5) !important; 
+}
+
 .btn-primary:hover {
-  background-color: #59506b;
-  border-color: #59506b;
-  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5);
+  background-color: #7b6bc3;
+  border-color: #7b6bc3;
+  box-shadow: 0 0 10px rgba(123, 107, 195, 0.5);
 }
 
 .btn-secondary:focus,
 .btn-secondary.focus,
-.btn-secondary:active,
+.btn-secondary:active {
+  background-color: #4f388a !important;
+  border-color: #4f388a !important;
+  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5) !important;
+}
+
 .btn-secondary:hover {
-  background-color: #4f388a;
-  border-color: #4f388a;
-  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5);
+  background-color: #59506b;
+  border-color: #59506b;
+  box-shadow: 0 0 10px rgba(89, 80, 107, 0.5);
 }
 
 .nav-pills .nav-link.active,
@@ -158,4 +168,12 @@ a:focus {
 
 .close:hover {
   color: #b197fc;
-} 
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem #4f388a, 0 0 0 0.25rem #b197fc;
+}
