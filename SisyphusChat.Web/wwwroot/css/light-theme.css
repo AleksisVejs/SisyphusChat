@@ -174,3 +174,19 @@ a:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8c77d0;
 }
 
+.add-friend-button, 
+.manage-requests-button {
+  border: 2px solid #333333;
+  color: #333333;
+}
+
+.add-friend-button:hover, 
+.manage-requests-button:hover {
+  color: #8c77d0;
+}
+
+.request-card {
+  background-color: #8c77d0;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(140, 119, 208, 0.5);
+}

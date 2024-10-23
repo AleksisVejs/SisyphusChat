@@ -4,19 +4,150 @@
 
 @model SisyphusChat.Core.Models.FRequestModel
 
-<div>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Index">Back</a>
-    <div>
-        <div>Sent Requests</div>
-        @foreach (var friends in Model.SentRequests)
-        {
-            <div>
-                @friends.
-            </div>
-            <button class="w-100 btn btn-lg btn-primary">Cancel Request</button>
-        }
+<div class="friend-request-container">
+    <a class="back-button btn btn-primary" asp-area="" asp-controller="Friends" asp-action="Index">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
+    <h1 class="page-title">Friend Requests</h1>
+
+    <hr/>
+
+    <div class="request-section">
+        <h2 class="section-title">Sent Requests</h2>
+
+        <div class="request-list">
+            @if (Model.SentRequests.Any())
+            {
+                @foreach (var friends in Model.SentRequests)
+                {
+                    <div class="request-card">
+                        <div class="request-info">
+                            <div class="request-username">@friends.</div>
+                        </div>
+                        <button class="btn cancel-button">Cancel Request</button>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="empty-message">You have no pending sent requests.</p>
+            }
+        </div>
     </div>
-    <div>
-        <div>Received Requests</div>
+
+    <hr/>
+
+    <div class="request-section">
+        <h2 class="section-title">Received Requests</h2>
+
+        <div class="request-list">
+            @if (Model.ReceivedRequests.Any())
+            {
+                @foreach (var friends in Model.ReceivedRequests)
+                {
+                    <div class="request-card">
+                        <div class="request-info">
+                            <div class="request-username">@friends.</div>
+                        </div>
+                        <div class="response-buttons">
+                            <button class="btn accept-button">Accept</button>
+                            <button class="btn cancel-button">Decline</button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="empty-message">You have no received friend requests.</p>
+            }
+        </div>
     </div>
 </div>
+
+<style>
+    .friend-request-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 15px;
+    }
+
+    .request-section {
+        margin-bottom: 30px;
+    }
+
+    .request-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .request-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .request-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .request-username {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .empty-message {
+        font-size: 14px;
+        color: #aaa;
+    }
+
+    .cancel-button {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .cancel-button:hover {
+        background-color: #c82333;
+        color: white;
+    }
+
+    .accept-button {
+        background-color: #28a745;
+        color: white;
+        margin-right: 10px;
+    }
+
+    .accept-button:hover {
+        background-color: #218838;
+        color: white;
+    }
+
+    .response-buttons {
+        display: flex;
+        gap: 10px;
+    }
+</style>

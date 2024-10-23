@@ -4,28 +4,143 @@
 
 @model ICollection<SisyphusChat.Core.Models.UserModel>
 
-<div>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Add">Add Friends</a>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Requests">Manage Requests</a>
-    <div>
-        @foreach (var friends in Model)
+<div class="friends-page-container">
+    <div class="friends-header">
+        <h2>Friends</h2>
+        <div class="header-buttons">
+            <a class="add-friend-button" asp-area="" asp-controller="Friends" asp-action="Add" title="Add Friends">+</a>
+            <a class="manage-requests-button" asp-area="" asp-controller="Friends" asp-action="Requests" title="Manage Requests">
+                <i class="fas fa-users"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="friends-list">
+        @foreach (var friend in Model)
         {
-            <div class="image-container">
-                @if (friends.Picture.Length > 0)
-                {
-                    var base64Image = Convert.ToBase64String(@friends.Picture);
-                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
-                    <img id="profileImage" src="@imgSrc" alt="User Avatar" />
-                }
-                else
-                {
-                    <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
-                }
+            <div class="friend-card">
+                <div class="profile-container">
+                    @if (friend.Picture.Length > 0)
+                    {
+                        var base64Image = Convert.ToBase64String(@friend.Picture);
+                        var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                        <img class="profile-image" src="@imgSrc" alt="User Avatar" />
+                    }
+                    else
+                    {
+                        <img class="profile-image" src="~/images/default_pfp.jpg" alt="Default Avatar" />
+                    }
+
+                    <div class="status-dot @(friend.IsOnline ? "online" : "offline")"></div>
+                </div>
+
+                <div class="friend-info">
+                    <p class="friend-name">@friend.UserName</p>
+                </div>
             </div>
-            <div>
-                @friends.UserName
-            </div>
-            <button class="w-100 btn btn-lg btn-primary">Remove Friend</button>
         }
     </div>
 </div>
+
+<style scoped>
+    .friends-page-container {
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    .friends-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .header-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .add-friend-button, 
+    .manage-requests-button {
+        background-color: transparent;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .add-friend-button {
+        font-size: 24px;
+        padding-bottom: 4px;
+    }
+
+    .add-friend-button:hover, 
+    .manage-requests-button:hover {
+        text-decoration: none;
+    }
+
+    .friends-list {
+        display: flex;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .friend-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 10px;
+        padding: 10px;
+        width: 120px;
+        text-align: center;
+    }
+
+    .profile-container {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .profile-image {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .status-dot {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        border: 2px solid #2d2d2d;
+    }
+
+    .status-dot.online {
+        background-color: #4caf50;
+    }
+
+    .status-dot.offline {
+        background-color: #808080;
+    }
+
+    /* Friend info */
+    .friend-info {
+        margin-top: 5px;
+    }
+
+    .friend-name {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .friend-description {
+        font-size: 12px;
+        color: #ccc;
+        margin: 0;
+    }
+</style>

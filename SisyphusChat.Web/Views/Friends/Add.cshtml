@@ -2,13 +2,64 @@
     ViewData["Title"] = "Add Friends Page";
 }
 
-<div>
-    <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Index">Back</a>
+<div class="add-friends-container">
+    <a class="back-button btn btn-primary" asp-area="" asp-controller="Friends" asp-action="Index">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <h1 class="page-title">Add Friends</h1>
+    <p class="page-description">Enter a username to send a friend request.</p>
+    <hr/>
     <form asp-action="SendRequest" method="post">
-        <div class="form-floating mb-3">
-            <input class="form-control" aria-required="true" placeholder="Enter friends username." id="receiverUsername" name="receiverUsername" value="" />
-            <label class="form-label">Username</label>
+        <div class="form-group mb-3">
+            <label for="receiverUsername" class="form-label">Username</label>
+            <input type="text" class="form-control" id="receiverUsername" name="receiverUsername" placeholder="Enter friend's username" required />
         </div>
-        <button type="submit" class="w-100 btn btn-lg btn-primary">Add Friend</button>
+        <button type="submit" class="btn btn-primary w-100">Add Friend</button>
     </form>
 </div>
+
+<style>
+    .add-friends-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .page-description {
+        font-size: 16px;
+        color: #bbb;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .form-control:focus {
+        border-color: #888;
+        box-shadow: none;
+    }
+</style>

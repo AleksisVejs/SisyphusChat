@@ -3,6 +3,11 @@ body {
   color: #e4e6eb;
 }
 
+h1,
+p {
+  color: #e4e6eb !important;
+}
+
 a {
   color: #b197fc;
   text-decoration: none;
@@ -176,4 +181,22 @@ a:focus {
 .form-control:focus,
 .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem #4f388a, 0 0 0 0.25rem #b197fc;
+}
+
+.add-friend-button, 
+.manage-requests-button {
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+.add-friend-button:hover, 
+.manage-requests-button:hover {
+  color: #b197fc;
+  background-color: #fff;
+}
+
+.request-card {
+  background-color: #4f388a;
+  color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5);
 }
