@@ -1,0 +1,167 @@
+﻿@model SisyphusChat.Web.Models.CreateGroupChatViewModel
+
+@{
+    ViewData["Title"] = "Create Group Chat";
+}
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/user-status.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/creategroup.css" asp-append-version="true" />
+</head>
+
+<body>
+    <div class="create-group-chat-container">
+        <a class="back-button btn btn-primary" asp-area="" asp-controller="Chat" asp-action="Index">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1 class="page-title">Create Group Chat</h1>
+        <p class="page-description">Enter a name for the group chat and select users to include.</p>
+        <hr/>
+
+        <form id="createGroupChatForm" asp-action="CreateGroupChat" asp-controller="GroupChat" method="post" class="form-container">
+            <div class="form-group mb-4">
+                <label for="groupName" class="form-label">Group Name</label>
+                <input id="groupName" name="ChatName" type="text" placeholder="Enter group name" class="form-control" asp-for="ChatName" required />
+                <span asp-validation-for="ChatName" class="text-danger text-red-500"></span>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="searchInput" placeholder="Search users..." class="search-input mb-2" />
+                <ul id="userList" class="user-list">
+                    @foreach (var user in Model.Users)
+                    {
+                        <li class="user-item mb-2" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" class="user-checkbox" value="@user.UserName" />
+                            <span>@user.UserName</span>
+                            <span class="user-status @(user.IsOnline ? "bg-green-500" : "bg-gray-500") w-3 h-3 rounded-full"></span>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div id="selectedUsersContainer" asp-for="SelectedUserNames"></div>
+            <span asp-validation-for="SelectedUserNames" class="text-danger text-red-500"></span>
+
+            <input type="hidden" name="OwnerId" value="@Model.OwnerId" />
+
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary w-100">Create Group Chat</button>
+            </div>
+        </form>
+    </div>
+
+    @section Scripts {
+        <script type="text/javascript">
+            function updateSelectedUsers() {
+                const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+                    .map(checkbox => checkbox.value);
+
+                const container = document.getElementById('selectedUsersContainer');
+                container.innerHTML = ''; // Clear previous inputs
+
+                selectedUsers.forEach(user => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'SelectedUserNames';
+                    input.value = user;
+                    container.appendChild(input);
+                });
+            }
+
+            function toggleCheckbox(item) {
+                const checkbox = item.querySelector('.user-checkbox');
+                checkbox.checked = !checkbox.checked;
+                updateSelectedUsers();
+            }
+
+            document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedUsers);
+            });
+
+            document.getElementById('searchInput').addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                const items = document.querySelectorAll("#userList .user-item");
+
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? "" : "none";
+                });
+            });
+
+            updateSelectedUsers();
+        </script>
+
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+
+<style>
+    .create-group-chat-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .page-description {
+        font-size: 16px;
+        color: #bbb;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .form-control {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 100%;
+    }
+    
+    .form-control:focus {
+        border-color: #888;
+        box-shadow: none;
+    }
+
+    .user-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .user-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .user-checkbox {
+        margin-right: 10px;
+    }
+
+    .user-status {
+        margin-left: auto;
+    }
+</style>

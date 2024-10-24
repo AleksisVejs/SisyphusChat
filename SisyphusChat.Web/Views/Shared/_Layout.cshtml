@@ -40,9 +40,12 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <a class="nav-link" asp-area="" asp-controller="Friends" asp-action="Index">Friends</a>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Chat" asp-action="Index">Chat</a>
+                            </li>
                         }
                     </ul>
                     <ul class="navbar-nav ml-auto">

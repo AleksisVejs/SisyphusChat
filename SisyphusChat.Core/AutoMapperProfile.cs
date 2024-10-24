@@ -22,6 +22,7 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id)) // Mapping owner entity to OwnerId
+                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner)) // Mapping owner entity to UserModel
                 .ForMember(dest => dest.ChatUsers, opt => opt.MapFrom(src => src.ChatUsers))
                 .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))

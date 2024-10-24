@@ -162,41 +162,69 @@ a:focus {
   outline: none !important;
 }
 
-.modal-content {
+/* Chat */
+#sidebar {
+  background: linear-gradient(135deg, #2c2f33, #2f2b42);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.user-item a {
+  color: #e4e6eb;
+  transition: background-color 0.3s ease;
+}
+
+.user-item a:hover {
   background-color: #4f388a;
+}
+
+.search-container {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.chat-header {
+  background-color: #2c2f33;
   color: #e4e6eb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }
 
-.close {
-  color: #e4e6eb;
+.chat-messages {
+  background-color: linear-gradient(135deg, #2c2f33, #4f388a);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }
 
-.close:hover {
-  color: #b197fc;
+.chat-footer {
+  background-color: #2c2f33;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }
 
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem #4f388a, 0 0 0 0.25rem #b197fc;
-}
-
-.add-friend-button, 
-.manage-requests-button {
-  border: 2px solid #fff;
-  color: #fff;
-}
-
-.add-friend-button:hover, 
-.manage-requests-button:hover {
-  color: #b197fc;
-  background-color: #fff;
-}
-
-.request-card {
+.sent {
   background-color: #4f388a;
-  color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(79, 56, 138, 0.5);
+  color: white;
+}
+
+/* Received messages */
+.received {
+  background-color: #59506b;
+  color: white;
+}
+
+#messageInput {
+  background-color: #3A3A3A;
+  color: white;
+}
+
+#sendMessageButton {
+  background-color: #4f388a;
+  color: white;
+}
+
+#sendMessageButton:hover {
+  background-color: #59506b;
+  color: white;
+}
+
+#chatContainer-chat {
+  background-color: linear-gradient(135deg, #2c2f33, #4f388a);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }

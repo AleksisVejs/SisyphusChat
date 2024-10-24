@@ -49,7 +49,7 @@ public class ChatHub(
 
         await messageService.CreateAsync(messageModel);
 
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, messageModel.TimeCreated.ToString("o"));
+        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, chatMembersUserNames, messageModel.TimeCreated.ToString("o"));
     }
 
 }

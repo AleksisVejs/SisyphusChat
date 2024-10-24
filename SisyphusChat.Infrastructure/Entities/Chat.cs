@@ -14,10 +14,10 @@ namespace SisyphusChat.Infrastructure.Entities
         public ChatType Type { get; set; }
 
         [Required]
-        public string OwnerID { get; set; }
+        public string OwnerId { get; set; }
 
         [Required]
-        [ForeignKey(nameof(OwnerID))]
+        [ForeignKey(nameof(OwnerId))]
         public User Owner { get; set; }
 
         [Required]
@@ -26,6 +26,5 @@ namespace SisyphusChat.Infrastructure.Entities
         public ICollection<ChatUser> ChatUsers { get; set; } = new List<ChatUser>();
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
-
     }
 }
