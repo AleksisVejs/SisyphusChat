@@ -76,6 +76,7 @@
                     </li>
                 }
 
+
             </ul>
         </div>
     </div>
@@ -126,20 +127,26 @@
         <div class="chat-messages">
             @foreach (var message in Model.ChatViewModel.Chat.Messages)
             {
-                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")">
-                    <div class="icon-container">
-                        @{
-                            // Call the helper method to get the image source
-                            string imgSrc = GetUserProfileImage(message.Sender.Picture, message.Sender.UserName);
+                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received") flex items-start gap-3 p-2 rounded-md">
+                    <div class="icon-container flex-shrink-0">
+                        @if (message.Sender.Picture != null && message.Sender.Picture.Length > 0)
+                        {
+                            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(message.Sender.Picture))" alt="@message.Sender.UserName's Avatar" class="rounded-full w-10 h-10" />
                         }
-                        <img src="@imgSrc" alt="@message.Sender.UserName's Avatar" class="rounded-full w-10 h-10" />
-                        <span class="sender-name">@message.Sender.UserName</span>
-                        <p>@message.Content</p>
-                        <span class="time">@message.TimeCreated.ToString("dd/MM/yyyy HH:mm")</span>
+                        else
+                        {
+                            <i class="fas fa-user user-icon w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"></i>
+                        }
+                    </div>
+                    <div class="message-content flex-grow">
+                        <span class="sender-name font-bold text-blue-600">@message.Sender.UserName</span>
+                        <p class="message-text bg-gray-100 p-2 rounded-md shadow-sm">@message.Content</p>
+                        <span class="time text-sm text-gray-500">@message.TimeCreated.ToString("dd/MM/yyyy HH:mm")</span>
                     </div>
                 </div>
             }
         </div>
+
 
 
 
@@ -342,4 +349,22 @@ main[b-fefn0adsrq] {
 .sender-name {
     font-weight: bold;
 }
+
+    .chat-messages {
+        padding: 1rem;
+        background-color: #f9f9f9;
+        border-radius: 0.5rem;
+    }
+
+    .message {
+        margin-bottom: 1rem;
+    }
+
+        .message.sent .message-text {
+            background-color: #e6f7ff;
+        }
+
+        .message.received .message-text {
+            background-color: #f0f0f0;
+        }
 </style>
