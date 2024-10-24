@@ -107,7 +107,7 @@ namespace SisyphusChat.Infrastructure.Repositories
                     ChatId = cu.ChatId,
                     ChatTitle = cu.Chat.Name,
                     UserName = cu.User.UserName,
-                    UserRole = cu.Chat.OwnerID == cu.UserId ? "Owner" : "Member"
+                    UserRole = cu.Chat.OwnerId == cu.UserId ? "Owner" : "Member"
                 })
                 .OrderByDescending(cu => cu.UserName) // You might want to change this to order by a relevant field
                 .ToListAsync();
