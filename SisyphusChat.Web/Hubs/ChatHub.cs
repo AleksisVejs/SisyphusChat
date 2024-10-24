@@ -13,6 +13,8 @@ public class ChatHub(
     public override async Task OnConnectedAsync()
     {
         await userService.GetCurrentContextUserAsync();
+        var currentUser = await userService.GetCurrentContextUserAsync();
+        await Clients.All.SendAsync("UserStatusChanged", currentUser.Id, true);
         await base.OnConnectedAsync();
     }
 
@@ -50,6 +52,11 @@ public class ChatHub(
         await messageService.CreateAsync(messageModel);
 
         await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, chatMembersUserNames, messageModel.TimeCreated.ToString("o"));
+    }
+
+    public async Task NotifyStatusChange(string userId, bool isOnline)
+    {
+        await Clients.All.SendAsync("UserStatusChanged", userId, isOnline);
     }
 
 }

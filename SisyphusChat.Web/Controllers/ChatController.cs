@@ -6,6 +6,8 @@ using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Core.Services;
 using SisyphusChat.Web.Models;
 using SisyphusChat.Infrastructure.Exceptions;
+using Microsoft.AspNetCore.SignalR;
+using SisyphusChat.Web.Hubs;
 
 namespace SisyphusChat.Web.Controllers
 {
@@ -72,5 +74,28 @@ namespace SisyphusChat.Web.Controllers
 
             return View(viewModel);
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateOnlineStatus(bool isOnline)
+        {
+            var user = await userService.GetCurrentContextUserAsync();
+            if (user != null)
+            {
+                user.LastLogin = DateTime.Now;
+                user.IsOnline = isOnline;
+                var updateSucceeded = userService.UpdateAsync(user);
+                if (updateSucceeded != null)
+                {
+                    // Notify all clients about the user's status change
+                    var hubContext = HttpContext.RequestServices.GetRequiredService<IHubContext<ChatHub>>();
+                    await hubContext.Clients.All.SendAsync("UserStatusChanged", user.Id, isOnline);
+                    return Ok();
+                }
+            }
+            return BadRequest();
+        }
+
+
     }
 }

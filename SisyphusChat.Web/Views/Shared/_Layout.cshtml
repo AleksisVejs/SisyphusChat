@@ -2,7 +2,6 @@
 @using SisyphusChat.Infrastructure.Entities;
 @inject SignInManager<User> SignInManager;
 @inject UserManager<User> UserManager;
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,16 +14,20 @@
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Load jQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-    (function() {
-        var savedTheme = localStorage.getItem("theme") || "light";
-        var themeLink = document.createElement("link");
-        themeLink.rel = "stylesheet";
-        themeLink.id = "theme-link";
-        themeLink.href = savedTheme === "dark" ? "/css/dark-theme.css" : "/css/light-theme.css";
-        document.head.appendChild(themeLink);
-    })();
-</script>
+        (function () {
+            var savedTheme = localStorage.getItem("theme") || "light";
+            var themeLink = document.createElement("link");
+            themeLink.rel = "stylesheet";
+            themeLink.id = "theme-link";
+            themeLink.href = savedTheme === "dark" ? "/css/dark-theme.css" : "/css/light-theme.css";
+            document.head.appendChild(themeLink);
+        })();
+    </script>
 </head>
 <body>
     <header>
@@ -40,7 +43,6 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
@@ -52,7 +54,6 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User); // Get current user
-
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Account/Manage/Index" asp-area="Identity">Hello, @UserManager.GetUserName(User)</a>
                             </li>
@@ -92,19 +93,77 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - SisyphusChat - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chathub")
+                .build();
+
+            // Pass authentication status to JavaScript
+            var isAuthenticated = @SignInManager.IsSignedIn(User).ToString().ToLower();  // Razor will output 'true' or 'false' as a string
+
+            // Embed the current user's ID into JavaScript based on authentication status
+            var currentUserId = isAuthenticated === "true"
+                ? '@UserManager.GetUserId(User)'
+                : "null";
+
+            // Ensure SignalR connection is started before invoking methods
+            connection.start().then(function () {
+                console.log("SignalR connection started.");
+                updateOnlineStatus(true); // Update status after the connection is established
+
+                // Update status every 2 minutes
+                setInterval(function () {
+                    console.log('Triggering status update.');
+                    updateOnlineStatus(true);
+                }, 120000); // 2 minutes
+            }).catch(function (err) {
+                console.error('SignalR connection failed: ', err.toString());
+            });
+
+            function updateOnlineStatus(isOnline) {
+                if (!isAuthenticated) {
+                    console.log('User is not authenticated. Skipping status update.');
+                    return;
+                }
+
+                console.log('Updating status:', isOnline); // Log status before AJAX call
+                $.ajax({
+                    url: '/Home/UpdateOnlineStatus',
+                    type: 'POST',
+                    data: { isOnline: isOnline },
+                    success: function () {
+                        // Ensure the connection is in 'Connected' state before invoking hub methods
+                        if (connection.state === signalR.HubConnectionState.Connected) {
+                            connection.invoke("NotifyStatusChange", currentUserId, true)
+                                .then(function () {
+                                    console.log('User status updated.');
+                                })
+                                .catch(function (err) {
+                                    console.error('Error invoking status change:', err.toString());
+                                });
+                        } else {
+                            console.log('Connection not in Connected state.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error updating user status:', error);
+                        updateOnlineStatus(false); // Set online status to false on failure
+                    }
+                });
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

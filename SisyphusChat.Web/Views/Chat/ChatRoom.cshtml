@@ -42,9 +42,10 @@
                 }
 
                 <!-- Users (Private chats) -->
+                <!-- Users (Private chats) -->
                 @foreach (var user in Model.UserViewModel.Users)
                 {
-                    <li class="user-item flex items-center gap-3" data-type="user">
+                    <li class="user-item flex items-center gap-3" data-user-id="@user.Id" data-type="user">
                         <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex items-center gap-3 w-full">
                             <div class="icon-container">
                                 <i class="fas fa-user user-icon"></i>
@@ -54,6 +55,7 @@
                         </a>
                     </li>
                 }
+
             </ul>
         </div>
     </div>
@@ -142,6 +144,24 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             scrollToBottom();
+        });
+
+        // for updating online status
+        connection.on("ReceiveUserStatusUpdate", (userId, isOnline) => {
+            // Find the user in the chat list by their ID and update their status indicator
+            const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+
+            if (userItem) {
+                // Update the status indicator color based on the user's online status
+                const statusIndicator = userItem.querySelector(".status-indicator");
+                if (isOnline) {
+                    statusIndicator.classList.remove("bg-gray-500");
+                    statusIndicator.classList.add("bg-green-500");
+                } else {
+                    statusIndicator.classList.remove("bg-green-500");
+                    statusIndicator.classList.add("bg-gray-500");
+                }
+            }
         });
 
         connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt) => {

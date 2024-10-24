@@ -12,7 +12,7 @@ namespace SisyphusChat.Core.Models
 
         public bool IsOnline { get; set; }
 
-        public DateTime TimeCreated { get; set; }
+        public DateTime LastLogin { get; set; }
 
         public DateTime LastUpdated { get; set; }
 
