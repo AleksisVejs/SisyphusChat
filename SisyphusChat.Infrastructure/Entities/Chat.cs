@@ -7,7 +7,7 @@ namespace SisyphusChat.Infrastructure.Entities
     public class Chat : BaseEntity
     {
         [Required]
-        [MaxLength(50)]
+        [MaxLength(70)]
         public string Name { get; set; }
 
         [Required]

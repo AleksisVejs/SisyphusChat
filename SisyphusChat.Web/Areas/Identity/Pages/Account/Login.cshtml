@@ -1,12 +1,11 @@
 ﻿@page
 @model LoginModel
-
 @{
     ViewData["Title"] = "Log in";
 }
-
-<h1>@ViewData["Title"]</h1>
-<div class="row">
+<h1 class="row justify-content-center">@ViewData["Title"]</h1>
+<div class="row justify-content-center">
+    <!-- Centered row -->
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
@@ -16,20 +15,23 @@
                     <label asp-for="Input.Email" class="form-label">Email</label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
-
-                <div class="form-floating mb-3 position-relative"> <!-- Added position-relative -->
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" id="password" />   
+                <div class="form-floating mb-3 position-relative">
+                    <!-- Added position-relative -->
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" id="password" />
                     <label asp-for="Input.Password" class="form-label">Password</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                     <a href="#" id="togglePasswordVisibility" class="toggle-password">
                         <i id="passwordIcon" class="fas fa-eye"></i>
                     </a>
                 </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
+                <div class="mb-3 d-flex align-items-center">
+                    <!-- Flexbox for alignment -->
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="Input.RememberMe" id="rememberMe" />
+                        <label class="form-check-label" asp-for="Input.RememberMe">
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
                 </div>
                 <div>
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
@@ -48,59 +50,24 @@
             </form>
         </section>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document
-  .getElementById("togglePasswordVisibility")
-  .addEventListener("click", function (e) {
-    e.preventDefault();
-    var passwordInput = document.getElementById("password");
-    var passwordIcon = document.getElementById("passwordIcon");
-
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      passwordIcon.classList.remove("fa-eye");
-      passwordIcon.classList.add("fa-eye-slash");
-    } else {
-      passwordInput.type = "password";
-      passwordIcon.classList.remove("fa-eye-slash");
-      passwordIcon.classList.add("fa-eye");
-    }
-  });
+        document.getElementById("togglePasswordVisibility").addEventListener("click", function (e) {
+            e.preventDefault();
+            var passwordInput = document.getElementById("password");
+            var passwordIcon = document.getElementById("passwordIcon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordIcon.classList.remove("fa-eye");
+                passwordIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                passwordIcon.classList.remove("fa-eye-slash");
+                passwordIcon.classList.add("fa-eye");
+            }
+        });
     </script>
 }
