@@ -19,13 +19,16 @@
         <div class="request-list">
             @if (Model.SentRequests.Any())
             {
-                @foreach (var friends in Model.SentRequests)
+                @foreach (var friend in Model.SentRequests)
                 {
                     <div class="request-card">
                         <div class="request-info">
-                            <div class="request-username">@friends.</div>
+                            <div class="request-username">@friend.ReqReceiver.UserName</div>
                         </div>
-                        <button class="btn cancel-button">Cancel Request</button>
+                        <form method="post" asp-action="CancelRequest" asp-controller="Friends" style="display:inline;">
+                            <input type="hidden" name="receiverId" value="@friend.ReqReceiverId" />
+                            <button type="submit" class="btn cancel-button">Cancel Request</button>
+                        </form>
                     </div>
                 }
             }
@@ -44,15 +47,21 @@
         <div class="request-list">
             @if (Model.ReceivedRequests.Any())
             {
-                @foreach (var friends in Model.ReceivedRequests)
+                @foreach (var friend in Model.ReceivedRequests)
                 {
                     <div class="request-card">
                         <div class="request-info">
-                            <div class="request-username">@friends.</div>
+                            <div class="request-username">@friend.ReqSender.UserName</div>
                         </div>
                         <div class="response-buttons">
-                            <button class="btn accept-button">Accept</button>
-                            <button class="btn cancel-button">Decline</button>
+                            <form method="post" asp-action="AcceptRequest" asp-controller="Friends" style="display:inline;">
+                                <input type="hidden" name="senderId" value="@friend.ReqSenderId" />
+                                <button type="submit" class="btn accept-button">Accept</button>
+                            </form>
+                            <form method="post" asp-action="DenyRequest" asp-controller="Friends" style="display:inline;">
+                                <input type="hidden" name="senderId" value="@friend.ReqSenderId" />
+                                <button type="submit" class="btn cancel-button">Decline</button>
+                            </form>
                         </div>
                     </div>
                 }

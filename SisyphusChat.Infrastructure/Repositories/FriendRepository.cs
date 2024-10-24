@@ -88,7 +88,8 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
     public async Task<ICollection<Friend>> GetAllSentRequestsAsync(string currentUserId)
     {
         var friends = await context.Friends
-            .Where(u => u.ReqSenderId == currentUserId && !u.IsAccepted)
+            .Include(f => f.ReqReceiver)
+            .Where(u => u.ReqSenderId == currentUserId && u.IsAccepted == false)
             .ToListAsync();
 
         return friends;
@@ -97,7 +98,8 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
     public async Task<ICollection<Friend>> GetAllReceivedRequestsAsync(string currentUserId)
     {
         var friends = await context.Friends
-            .Where(u => u.ReqReceiverId == currentUserId && !u.IsAccepted)
+            .Include(fr => fr.ReqSender)
+            .Where(u => u.ReqReceiverId == currentUserId && u.IsAccepted == false)
             .ToListAsync();
 
         return friends;

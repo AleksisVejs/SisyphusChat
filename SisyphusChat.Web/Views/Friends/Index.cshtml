@@ -37,6 +37,11 @@
                 <div class="friend-info">
                     <p class="friend-name">@friend.UserName</p>
                 </div>
+
+                <form method="post" asp-action="RemoveFriend" asp-controller="Friends" style="display:inline;">
+                    <input type="hidden" name="friendId" value="@friend.Id" />
+                    <button type="submit" class="btn remove-button">Remove</button>
+                </form>
             </div>
         }
     </div>
@@ -107,6 +112,17 @@
         height: 70px;
         border-radius: 50%;
         object-fit: cover;
+    }
+
+    .remove-button {
+        background-color: #dc3545;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .remove-button:hover {
+        background-color: #c82333;
+        color: white;
     }
 
     .status-dot {

@@ -43,37 +43,40 @@ namespace SisyphusChat.Web.Controllers
             var currentUser = await userService.GetCurrentContextUserAsync();
             var receiverUser = await userService.GetByUsernameAsync(receiverUsername);
             await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
-            return RedirectToAction("AddFriends");
+            return RedirectToAction("Add");
         }
 
         // Cancels friendship request
         [HttpPost]
-        public async Task CancelRequest(string receiverId)
+        public async Task<IActionResult> CancelRequest(string receiverId)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             await friendService.DeleteByIdAsync(currentUser.Id + ' ' + receiverId);
+            return RedirectToAction("Requests");
         }
 
         // Accepts friendship request
         [HttpPost]
-        public async Task AcceptRequest(string senderId)
+        public async Task<IActionResult> AcceptRequest(string senderId)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             var friend = await friendService.GetByIdAsync(senderId + ' ' + currentUser.Id);
             await friendService.UpdateAsync(friend);
+            return RedirectToAction("Requests");
         }
 
         // Denies friendship request
         [HttpPost]
-        public async Task DenyRequest(string senderId)
+        public async Task<IActionResult> DenyRequest(string senderId)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             await friendService.DeleteByIdAsync(senderId + ' ' + currentUser.Id);
+            return RedirectToAction("Requests");
         }
 
         // Stops friendship
         [HttpPost]
-        public async Task RemoveFriend(string friendId)
+        public async Task<IActionResult> RemoveFriend(string friendId)
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             
@@ -85,6 +88,7 @@ namespace SisyphusChat.Web.Controllers
             {
                 await friendService.DeleteByIdAsync(friendId + ' ' + currentUser.Id);
             }
+            return RedirectToAction("Index");
         }
     }
 }

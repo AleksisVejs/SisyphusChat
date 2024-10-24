@@ -7,7 +7,5 @@ namespace SisyphusChat.Core.Models
         public IEnumerable<FriendModel> SentRequests { get; set; }
 
         public IEnumerable<FriendModel> ReceivedRequests { get; set; }
-
-        public IEnumerable<UserModel> Users { get; set; }
     }
 }
