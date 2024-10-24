@@ -22,6 +22,14 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
+    options.SlidingExpiration = true; 
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout"; 
+});
 
 builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();

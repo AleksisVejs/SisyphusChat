@@ -45,7 +45,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
             }
             else
             {
-                return RedirectToPage();
+                return RedirectToPage("/Account/Login");
             }
         }
     }
