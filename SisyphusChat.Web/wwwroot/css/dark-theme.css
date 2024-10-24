@@ -130,7 +130,7 @@ a:focus {
 
 /* Chat */
 #sidebar {
-  background-color: #2c2f33;
+  background: linear-gradient(135deg, #2c2f33, #2f2b42);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -155,7 +155,7 @@ a:focus {
 }
 
 .chat-messages {
-  background-color: #2c2f33;
+  background-color: linear-gradient(135deg, #2c2f33, #4f388a);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }
 
@@ -191,6 +191,6 @@ a:focus {
 }
 
 #chatContainer-chat {
-  background-color: #2c2f33;
+  background-color: linear-gradient(135deg, #2c2f33, #4f388a);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }
