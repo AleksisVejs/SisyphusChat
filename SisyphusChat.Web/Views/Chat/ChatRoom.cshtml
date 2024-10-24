@@ -22,9 +22,12 @@
         <!-- Search bar with button-->
         <div class="search-container flex items-center gap-2">
             <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" />
+            @*
+            Group chat creation button (currently disabled)
             <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" class="create-group-button">
                 <i class="fas fa-comments"></i>
-            </a>
+            </a> 
+            *@
         </div>
 
         <!-- Combined list for users and group chats -->
@@ -186,7 +189,6 @@
             }
         });
 
-
         async function startConnection() {
             try {
                 await connection.start();
@@ -212,6 +214,7 @@
             document.getElementById("sendMessageButton").disabled = true;
         });
 
+        // Send message when the send button is clicked
         document.getElementById("sendMessageButton").addEventListener("click", () => {
             const message = document.getElementById("messageInput").value;
             const errorContainer = document.getElementById("errorMessage");
@@ -239,6 +242,39 @@
             }
         });
 
+        // Send message when Enter key is pressed in the input field
+        document.getElementById("messageInput").addEventListener("keydown", function (event) {
+            if (event.keyCode === 13 && !event.shiftKey) {  // Enter key without Shift
+                event.preventDefault(); // Prevent the default behavior of adding a new line
+
+                const message = document.getElementById("messageInput").value;
+                const errorContainer = document.getElementById("errorMessage");
+                const errorMessageText = document.getElementById("errorMessageText");
+
+                if (message.trim() === "") {
+                    return;
+                }
+
+                if (message.length > 1000) {
+                    errorMessageText.textContent = "Message cannot exceed 1000 characters.";
+                    errorContainer.classList.remove("d-none");
+                    return;
+                }
+
+                errorContainer.classList.add("d-none");
+
+                // Check if the connection is in the connected state before sending
+                if (connection.state === signalR.HubConnectionState.Connected) {
+                    connection.invoke("SendMessage", currentUser, message, chatId)
+                        .catch(err => console.error("SendMessage Error: ", err));
+                    document.getElementById("messageInput").value = ""; // Clear the input field
+                } else {
+                    console.warn("Cannot send message. SignalR connection is not established.");
+                }
+            }
+        });
+
+        // Filter chat list by search input
         document.getElementById("searchInput").addEventListener("input", function () {
             const searchTerm = this.value.toLowerCase();
             const items = document.querySelectorAll("#chatList .user-item");
@@ -254,6 +290,7 @@
         });
     </script>
 }
+
 
 <style scoped>
 html, body {
