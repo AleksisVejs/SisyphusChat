@@ -43,8 +43,6 @@
             <div id="selectedUsersContainer" asp-for="SelectedUserNames"></div>
             <span asp-validation-for="SelectedUserNames" class="text-danger text-red-500"></span>
 
-            <input type="hidden" name="OwnerId" value="@Model.OwnerId" />
-
             <div class="button-container">
                 <button type="submit" class="btn btn-primary w-100">Create Group Chat</button>
             </div>

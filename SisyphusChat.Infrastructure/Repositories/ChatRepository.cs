@@ -14,6 +14,17 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
         entity.TimeCreated = DateTime.Now;
         entity.IsReported = false;
 
+        // Attach users to prevent tracking issues
+        foreach (var chatUser in entity.ChatUsers)
+        {
+            // Attach the user to the context, which ensures it's not re-tracked
+            if (chatUser.User != null)
+            {
+                context.Attach(chatUser.User);
+            }
+        }
+
+        // Add the chat entity
         await context.Chats.AddAsync(entity);
         await context.SaveChangesAsync();
     }

@@ -3,19 +3,19 @@ using SisyphusChat.Core.Models;
 using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace SisyphusChat.Web.Controllers;
 
-public class GroupChatController(IUserService userService, IChatService chatService) : Controller
+public class GroupChatController(IUserService userService, IChatService chatService, IFriendService friendService) : Controller
 {
     public async Task<IActionResult> Index()
     {
         var currentUser = await userService.GetCurrentContextUserAsync();
-        var users = await userService.GetAllExceptCurrentUserAsync(currentUser);
+        var users = await friendService.GetAllFriendsAsync(currentUser.Id);
 
         var createGroupChatViewModel = new CreateGroupChatViewModel
         {
-            OwnerId = currentUser.Id,
             Users = users.ToList(),
         };
 
@@ -25,31 +25,23 @@ public class GroupChatController(IUserService userService, IChatService chatServ
     [HttpPost]
     public async Task<IActionResult> CreateGroupChat(CreateGroupChatViewModel model)
     {
-        if (!ModelState.IsValid)
+        if (ModelState.IsValid)
         {
-            model.Users = (await userService.GetAllExceptCurrentUserAsync(await userService.GetCurrentContextUserAsync())).ToList();
-            return View("Index", model);
+            var chatModel = new ChatModel
+            {
+                Name = model.ChatName,
+                Type = ChatType.Group,
+                OwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier), // Set the current user's ID as OwnerId
+                ChatUsers = model.SelectedUserNames.Select(username => new ChatUserModel
+                {
+                    User = new UserModel { UserName = username }
+                }).ToList()
+            };
+
+            await chatService.CreateAsync(chatModel);
+            return RedirectToAction("Index", "Chat");
         }
 
-        var chatUsers = await userService.GetUsersByUserNamesAsync(model.SelectedUserNames.ToArray());
-
-        chatUsers.Add(new ChatUserModel { UserId = model.OwnerId });
-
-        var currentUser = await userService.GetCurrentContextUserAsync();
-
-        var chatModel = new ChatModel
-        {
-            OwnerId = model.OwnerId,
-            Owner = currentUser,
-            Name = model.ChatName,
-            Type = ChatType.Group,
-            ChatUsers = chatUsers,
-            TimeCreated = DateTime.UtcNow,
-            LastUpdated = DateTime.UtcNow
-        };
-
-        await chatService.CreateAsync(chatModel);
-
-        return RedirectToAction("Index", "Chat");
+        return View(model);
     }
 }

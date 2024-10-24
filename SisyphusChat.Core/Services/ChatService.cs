@@ -10,9 +10,46 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 {
     public async Task CreateAsync(ChatModel model)
     {
-        ArgumentNullException.ThrowIfNull(model);
+        var chatEntity = new Chat
+        {
+            Id = model.Id == null ? Guid.NewGuid() : new Guid(model.Id), // Ensure Chat.Id is generated as a Guid
+            Name = model.Name,
+            Type = model.Type,
+            OwnerId = model.OwnerId,
+            IsReported = model.IsReported,
+            TimeCreated = model.TimeCreated,
+            LastUpdated = model.LastUpdated,
+            //Messages = model.Messages.Select(m => new Message
+            //{
+            //    Content = m.Content,
+            //    SenderId = m.SenderId,
+            //    TimeCreated = m.TimeCreated
+            //}).ToList(),
+            ChatUsers = new List<ChatUser>() // Initialize the ChatUsers collection
+        };
 
-        var chatEntity = mapper.Map<Chat>(model);
+        // Add the owner to ChatUsers explicitly
+        var owner = await unitOfWork.UserRepository.GetByIdAsync(model.OwnerId);
+        var chatUser = new ChatUser
+        {
+            ChatId = chatEntity.Id,
+            UserId = owner.Id
+        };
+
+        chatEntity.ChatUsers.Add(chatUser); // Add owner to the ChatUsers
+
+        // Add other users to ChatUsers if necessary
+        if (model.ChatUsers != null)
+        {
+            foreach (var user in model.ChatUsers)
+            {
+                chatEntity.ChatUsers.Add(new ChatUser
+                {
+                    ChatId = chatEntity.Id,
+                    UserId = user.UserId
+                });
+            }
+        }
 
         await unitOfWork.ChatRepository.AddAsync(chatEntity);
         await unitOfWork.SaveAsync();

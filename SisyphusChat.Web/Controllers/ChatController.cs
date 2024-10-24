@@ -10,12 +10,12 @@ using SisyphusChat.Infrastructure.Exceptions;
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class ChatController(IChatService chatService, IUserService userService) : Controller
+    public class ChatController(IChatService chatService, IUserService userService, IFriendService friendService) : Controller
     {
         public async Task<IActionResult> Index()
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
-            var users = await userService.GetAllExceptCurrentUserAsync(currentUser);
+            var users = await friendService.GetAllFriendsAsync(currentUser.Id);
             var associatedChats = await chatService.GetAssociatedChatsAsync(currentUser);
 
             var userViewModel = new UserViewModel
@@ -47,7 +47,7 @@ namespace SisyphusChat.Web.Controllers
             var currentUser = await userService.GetCurrentContextUserAsync();
             var chat = await chatService.GetByIdAsync(chatId);
             var associatedChats = await chatService.GetAssociatedChatsAsync(currentUser);
-            var users = await userService.GetAllExceptCurrentUserAsync(currentUser);
+            var users = await friendService.GetAllFriendsAsync(currentUser.Id);
             var chatViewModel = new ChatViewModel { Chat = chat };
             var currentChatUserNames = chat.ChatUsers.Select(m => m.User.UserName).ToList();
 

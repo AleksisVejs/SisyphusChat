@@ -13,8 +13,6 @@ namespace SisyphusChat.Web.Models
         [MinLength(1, ErrorMessage = "At least one user must be selected.")]
         public List<string> SelectedUserNames { get; set; } = new List<string>();
 
-        public string OwnerId { get; set; }
-
         public List<UserModel> Users { get; set; } = new List<UserModel>();
     }
 }
