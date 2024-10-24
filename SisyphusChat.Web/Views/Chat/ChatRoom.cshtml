@@ -59,11 +59,11 @@
     </div>
 
     <div id="chatContainer">
-        <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")"
+        <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")">
         @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
         {
             <text>onclick="window.location.href='@Url.Action("Index", "ChatSettings", new { chatId = Model.ChatViewModel.Chat.Id })'"</text>
-        }>
+        }
             <div class="header-content flex items-center gap-3 pb-3">
                 @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
                 {
@@ -106,10 +106,7 @@
             @foreach (var message in Model.ChatViewModel.Chat.Messages)
             {
                 <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")">
-                    @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
-                    {
-                        <span class="sender-name">@message.Sender.UserName</span>
-                    }
+                    <span class="sender-name">@message.Sender.UserName</span>
                     <p>@message.Content</p>
                     <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
                 </div>
@@ -128,7 +125,7 @@
 
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
     <script>
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/chathub")
@@ -277,5 +274,9 @@ html, body {
 
 main[b-fefn0adsrq] {
     margin: 0;
+}
+
+.sender-name {
+    font-weight: bold;
 }
 </style>
