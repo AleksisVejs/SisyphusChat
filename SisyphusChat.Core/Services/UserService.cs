@@ -59,12 +59,26 @@ public class UserService(
 
     public async Task<UserModel> GetByUsernameAsync(string userName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(userName);
+        if (string.IsNullOrEmpty(userName))
+        {
+            return null; // Return null if username is empty or null
+        }
+
+        // Get the current user using the existing method
+        var currentUser = await GetCurrentContextUserAsync();
+
+        // Check if the username is the same as the current user's username
+        if (currentUser != null && currentUser.UserName == userName)
+        {
+            return null; // Return null if trying to get the current user himself
+        }
 
         var userEntity = await unitOfWork.UserRepository.GetByUsernameAsync(userName);
-
-        return mapper.Map<UserModel>(userEntity);
+        return userEntity == null ? null : mapper.Map<UserModel>(userEntity); // Return null if user not found
     }
+
+
+
 
     public async Task DeleteByIdAsync(string id)
     {

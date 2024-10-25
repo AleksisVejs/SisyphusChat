@@ -1,4 +1,6 @@
-﻿@{
+﻿@model SisyphusChat.Web.Models.AddFriend
+
+@{
     ViewData["Title"] = "Add Friends Page";
 }
 
@@ -8,11 +10,24 @@
     </a>
     <h1 class="page-title">Add Friends</h1>
     <p class="page-description">Enter a username to send a friend request.</p>
-    <hr/>
+    <hr />
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (ViewData.ModelState["receiverUsername"] != null)
+    {
+        <div class="alert alert-danger">
+            @ViewData.ModelState["receiverUsername"].Errors[0].ErrorMessage
+        </div>
+    }
     <form asp-action="SendRequest" method="post">
         <div class="form-group mb-3">
             <label for="receiverUsername" class="form-label">Username</label>
-            <input type="text" class="form-control" id="receiverUsername" name="receiverUsername" placeholder="Enter friend's username" required />
+            <input type="text" class="form-control" id="receiverUsername" name="receiverUsername" placeholder="Enter friend's username" required /> <!-- Display error here -->
         </div>
         <button type="submit" class="btn btn-primary w-100">Add Friend</button>
     </form>
@@ -58,8 +73,32 @@
         border-radius: 5px;
     }
 
-    .form-control:focus {
-        border-color: #888;
-        box-shadow: none;
+        .form-control:focus {
+            border-color: #888;
+            box-shadow: none;
+        }
+
+    .alert {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+    }
+
+    .text-danger {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
     }
 </style>
