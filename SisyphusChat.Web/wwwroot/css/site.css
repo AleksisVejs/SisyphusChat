@@ -81,7 +81,6 @@ button#theme-switcher {
 .user-item a {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   cursor: pointer;
   transition: background 0.2s;
   border-radius: 8px;
