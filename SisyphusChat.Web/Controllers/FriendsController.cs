@@ -35,16 +35,38 @@ namespace SisyphusChat.Web.Controllers
             requests.ReceivedRequests = await friendService.GetAllReceivedRequestsAsync(currentUser.Id);
             return View(requests);
         }
-
-        // Creates a friendship request
         [HttpPost]
         public async Task<IActionResult> SendRequest(string receiverUsername)
         {
+            ViewData["Title"] = "Add Friends Page";
+
             var currentUser = await userService.GetCurrentContextUserAsync();
             var receiverUser = await userService.GetByUsernameAsync(receiverUsername);
-            await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
-            return RedirectToAction("Add");
+
+            if (receiverUser == null)
+            {
+                ModelState.AddModelError("receiverUsername", "User not found.");
+                return View("Add"); // Return to the Add view with ModelState errors
+            }
+
+            try
+            {
+                await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
+
+                // Set a success message
+                TempData["SuccessMessage"] = "Friend request sent successfully!";
+                return RedirectToAction("Add"); // Redirect to the Add view
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("receiverUsername", ex.Message);
+                return View("Add"); // Return to the Add view with ModelState errors
+            }
         }
+
+
+
+
 
         // Cancels friendship request
         [HttpPost]

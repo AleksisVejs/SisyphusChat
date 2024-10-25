@@ -39,10 +39,6 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
             .Include(u => u.Messages)
             .FirstOrDefaultAsync(g => g.UserName == userName);
 
-        if (user == null)
-        {
-            throw new EntityNotFoundException("Entity not found");
-        }
 
         return user;
     }
