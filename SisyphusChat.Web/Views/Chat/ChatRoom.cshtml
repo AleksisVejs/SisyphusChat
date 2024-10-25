@@ -22,11 +22,11 @@
         <!-- Search bar with button-->
         <div class="search-container flex items-center gap-2">
             <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" />
-
-            <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" class="create-group-button">
-                <i class="fas fa-comments"></i>
-            </a>
         </div>
+        <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" type="button" class="btn btn-primary w-100">
+            <i class="fas fa-comments"></i>
+            Create Group Chat
+        </a>
 
         <!-- Combined list for users and group chats -->
         <div id="listContainer" class="scrollable-container">
@@ -34,11 +34,13 @@
                 <!-- Group chats -->
                 @foreach (var chat in Model.UserViewModel.AssociatedChats)
                 {
-                    <li class="user-item" data-type="group">
-                        <div class="icon-container">
-                            <i class="fas fa-users group-icon"></i>
-                        </div>
-                        <a href="@Url.Action("OpenGroupChat", "Chat", new { chatId = chat.Id })">@chat.Name</a>
+                    <li class="user-item flex items-center gap-3" data-type="group">
+                        <a href="@Url.Action("OpenGroupChat", "Chat", new { chatId = chat.Id })" class="flex items-center gap-3 w-full">
+                            <div class="icon-container">
+                                <i class="fas fa-users group-icon"></i>
+                            </div>
+                            <span class="flex-grow text-blue-600 font-semibold truncate">@chat.Name</span>
+                        </a>
                     </li>
                 }
 
@@ -61,10 +63,6 @@
 
     <div id="chatContainer">
         <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")">
-        @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
-        {
-                <a onclick="window.location.href='@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })'">Chat Settings</a>
-        }
             <div class="header-content flex items-center gap-3 pb-3">
                 @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
                 {
@@ -81,8 +79,9 @@
                                     @displayMembersList
                                 </span>
                             </div>
+                            <a href="@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })" type="button" class="btn btn-primary w-10 gcsettings">Settings</a>
                         </div>
-
+                        
                 }
                 else
                 {
@@ -313,5 +312,10 @@ main[b-fefn0adsrq] {
 
 .sender-name {
     font-weight: bold;
+}
+
+.gcsettings {
+    margin-left: auto;
+    margin-right: 1%;
 }
 </style>
