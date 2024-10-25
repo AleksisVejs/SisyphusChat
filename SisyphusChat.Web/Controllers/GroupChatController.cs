@@ -32,11 +32,13 @@ public class GroupChatController(IUserService userService, IChatService chatServ
                 Name = model.ChatName,
                 Type = ChatType.Group,
                 OwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier), // Set the current user's ID as OwnerId
-                ChatUsers = model.SelectedUserNames.Select(username => new ChatUserModel
-                {
-                    User = new UserModel { UserName = username }
-                }).ToList()
             };
+
+            // Fetch users with resolved UserIds
+            var chatUsers = await userService.GetUsersByUserNamesAsync(model.SelectedUserNames.ToArray());
+
+            // Add these users to the chat
+            chatModel.ChatUsers = chatUsers.ToList();
 
             await chatService.CreateAsync(chatModel);
             return RedirectToAction("Index", "Chat");
@@ -44,4 +46,5 @@ public class GroupChatController(IUserService userService, IChatService chatServ
 
         return View(model);
     }
+
 }

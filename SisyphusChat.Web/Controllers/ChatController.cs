@@ -72,5 +72,12 @@ namespace SisyphusChat.Web.Controllers
 
             return View(viewModel);
         }
+
+        public async Task<IActionResult> OpenGroupChat(string chatId)
+        {
+            var chat = await chatService.GetByIdAsync(chatId);
+
+            return RedirectToAction("ChatRoom", new { chatId = chat.Id });
+        }
     }
 }
