@@ -9,15 +9,15 @@ using SisyphusChat.Web.Models;
 namespace SisyphusChat.Web.Controllers;
 
 [Authorize]
-public class ChatSettingsController(IUserService userService, IChatService chatService) : Controller
+public class ChatSettingsController(IUserService userService, IChatService chatService, IFriendService friendService) : Controller
 {
     public async Task<IActionResult> Index(string chatId)
     {
         var currentUser = await userService.GetCurrentContextUserAsync();
-        var users = await userService.GetAllAsync();
         var chat = await chatService.GetByIdAsync(chatId);
         var chatOwner = chat.Owner.UserName;
         var chatUsers = chat.ChatUsers.Select(it => it.User).Where(c => c.Id != chat.Owner.Id);
+        var users = await friendService.GetAllFriendsAsync(chat.OwnerId);
         var usersNotInChat = users
             .Where(user => chat.ChatUsers
                 .Select(m => m.User)
@@ -63,7 +63,7 @@ public class ChatSettingsController(IUserService userService, IChatService chatS
                 Id = model.ChatId
             }, selectedUsers);
 
-        return RedirectToAction("Chat", "Chat", new { chatId = model.ChatId });
+        return RedirectToAction("ChatRoom", "Chat", new { chatId = model.ChatId });
     }
 
     public async Task<IActionResult> DeleteUserFromChat(string userId, string chatId)
