@@ -7,7 +7,6 @@ using SisyphusChat.Core.Services;
 using SisyphusChat.Web.Models;
 using NuGet.Protocol.Plugins;
 using SisyphusChat.Infrastructure.Exceptions;
-using SisyphusChat.Infrastructure.Migrations;
 using SisyphusChat.Core.Models;
 
 namespace SisyphusChat.Web.Controllers
