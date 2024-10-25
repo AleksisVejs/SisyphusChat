@@ -41,7 +41,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress] // Ensure the email is valid
+            [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; } // Changed to Email
 
@@ -84,7 +84,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 // Use FindByEmailAsync to find the user by email
-                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email); // Ensure you are looking for email
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
 
                 
                 if (user == null)
