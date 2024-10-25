@@ -22,12 +22,10 @@
         <!-- Search bar with button-->
         <div class="search-container flex items-center gap-2">
             <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" />
-            @*
-            Group chat creation button (currently disabled)
+
             <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" class="create-group-button">
                 <i class="fas fa-comments"></i>
-            </a> 
-            *@
+            </a>
         </div>
 
         <!-- Combined list for users and group chats -->
@@ -65,7 +63,7 @@
         <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")">
         @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
         {
-            <text>onclick="window.location.href='@Url.Action("Index", "ChatSettings", new { chatId = Model.ChatViewModel.Chat.Id })'"</text>
+                <a onclick="window.location.href='@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })'">Chat Settings</a>
         }
             <div class="header-content flex items-center gap-3 pb-3">
                 @if (Model.ChatViewModel.Chat.Type == ChatType.Group)

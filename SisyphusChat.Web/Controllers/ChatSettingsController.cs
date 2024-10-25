@@ -71,11 +71,11 @@ public class ChatSettingsController(IUserService userService, IChatService chatS
         try
         {
             await chatService.DeleteUserFromChatByIdAsync(userId, chatId);
-            return Json(new { success = true });
+            return RedirectToAction("Index", new { chatId = chatId });
         }
         catch (Exception ex)
         {
-            return Json(new { success = false, message = ex.Message });
+            return RedirectToAction("Index", new { chatId = chatId });
         }
     }
 }

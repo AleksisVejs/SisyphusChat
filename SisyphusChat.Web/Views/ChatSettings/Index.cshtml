@@ -42,7 +42,9 @@
                          <span class="user-status @(user.IsOnline ? "online" : "offline")">@(user.IsOnline ? "Online" : "Offline")</span>
                         @if (Model.CurrentUser == Model.ChatOwner)
                         {
-                            <button class="btn btn-danger ml-2" onclick="deleteUser('@user.Id', event)">Delete</button>
+                            <button asp-action="DeleteUserFromChat" asp-route-userId="@user.Id" asp-route-chatId="@Model.ChatId" class="btn btn-danger ml-2">
+                                Delete
+                            </button>
                         }
                     </li>
                 }
