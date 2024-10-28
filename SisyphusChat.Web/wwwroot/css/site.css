@@ -241,3 +241,36 @@ p {
   width: 100%;
   padding: 0.25rem;
 }
+
+.notification-dropdown {
+    position: relative;
+}
+
+.notification-bubble {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+    display: none; /* Initially hidden */
+}
+
+.notification-list {
+    display: none; /* Hide by default */
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+    .notification-list.show {
+        display: block; /* Show when needed */
+    }

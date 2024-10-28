@@ -16,7 +16,9 @@ var connectionString = builder.Configuration.GetConnectionString("ApplicationDbC
 builder.Services.AddScoped<SignInManager<User>>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString).EnableSensitiveDataLogging());
-
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();  // Logs to console window
+builder.Logging.AddDebug();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -44,6 +46,7 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFriendRepository, FriendRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -54,6 +57,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 // Map the AutoMapper profile
@@ -84,8 +88,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapRazorPages();
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 if (!app.Environment.IsDevelopment())
 {

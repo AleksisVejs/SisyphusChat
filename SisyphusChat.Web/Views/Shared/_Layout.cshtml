@@ -15,6 +15,8 @@
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <script>
     (function() {
         var savedTheme = localStorage.getItem("theme") || "light";
@@ -25,6 +27,8 @@
         document.head.appendChild(themeLink);
     })();
 </script>
+    
+
 </head>
 <body>
     <header>
@@ -59,16 +63,33 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Account/Manage/Index" asp-area="Identity">Hello, @UserManager.GetUserName(User)</a>
                             </li>
-                            if (currentUser.IsAdmin) // Check if user exists and is admin
+                            if(currentUser != null)
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a>
-                                </li>
+                                if (currentUser.IsAdmin) // Check if user exists and is admin
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a>
+                                    </li>
+                                }
+                                
                             }
+
                             <li class="nav-item">
                                 <form asp-area="Identity" asp-page="/Account/Logout" method="post" id="logoutForm" class="form-inline">
                                     <button type="submit" class="nav-link btn btn-link">Logout</button>
                                 </form>
+                            </li>
+                            <li class="nav-item notification-dropdown">
+                                <a href="#" id="notificationIcon" class="nav-link" onclick="toggleNotificationDropdown(event)">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <span class="notification-bubble" id="notificationCount">0</span>
+                                </a>
+                                <div class="notification-list" id="notificationList">
+                                    <label>
+                                        <input type="checkbox" id="toggleUnread"> Show Unread Only
+                                    </label>
+                                    <!-- Notifications will be dynamically inserted here -->
+                                </div>
                             </li>
                         }
                         else
@@ -105,15 +126,71 @@
             </div>
         </footer>
     }
+    @await RenderSectionAsync("Scripts", required: false)
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script> <!-- Load SignalR after jQuery -->
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub")
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Debug)
+                .build();
+
+            // Handle received messages
+            connection.on("ReceiveMessage", function (message) {
+                console.log("Received message:", message);
+            });
+
+            // Handle notifications
+            connection.on("ReceiveNotifications", function (notifications) {
+                if (!notifications || notifications.length === 0) {
+                    console.log("No notifications");
+                } else {
+                    console.log("Received notifications:", notifications);
+                }
+            });
+
+            // Start the connection
+            async function startConnection() {
+                try {
+                    await connection.start();
+                    console.log("Connected to NotificationHub!");
+
+                    // Fetch notifications immediately after connecting
+                    await connection.invoke("GetNotificationsAsync");
+                } catch (err) {
+                    console.error("Error starting connection:", err);
+                    setTimeout(startConnection, 5000);
+                }
+            }
+
+            startConnection();
+
+            // Connection status handlers
+            connection.onclose((error) => {
+                console.log("Connection closed:", error);
+            });
+
+            connection.onreconnecting((error) => {
+                console.log("Reconnecting:", error);
+            });
+
+            connection.onreconnected((connectionId) => {
+                console.log("Reconnected. ConnectionId:", connectionId);
+                // Fetch notifications again after reconnecting
+                connection.invoke("GetNotificationsAsync");
+            });
+        });
+    </script>
+
 </body>
 </html>
+
 

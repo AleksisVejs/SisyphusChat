@@ -21,7 +21,9 @@ namespace SisyphusChat.Infrastructure.Data
         
         public DbSet<Message> Messages { get; set; }
 
-        public DbSet<User> Users { get; set; }  
+        public DbSet<User> Users { get; set; } 
+        
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
