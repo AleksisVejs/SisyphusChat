@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SisyphusChat.Infrastructure.Entities;
 
 namespace SisyphusChat.Infrastructure.Data
@@ -20,6 +21,8 @@ namespace SisyphusChat.Infrastructure.Data
         public DbSet<Friend> Friends { get; set; }
         
         public DbSet<Message> Messages { get; set; }
+
+        public DbSet<Report> Reports { get; set; }
 
         public DbSet<User> Users { get; set; }  
 
@@ -58,6 +61,18 @@ namespace SisyphusChat.Infrastructure.Data
                 .WithMany(u => u.Messages) 
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
+
+            modelBuilder.Entity<Report>()
+                .HasOne(r => r.Chat)
+                .WithMany()
+                .HasForeignKey(r => r.ChatId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Report>()
+                .HasOne(r => r.Message)
+                .WithMany()
+                .HasForeignKey(r => r.MessageId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             base.OnModelCreating(modelBuilder);

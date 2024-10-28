@@ -10,7 +10,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 {
     public async Task AddAsync(Chat entity)
     {
-        entity.Id = Guid.NewGuid();
+        entity.Id = Guid.NewGuid().ToString();
         entity.TimeCreated = DateTime.Now;
         entity.IsReported = false;
 
