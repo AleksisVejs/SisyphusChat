@@ -11,7 +11,7 @@ namespace SisyphusChat.Core.Models
         public string Message { get; set; }
         public string SenderUserId { get; set; } // Simple reference instead of full User entity
         public string SenderUsername { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime TimeCreated { get; set; }
         public bool IsRead { get; set; }
         public string RelatedEntityId { get; set; }
         public string RelatedEntityType { get; set; }

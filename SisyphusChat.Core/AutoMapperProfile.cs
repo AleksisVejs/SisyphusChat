@@ -61,7 +61,7 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
                 .ForMember(dest => dest.SenderUserId, opt => opt.MapFrom(src => src.SenderUsername))
                 .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.SenderUsername))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.TimeCreated))
+                .ForMember(dest => dest.TimeCreated, opt => opt.MapFrom(src => src.TimeCreated))
                 .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
                 .ForMember(dest => dest.RelatedEntityId, opt => opt.MapFrom(src => src.RelatedEntityId))
                 .ForMember(dest => dest.RelatedEntityType, opt => opt.MapFrom(src => src.RelatedEntityType))
