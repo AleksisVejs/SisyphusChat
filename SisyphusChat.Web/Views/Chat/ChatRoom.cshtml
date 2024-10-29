@@ -109,6 +109,7 @@
                     <span class="sender-name">@message.Sender.UserName</span>
                     <p>@message.Content</p>
                     <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
+                    <a href="@Url.Action("DeleteMessage", "Chat" , new { messageId = @message.Id })" type="button" class="btn btn-primary w-10 gcsettings">Delete</a>
                 </div>
             }
         </div>

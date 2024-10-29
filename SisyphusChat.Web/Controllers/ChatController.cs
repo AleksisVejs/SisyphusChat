@@ -10,7 +10,7 @@ using SisyphusChat.Infrastructure.Exceptions;
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class ChatController(IChatService chatService, IUserService userService, IFriendService friendService) : Controller
+    public class ChatController(IChatService chatService, IMessageService messageService, IUserService userService, IFriendService friendService) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -27,7 +27,6 @@ namespace SisyphusChat.Web.Controllers
 
             return View(userViewModel);
         }
-
 
         // Creates or opens a private 1-on-1 chat
         public async Task<IActionResult> CreateOrOpenChat(string recipientUserId)
@@ -78,6 +77,19 @@ namespace SisyphusChat.Web.Controllers
             var chat = await chatService.GetByIdAsync(chatId);
 
             return RedirectToAction("ChatRoom", new { chatId = chat.Id });
+        }
+
+        public async Task<IActionResult> DeleteMessage(string messageId)
+        {
+            try
+            {
+                await messageService.DeleteByIdAsync(messageId);
+                return Json(new { success = true, message = "Message deleted successfully." });
+            }
+            catch (EntityNotFoundException)
+            {
+                return Json(new { success = false, message = "Message not found." });
+            }
         }
     }
 }
