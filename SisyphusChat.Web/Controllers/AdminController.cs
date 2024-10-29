@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class AdminController(IAdminService reportService) : Controller
+    public class AdminController(IAdminService adminService) : Controller
     {
         public async Task<IActionResult> DownloadReport(string reportType, string format)
         {
@@ -15,12 +15,12 @@ namespace SisyphusChat.Web.Controllers
 
             if (format == "excel")
             {
-                reportBytes = await reportService.GenerateExcelAsync(reportType);
+                reportBytes = await adminService.GenerateExcelAsync(reportType);
                 return File(reportBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{reportType}_Report.xlsx");
             }
             else
             {
-                reportBytes = await reportService.GeneratePdfAsync(reportType);
+                reportBytes = await adminService.GeneratePdfAsync(reportType);
                 return File(reportBytes, "application/pdf", $"{reportType}_Report.pdf");
             }
         }
@@ -31,7 +31,7 @@ namespace SisyphusChat.Web.Controllers
             try
             {
                 // To generate a pdf report with specified parameter to preview instead of downloading
-                byte[] stream = await reportService.GeneratePdfAsync(reportType);
+                byte[] stream = await adminService.GeneratePdfAsync(reportType);
                 return File(stream, "application/pdf"); // return the pdf file to preview in browser instead of downloading
 
             }

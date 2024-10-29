@@ -51,22 +51,22 @@ namespace SisyphusChat.Core.Services
             return await _unitOfWork.AdminRepository.GetUsersWithLastMessage();
         }
 
-        public async Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport()
+        public async Task<List<AttachmentUsageDto>> GetAttachmentsUsageReport()
         {
             return await _unitOfWork.AdminRepository.GetAttachmentsUsageReport();
         }
 
-        public async Task<List<MessageReportDto>> GetMessageReport(ChatType chatType)
+        public async Task<List<MessageDto>> GetMessageReport(ChatType chatType)
         {
             return await _unitOfWork.AdminRepository.GetMessagesReport(chatType);
         }
 
-        public async Task<List<UserActivityReportDto>> GetUserActivities()
+        public async Task<List<UserActivityDto>> GetUserActivities()
         {
             return await _unitOfWork.AdminRepository.GetUsersActivityReport();
         }
 
-        public async Task<List<ChatParticipationReportDto>> GetChatParticipationReport()
+        public async Task<List<ChatParticipationDto>> GetChatParticipationReport()
         {
             return await _unitOfWork.AdminRepository.GetChatParticipationReports();
         }
