@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SisyphusChat.Infrastructure.DTO
 {
-    public class UserActivityReportDto
+    public class UserActivityDto
     {
         // Custom data transfer object for user activity reports for specific data
         public string UserName { get; set; }

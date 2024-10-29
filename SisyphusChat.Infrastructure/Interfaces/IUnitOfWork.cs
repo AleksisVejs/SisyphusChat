@@ -5,6 +5,8 @@ namespace SisyphusChat.Core.Interfaces
 {
     public interface IUnitOfWork
     {
+        IAdminRepository AdminRepository { get; }
+
         IAttachmentRepository AttachmentRepository { get; } 
         
         IChatRepository ChatRepository { get; }
@@ -13,7 +15,7 @@ namespace SisyphusChat.Core.Interfaces
 
         IMessageRepository MessageRepository { get; }
 
-        IAdminRepository AdminRepository { get; }
+        IReportRepository ReportRepository { get; }
 
         IUserRepository UserRepository { get; }
         

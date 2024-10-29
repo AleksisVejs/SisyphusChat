@@ -16,13 +16,13 @@ using OfficeOpenXml;
 
 namespace SisyphusChat.Core.Services
 {
-    public class ReportService : IReportService
+    public class AdminService : IAdminService
     {
         // To inject the UnitOfWork dependency with readonly to ensure it is not changed
         private readonly IUnitOfWork _unitOfWork;
 
         // To inject the UnitOfWork dependency in the constructor
-        public ReportService(IUnitOfWork unitOfWork)
+        public AdminService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -35,45 +35,45 @@ namespace SisyphusChat.Core.Services
 
         public async Task<List<Chat>> GetChats()
         {
-            var chats = await _unitOfWork.ReportRepository.GetChats();
+            var chats = await _unitOfWork.AdminRepository.GetChats();
             return chats.ToList();
         }
 
         public async Task<List<Message>> GetMessages()
         {
-            var messages = await _unitOfWork.ReportRepository.GetMessages();
+            var messages = await _unitOfWork.AdminRepository.GetMessages();
             return messages.ToList();
         }
 
         public async Task<List<User>> GetUsers()
         {
-            var users = await _unitOfWork.ReportRepository.GetUsers();
+            var users = await _unitOfWork.AdminRepository.GetUsers();
             return users.ToList();
         }
 
         public async Task<List<UserWithLastMessageDto>> GetUsersWithLastMessage()
         {
-            return await _unitOfWork.ReportRepository.GetUsersWithLastMessage();
+            return await _unitOfWork.AdminRepository.GetUsersWithLastMessage();
         }
 
-        public async Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport()
+        public async Task<List<AttachmentUsageDto>> GetAttachmentsUsageReport()
         {
-            return await _unitOfWork.ReportRepository.GetAttachmentsUsageReport();
+            return await _unitOfWork.AdminRepository.GetAttachmentsUsageReport();
         }
 
-        public async Task<List<MessageReportDto>> GetMessageReport(ChatType chatType)
+        public async Task<List<MessageDto>> GetMessageReport(ChatType chatType)
         {
-            return await _unitOfWork.ReportRepository.GetMessagesReport(chatType);
+            return await _unitOfWork.AdminRepository.GetMessagesReport(chatType);
         }
 
-        public async Task<List<UserActivityReportDto>> GetUserActivities()
+        public async Task<List<UserActivityDto>> GetUserActivities()
         {
-            return await _unitOfWork.ReportRepository.GetUsersActivityReport();
+            return await _unitOfWork.AdminRepository.GetUsersActivityReport();
         }
 
-        public async Task<List<ChatParticipationReportDto>> GetChatParticipationReport()
+        public async Task<List<ChatParticipationDto>> GetChatParticipationReport()
         {
-            return await _unitOfWork.ReportRepository.GetChatParticipationReports();
+            return await _unitOfWork.AdminRepository.GetChatParticipationReports();
         }
 
         // To generate a PDF report table based on the report type asynchronously and the methods used are above

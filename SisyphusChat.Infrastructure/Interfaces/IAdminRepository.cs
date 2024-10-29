@@ -16,10 +16,10 @@ namespace SisyphusChat.Infrastructure.Interfaces
         Task<List<User>> GetUsers();
         // The actual useful methods
         Task<List<UserWithLastMessageDto>> GetUsersWithLastMessage();
-        Task<List<UserActivityReportDto>> GetUsersActivityReport();
-        Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport();
-        Task<List<ChatParticipationReportDto>> GetChatParticipationReports();
-        Task<List<MessageReportDto>> GetMessagesReport(ChatType chatType);
+        Task<List<UserActivityDto>> GetUsersActivityReport();
+        Task<List<AttachmentUsageDto>> GetAttachmentsUsageReport();
+        Task<List<ChatParticipationDto>> GetChatParticipationReports();
+        Task<List<MessageDto>> GetMessagesReport(ChatType chatType);
 
 
 

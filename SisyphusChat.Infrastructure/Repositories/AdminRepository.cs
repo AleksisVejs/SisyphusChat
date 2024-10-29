@@ -81,10 +81,10 @@ namespace SisyphusChat.Infrastructure.Repositories
             return usersWithLastMessage;
         }
 
-        public async Task<List<AttachmentUsageReportDto>> GetAttachmentsUsageReport()
+        public async Task<List<AttachmentUsageDto>> GetAttachmentsUsageReport()
         {
             var attachmentReport = await context.Attachments
-                .Select(a => new AttachmentUsageReportDto
+                .Select(a => new AttachmentUsageDto
                 {
                     AttachmentId = a.Id,
                     UserName = a.Message.Sender.UserName,
@@ -98,10 +98,10 @@ namespace SisyphusChat.Infrastructure.Repositories
             return attachmentReport;
         }
 
-        public async Task<List<ChatParticipationReportDto>> GetChatParticipationReports()
+        public async Task<List<ChatParticipationDto>> GetChatParticipationReports()
         {
             var chatParticipationReport = await context.ChatUsers
-                .Select(cu => new ChatParticipationReportDto
+                .Select(cu => new ChatParticipationDto
                 {
                     ChatId = cu.ChatId,
                     ChatTitle = cu.Chat.Name,
@@ -114,14 +114,14 @@ namespace SisyphusChat.Infrastructure.Repositories
             return chatParticipationReport;
         }
 
-        public async Task<List<MessageReportDto>> GetMessagesReport(ChatType chatType)
+        public async Task<List<MessageDto>> GetMessagesReport(ChatType chatType)
         {
             var messageReports = await context.Messages
                 .Where(m => m.Chat.Type == chatType)
                 .SelectMany(m =>
                     m.Chat.ChatUsers
                     .Where(cu => cu.UserId != m.SenderId)
-                    .Select(cu => new MessageReportDto
+                    .Select(cu => new MessageDto
                     {
                         MessageId = m.Id,
                         SenderUserName = m.Sender.UserName,
@@ -136,10 +136,10 @@ namespace SisyphusChat.Infrastructure.Repositories
             return messageReports;
         }
 
-        public async Task<List<UserActivityReportDto>> GetUsersActivityReport()
+        public async Task<List<UserActivityDto>> GetUsersActivityReport()
         {
             var userActivityReport = await context.Users
-                .Select(u => new UserActivityReportDto
+                .Select(u => new UserActivityDto
                 {
                     UserName = u.UserName,
                     LastLogin = u.LastLogin,
