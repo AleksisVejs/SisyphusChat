@@ -11,7 +11,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 {
     public async Task AddAsync(Message entity)
     {
-        entity.Id = Guid.NewGuid();
+        entity.Id = Guid.NewGuid().ToString();
         entity.TimeCreated = DateTime.Now;
         entity.Status = MessageStatus.Sent;
 

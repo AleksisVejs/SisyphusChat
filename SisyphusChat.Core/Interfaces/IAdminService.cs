@@ -8,7 +8,7 @@ using SisyphusChat.Infrastructure.DTO;
 
 namespace SisyphusChat.Core.Interfaces
 {
-    public interface IReportService
+    public interface IAdminService
     {
         // Interface for the report service
 

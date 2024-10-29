@@ -13,10 +13,12 @@ namespace SisyphusChat.Core.Interfaces
 
         IMessageRepository MessageRepository { get; }
 
-        IReportRepository ReportRepository { get; }
+        IAdminRepository AdminRepository { get; }
 
         IUserRepository UserRepository { get; }
-        
+
+        IReportRepository ReportRepository { get; }
+
         Task SaveAsync();
     }
 }
