@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class AdminController(IReportService reportService) : Controller
+    public class AdminController(IAdminService reportService) : Controller
     {
         public async Task<IActionResult> DownloadReport(string reportType, string format)
         {
