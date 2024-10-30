@@ -2,9 +2,10 @@
 using Microsoft.Extensions.Logging;
 using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
-using SisyphusChat.Infrastructure.Entities;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using SisyphusChat.Infrastructure.Entities;
 
 public class NotificationHub : Hub
 {
@@ -70,44 +71,25 @@ public class NotificationHub : Hub
         }
     }
 
-    public async Task MarkNotificationAsRead(string notificationId)
+ 
+
+    public async Task MarkMessageNotificationsAsRead(string chatId, string userId)
     {
-        _logger.LogInformation($"📍 Marking notification {notificationId} as read");
         try
         {
-            await _notificationService.MarkAsRead(notificationId);
-
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "❌ Error marking notification as read");
-            await Clients.Caller.SendAsync("NotificationError", "Failed to mark notification as read");
-        }
-    }
-
-    public async Task SendNotificationAsync(string userId, string message)
-    {
-        _logger.LogInformation($"📍 Sending notification to user {userId}");
-        try
-        {
-            var notification = new NotificationModel
+            var notifications = await _notificationService.GetUnreadNotificationsByUserId(userId);
+            var messageNotifications = notifications.Where(n => n.Type == NotificationType.Message && n.RelatedEntityId == chatId);
+            
+            foreach (var notification in messageNotifications)
             {
-                UserId = userId,
-                Message = message,
-                TimeCreated = DateTime.UtcNow,
-                IsRead = false
-            };
-
-            await _notificationService.CreateAsync(notification);
-
-            _logger.LogInformation("✅ Notification added to database");
-            await Clients.User(userId).SendAsync("ReceiveNotification", notification);
-            _logger.LogInformation("✅ Notification sent to client");
+                await _notificationService.MarkAsRead(notification.Id.ToString());
+            }
+            
+            await Clients.User(userId).SendAsync("NotificationsUpdated");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "❌ Error sending notification");
-            await Clients.Caller.SendAsync("NotificationError", "Failed to send notification");
+            _logger.LogError(ex, "❌ Error marking message notifications as read");
         }
     }
 }

@@ -16,8 +16,7 @@ namespace SisyphusChat.Infrastructure.Entities
         public User User { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string Type { get; set; } // Enum type (e.g., 'Message', 'Friend_Request')
+        public NotificationType Type { get; set; }
 
         [Required]
         [StringLength(1000)]
@@ -35,8 +34,6 @@ namespace SisyphusChat.Infrastructure.Entities
         [StringLength(450)]
         public string RelatedEntityId { get; set; } // ID of related entity (e.g., MessageId, FriendRequestId)
 
-        [StringLength(50)]
-        public string RelatedEntityType { get; set; } // Type of related entity
 
         public bool IsDeleted { get; set; } = false; // Soft delete
     }
