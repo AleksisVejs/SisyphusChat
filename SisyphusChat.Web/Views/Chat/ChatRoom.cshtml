@@ -116,11 +116,14 @@
                 else
                 {
                         <!-- Private chat -->
+                        <!-- ChatRoom.cshtml -->
                         <div class="icon-container-large flex items-center">
                             <i class="fas fa-user user-icon-large"></i>
                             <div class="username-status flex flex-col ml-2">
                                 <span class="username-text">
-                                    @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
+                                    <a href="@Url.Action("Profile", "Friends", new { username = Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName })" class="text-blue-500 hover:underline">
+                                        @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
+                                    </a>
                                 </span>
                                 <span class="status-text @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "text-green-500" : "text-gray-500")">
                                     @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "Online" : "Offline")
