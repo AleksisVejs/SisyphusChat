@@ -34,20 +34,34 @@
             <h2 class="text-xl font-bold mb-2 purple-title">Users in group chat</h2>
             <input type="text" id="searchInChatUsers" placeholder="Search users in chat..." class="search-input mb-2" />
             <ul id="chatUsersList" class="user-list">
-                @foreach (var user in Model.ChatUsers)
-                {
-                    <li class="user-item">
-                        @user.UserName
-                        <span class="user-status @(user.IsOnline ? "online" : "offline")">@(user.IsOnline ? "Online" : "Offline")</span>
-                        @if (Model.CurrentUser == Model.ChatOwner)
-                        {
-                            <button asp-action="DeleteUserFromChat" asp-route-userId="@user.Id" asp-route-chatId="@Model.ChatId" class="btn ml-2 delete-button">
-                                Delete
-                            </button>
-                        }
-                    </li>
-                }
-            </ul>
+    @foreach (var user in Model.ChatUsers)
+    {
+        <li class="user-item">
+            <div class="user-info-container">
+                <div class="user-avatar">
+                    @if (user.Picture != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(user.Picture)" alt="Profile Picture" class="user-profile-pic" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default-profile.png" alt="Default Profile Picture" class="user-profile-pic" />
+                    }
+                </div>
+                <div class="user-details">
+                    <span class="user-name">@user.UserName</span>
+                    <span class="user-status @(user.IsOnline ? "online" : "offline")">@(user.IsOnline ? "Online" : "Offline")</span>
+                </div>
+            </div>
+            @if (Model.CurrentUser == Model.ChatOwner)
+            {
+                <button asp-action="DeleteUserFromChat" asp-route-userId="@user.Id" asp-route-chatId="@Model.ChatId" class="btn ml-2 delete-button">
+                    Delete
+                </button>
+            }
+        </li>
+    }
+</ul>
         </div>
 
          <hr/>
@@ -135,4 +149,44 @@
         background-color: #c82333;
         color: white;
     }
+
+    .user-info-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
 </style>

@@ -50,7 +50,14 @@
                     <li class="user-item flex items-center gap-3" data-type="user">
                         <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex items-center gap-3 w-full">
                             <div class="icon-container">
-                                <i class="fas fa-user user-icon"></i>
+                                @if (user.Picture != null)
+                                {
+                                    <img src="data:image/png;base64,@Convert.ToBase64String(user.Picture)" alt="Profile Picture" class="profile-pic" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default-profile.png" alt="Default Profile Picture" class="profile-pic" />
+                                }
                             </div>
                             <span class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</span>
                             <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
@@ -65,24 +72,43 @@
         <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")">
             <div class="header-content flex items-center gap-3 pb-3">
                 @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
-                {
-                        <!-- Group chat -->
-                        <div class="icon-container-large flex items-center">
-                            <i class="fas fa-users group-icon-large"></i>
-                            <div class="username-status flex flex-col ml-2">
-                                <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
-                                <span id="groupUsers">
-                                    @{
-                                        var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
-                                        var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
+{
+    <div class="icon-container-large flex items-center">
+        @if (Model.ChatViewModel.Chat.ChatUsers.Any(u => u.User.Picture != null))
+        {
+            <div class="group-images-stack">
+                @foreach (var chatUser in Model.ChatViewModel.Chat.ChatUsers.Take(4))
+                            {
+                                <div class="stacked-image">
+                                    @if (chatUser.User.Picture != null)
+                                    {
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(chatUser.User.Picture)" alt="Profile Picture" />
                                     }
-                                    @displayMembersList
-                                </span>
-                            </div>
-                            <a href="@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })" type="button" class="btn btn-primary w-10 gcsettings">Settings</a>
+                                    else
+                                    {
+                                        <img src="~/images/default-profile.png" alt="Default Profile Picture" />
+                                    }
+                                </div>
+                            }
                         </div>
-                        
-                }
+                    }
+                    else
+                    {
+                        <i class="fas fa-users group-icon-large"></i>
+                    }
+                    <div class="username-status flex flex-col ml-2">
+                        <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
+                        <span id="groupUsers">
+                            @{
+                                var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
+                                var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
+                            }
+                            @displayMembersList
+                        </span>
+                    </div>
+                    <a href="@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })" type="button" class="btn btn-primary w-10 gcsettings">Settings</a>
+                </div>
+            }
                 else
                 {
                         <!-- Private chat -->
@@ -106,13 +132,22 @@
             @foreach (var message in Model.ChatViewModel.Chat.Messages)
             {
                 <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")">
-                    <span class="sender-name">@message.Sender.UserName</span>
+                    <div class="message-header">
+                        @if (message.Sender.Picture != null)
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(message.Sender.Picture)" alt="Profile Picture" class="message-profile-pic" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-profile.png" alt="Default Profile Picture" class="message-profile-pic" />
+                        }
+                        <span class="sender-name">@message.Sender.UserName</span>
+                    </div>
                     <p>@message.Content</p>
                     <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
                 </div>
             }
         </div>
-
 
         <div class="chat-footer">
             <input type="text" id="messageInput" placeholder="Type a message..." />

@@ -43,7 +43,14 @@
                     <li class="user-item flex items-center gap-3" data-type="user">
                         <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex items-center gap-3 w-full">
                             <div class="icon-container">
-                                <i class="fas fa-user user-icon"></i>
+                                @if (user.Picture != null)
+                                {
+                                    <img src="data:image/png;base64,@Convert.ToBase64String(user.Picture)" alt="Profile Picture" class="profile-pic" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default-profile.png" alt="Default Profile Picture" class="profile-pic" />
+                                }
                             </div>
                             <span class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</span>
                             <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
