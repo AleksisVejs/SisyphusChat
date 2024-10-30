@@ -1,0 +1,16 @@
+@model SisyphusChat.Web.Models.ProfileViewModel
+@{
+    ViewData["Title"] = $"{Model.Username}'s Profile";
+}
+
+<h1>@Model.Username's Profile</h1>
+@if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
+{
+    var base64Image = Convert.ToBase64String(Model.ProfilePicture);
+    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+    <img id="profileImage" src="@imgSrc" alt="User Avatar" />
+}
+else
+{
+    <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
+}

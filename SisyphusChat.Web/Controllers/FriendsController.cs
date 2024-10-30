@@ -63,10 +63,6 @@ namespace SisyphusChat.Web.Controllers
             }
         }
 
-
-
-
-
         // Cancels friendship request
         [HttpPost]
         public async Task<IActionResult> CancelRequest(string receiverId)
@@ -110,6 +106,29 @@ namespace SisyphusChat.Web.Controllers
                 await friendService.DeleteByIdAsync(friendId + ' ' + currentUser.Id);
             }
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Profile(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return NotFound();
+            }
+
+            // Fetch user data based on the username
+            var user = await userService.GetByUsernameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var profile = new ProfileViewModel
+            {
+                Username = user.UserName,
+                ProfilePicture = user.Picture,
+            };
+
+            return View(profile);
         }
     }
 }

@@ -35,7 +35,11 @@
                 </div>
 
                 <div class="friend-info">
-                    <p class="friend-name">@friend.UserName</p>
+                    <p class="friend-name">
+                        <a href="@Url.Action("Profile", "Friends", new { username = friend.UserName })" class="text-blue-500 hover:underline">
+                            @friend.UserName
+                        </a>
+                    </p>
                 </div>
 
                 <form method="post" asp-action="RemoveFriend" asp-controller="Friends" style="display:inline;">
