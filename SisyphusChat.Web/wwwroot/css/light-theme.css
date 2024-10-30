@@ -228,3 +228,71 @@ a:focus {
   background-color: #e4e6eb;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
 }
+
+/* Chat Settings Styles */
+.form-container {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.centered-heading {
+    color: #8c77d0;
+}
+
+.form-control {
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.form-control:focus {
+    border-color: #8c77d0;
+    box-shadow: 0 0 0 2px rgba(140, 119, 208, 0.2);
+}
+
+.form-control[readonly] {
+  background-color: #f0f0f0;
+  color: #333333;
+  border: 1px solid #e2e8f0;
+  cursor: not-allowed;
+}
+
+.search-input {
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.user-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+    border: 2px solid #8c77d0;
+}
+
+.user-name {
+    color: #333333;
+}
+
+.chat-owner-name {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.user-checkbox {
+    accent-color: #8c77d0;
+}
+
+.user-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background: #8c77d0;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+    background: #7b6bc3;
+}

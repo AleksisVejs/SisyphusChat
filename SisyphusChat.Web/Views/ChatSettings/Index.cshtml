@@ -39,13 +39,15 @@
         <li class="user-item">
             <div class="user-info-container">
                 <div class="user-avatar">
-                    @if (user.Picture != null)
+                    @if (user.Picture.Length > 0)
                     {
-                        <img src="data:image/png;base64,@Convert.ToBase64String(user.Picture)" alt="Profile Picture" class="user-profile-pic" />
+                        var base64Image = Convert.ToBase64String(@user.Picture);
+                        var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                        <img class="user-profile-pic" src="@imgSrc" alt="User Avatar" />
                     }
                     else
                     {
-                        <img src="~/images/default-profile.png" alt="Default Profile Picture" class="user-profile-pic" />
+                        <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="user-profile-pic" />
                     }
                 </div>
                 <div class="user-details">
@@ -87,12 +89,15 @@
             <div style="display: none;">
                 <input type="hidden" id="selectedUsers" name="SelectedUsers" />
             </div>
-
-            <div class="button-container">
-                <button type="button" class="btn btn-secondary" onclick="returnBack()">Back To Chat</button>
-                <button type="submit" class="btn btn-primary">Update Group Chat</button>
-            </div>
         }
+
+        <div class="button-container">
+            <button type="button" class="btn btn-secondary" onclick="returnBack()">Return</button>
+            @if (Model.CurrentUser == Model.ChatOwner)
+            {
+                <button type="submit" class="btn btn-primary">Update Group Chat</button>
+            }
+        </div>
     </form>
 
     <script type="text/javascript">
@@ -140,53 +145,121 @@
 </body>
 
 <style scoped>
-    .delete-button {
-        background-color: #dc3545;
-        color: white;
+    .form-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 12px;
     }
 
-    .delete-button:hover {
-        background-color: #c82333;
-        color: white;
+    .centered-heading {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .control-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .user-list {
+        max-height: 300px;
+        overflow-y: auto;
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+
+    .user-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
     }
 
     .user-info-container {
-    display: flex;
-    align-items: center;
-    flex: 1;
-}
+        display: flex;
+        align-items: center;
+        flex: 1;
+        gap: 1rem;
+    }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    border-radius: 50%;
-    overflow: hidden;
-}
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
 
-.user-profile-pic {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .user-profile-pic {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-.user-details {
-    display: flex;
-    flex-direction: column;
-}
+    .user-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
 
-.user-name {
-    font-weight: bold;
-    margin-bottom: 2px;
-}
+    .user-name {
+        font-weight: 600;
+    }
 
-.user-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
+    .user-status {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        display: inline-block;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .chat-owner-name {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+
+    .user-checkbox {
+        width: 18px;
+        height: 18px;
+        margin-right: 0.75rem;
+    }
 </style>
