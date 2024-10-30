@@ -229,6 +229,7 @@ a:focus {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
 }
 
+
 /* Profile Styles */
 .profile-container-page {
     background: linear-gradient(135deg, #2c2f33, #33245a);
@@ -311,4 +312,119 @@ a:focus {
 
 .remove-button:hover {
     background-color: #c82333;
+}
+=======
+/* Chat Settings Styles */
+.form-container {
+    background-color: #2c2f33;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.centered-heading {
+    color: #b197fc;
+}
+
+.form-control {
+    border: 1px solid #4f388a;
+    background-color: #2c2f33;
+    color: #e4e6eb;
+}
+
+.form-control:focus {
+    border-color: #4f388a;
+    box-shadow: 0 0 0 2px rgba(79, 56, 138, 0.2);
+}
+
+.form-control[readonly] {
+  background-color: #1e2124;
+  color: #e4e6eb;
+  border: none;
+  cursor: not-allowed;
+}
+
+.form-control[disabled] {
+  background-color: #1e2124;
+  color: #e4e6eb;
+}
+
+.input-group {
+  background-color: #2c2f33;
+}
+
+.input-group-text {
+  background-color: #2c2f33;
+  color: #e4e6eb;
+  border: 1px solid #4f388a;
+}
+
+.search-input {
+    border: 1px solid #4f388a;
+    background-color: #2c2f33;
+    color: #e4e6eb;
+}
+
+.user-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.user-avatar {
+    border: 2px solid #4f388a;
+}
+
+.user-name {
+    color: #e4e6eb;
+}
+
+.chat-owner-name {
+    background-color: #2c2f33;
+    border: 1px solid #4f388a;
+}
+
+.user-checkbox {
+    accent-color: #4f388a;
+}
+
+.user-list::-webkit-scrollbar-track {
+    background: #2c2f33;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background: #4f388a;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+    background: #59506b;
+}
+
+.delete-button {
+  color: #ffffff;
+  background-color: #f71f1f;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2c2f33;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4f388a;
+  border-radius: 5px;
+  border: 2px solid #2c2f33;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7b6bc3;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4f388a #2c2f33;
 }

@@ -43,7 +43,16 @@
                     <li class="user-item flex items-center gap-3" data-type="user">
                         <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex items-center gap-3 w-full">
                             <div class="icon-container">
-                                <i class="fas fa-user user-icon"></i>
+                                @if (user.Picture.Length > 0)
+                                {
+                                    var base64Image = Convert.ToBase64String(@user.Picture);
+                                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                                    <img class="profile-image" src="@imgSrc" alt="User Avatar" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="profile-pic" />
+                                }
                             </div>
                             <span class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</span>
                             <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
