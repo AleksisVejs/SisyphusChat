@@ -296,3 +296,31 @@ a:focus {
 .user-list::-webkit-scrollbar-thumb:hover {
     background: #7b6bc3;
 }
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8c77d0;
+  border-radius: 5px;
+  border: 2px solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7b6bc3;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8c77d0 #f0f0f0;
+}

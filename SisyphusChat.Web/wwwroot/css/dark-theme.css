@@ -316,3 +316,30 @@ a:focus {
   color: #ffffff;
   background-color: #f71f1f;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2c2f33;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4f388a;
+  border-radius: 5px;
+  border: 2px solid #2c2f33;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7b6bc3;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4f388a #2c2f33;
+}
