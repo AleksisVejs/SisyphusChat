@@ -24,6 +24,14 @@
                 }
             </div>
             <h1 class="profile-username">@Model.Username</h1>
+
+            <form method="post" asp-action="RemoveFriend" asp-controller="Friends">
+                <input type="hidden" name="friendId" value="@Model.UserId" />
+                <button type="submit" class="remove-friend-button">
+                    <i class="fas fa-user-minus"></i>
+                    Remove Friend
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -87,5 +95,29 @@
         font-size: 2.5rem;
         font-weight: 600;
         margin: 0;
+    }
+
+    .remove-friend-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: none;
+        background-color: #dc3545;
+        color: white;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .remove-friend-button:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+    }
+
+    .remove-friend-button i {
+        font-size: 1.1rem;
     }
 </style>

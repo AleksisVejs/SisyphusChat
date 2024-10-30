@@ -126,6 +126,7 @@ namespace SisyphusChat.Web.Controllers
             {
                 Username = user.UserName,
                 ProfilePicture = user.Picture,
+                UserId = user.Id
             };
 
             return View(profile);
