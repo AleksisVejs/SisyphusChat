@@ -310,7 +310,6 @@ p {
     width: 30px;
     height: 30px;
     position: absolute;
-    border: 2px solid var(--background-color);
     border-radius: 50%;
     overflow: hidden;
 }

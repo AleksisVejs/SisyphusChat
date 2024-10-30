@@ -269,10 +269,6 @@ a:focus {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.profile-image {
-    border: 2px solid #7b6bc3;
-}
-
 .add-friend-button, 
 .manage-requests-button {
     background-color: #4f388a;
