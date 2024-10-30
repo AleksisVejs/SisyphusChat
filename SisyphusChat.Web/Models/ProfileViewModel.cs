@@ -11,5 +11,7 @@ namespace SisyphusChat.Web.Models
         public string Username { get; set; }
         public byte[] ProfilePicture { get; set; }
         public string UserId { get; set; }
+        public bool IsOnline { get; set; }
+        public DateTime JoinDate { get; set; }
     }
 }

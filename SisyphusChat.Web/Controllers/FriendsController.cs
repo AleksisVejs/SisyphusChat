@@ -126,7 +126,9 @@ namespace SisyphusChat.Web.Controllers
             {
                 Username = user.UserName,
                 ProfilePicture = user.Picture,
-                UserId = user.Id
+                UserId = user.Id,
+                IsOnline = user.IsOnline,
+                JoinDate = user.TimeCreated
             };
 
             return View(profile);
