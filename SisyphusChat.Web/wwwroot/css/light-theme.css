@@ -228,3 +228,91 @@ a:focus {
   background-color: #e4e6eb;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
 }
+
+/* Profile Styles */
+.profile-container-page {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(140, 119, 208, 0.1);
+}
+
+.profile-image-wrapper {
+    border: 4px solid #8c77d0;
+    box-shadow: 0 4px 15px rgba(140, 119, 208, 0.2);
+}
+
+.profile-username {
+    color: #333333;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    background-color: #8c77d0;
+    color: #ffffff;
+}
+
+.back-button:hover {
+    background-color: #7b6bc3;
+    color: #ffffff;
+    transform: translateX(-5px);
+}
+
+#profileImage:hover {
+    filter: brightness(0.95);
+}
+
+/* Friends List Styles */
+.friend-card {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(140, 119, 208, 0.1);
+}
+
+.add-friend-button, 
+.manage-requests-button {
+    background-color: #8c77d0;
+    color: #ffffff;
+}
+
+.add-friend-button:hover, 
+.manage-requests-button:hover {
+    background-color: #7b6bc3;
+    color: #ffffff;
+}
+
+.friend-name a {
+    color: #333333;
+}
+
+.friend-name a:hover {
+    color: #8c77d0;
+}
+
+.status-dot {
+    border-color: #ffffff;
+}
+
+.status-dot.online {
+    background-color: #43b581;
+}
+
+.status-dot.offline {
+    background-color: #747f8d;
+}
+
+.remove-button {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+.profile-image {
+    border: 2px solid #8c77d0;  /* Add subtle border */
+}
+
+.status-dot {
+    border-color: #ffffff;
+}

@@ -3,14 +3,89 @@
     ViewData["Title"] = $"{Model.Username}'s Profile";
 }
 
-<h1>@Model.Username's Profile</h1>
-@if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
-{
-    var base64Image = Convert.ToBase64String(Model.ProfilePicture);
-    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
-    <img id="profileImage" src="@imgSrc" alt="User Avatar" />
-}
-else
-{
-    <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
-}
+<div class="profile-page">
+    <a href="@Url.Action("Index", "Friends")" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Friends</span>
+    </a>
+
+    <div class="profile-container-page">
+        <div class="profile-header">
+            <div class="profile-image-wrapper">
+                @if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
+                {
+                    var base64Image = Convert.ToBase64String(Model.ProfilePicture);
+                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                    <img id="profileImage" src="@imgSrc" alt="User Avatar" />
+                }
+                else
+                {
+                    <img id="profileImage" src="~/images/default_pfp.jpg" alt="Default Avatar" />
+                }
+            </div>
+            <h1 class="profile-username">@Model.Username</h1>
+        </div>
+    </div>
+</div>
+
+<style scoped>
+    .profile-page {
+        max-width: 800px;
+        margin: 40px auto;
+        position: relative;
+        padding: 20px;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+        text-decoration: none;
+    }
+
+    .profile-container-page {
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        text-align: center;
+    }
+
+    .profile-image-wrapper {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-image-wrapper:hover {
+        transform: scale(1.05);
+    }
+
+    #profileImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: filter 0.3s ease;
+    }
+
+    .profile-username {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+</style>
