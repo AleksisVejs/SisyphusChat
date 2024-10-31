@@ -219,10 +219,16 @@ function createNotificationGroupElement(group) {
         hour12: true
     });
 
-    // Add icons based on type
-    const groupIcon = group.type === 'group' 
-        ? '<i class="fas fa-users notification-icon"></i>' 
-        : '<i class="fas fa-user notification-icon"></i>';
+    // Modify the icon selection to include admin notifications
+    const groupIcon = group.notifications[0].type === 2 // AdminMessage type
+        ? '<i class="fas fa-shield-alt notification-icon"></i>'
+        : group.type === 'group'
+            ? '<i class="fas fa-users notification-icon"></i>'
+            : '<i class="fas fa-user notification-icon"></i>';
+
+    // Add admin-notification class if it's an admin message
+    const isAdminNotification = group.notifications[0].type === 2;
+    const adminClass = isAdminNotification ? 'admin-notification' : '';
 
     div.innerHTML = `
         <div class="notification-group-header">
@@ -236,7 +242,7 @@ function createNotificationGroupElement(group) {
             ${group.notifications.map(notification => {
                 const message = notification.message.replace(/^\[(.*?)\]\s*/, '');
                 return `
-                    <div class="notification-item ${notification.isRead ? 'read' : 'unread'}" 
+                    <div class="notification-item ${adminClass} ${notification.isRead ? 'read' : 'unread'}" 
                          data-notification-id="${notification.id}"
                          onclick="handleNotificationClick(${notification.type}, '${notification.relatedEntityId}', event)">
                         <div class="notification-content">

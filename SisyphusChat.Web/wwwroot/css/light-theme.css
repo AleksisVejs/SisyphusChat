@@ -617,3 +617,74 @@ a:focus {
     color: rgba(0, 0, 0, 0.5);
     font-style: italic;
 }
+
+.notification-item.admin-notification {
+    background: rgba(220, 53, 69, 0.05);
+    border-left: 2px solid #dc3545;
+}
+
+.notification-item.admin-notification .notification-sender {
+    color: #dc3545;
+}
+
+.notification-item.admin-notification .notification-icon {
+    color: #dc3545;
+}
+
+.notification-item.admin-notification:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Admin Notification Form Styles */
+.admin-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(140, 119, 208, 0.1);
+}
+
+.admin-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.admin-card .card-header h5 {
+    color: #8c77d0;
+    font-weight: 600;
+    margin: 0;
+}
+
+.admin-card .card-body {
+    padding: 1.5rem;
+}
+
+#adminNotificationForm textarea {
+    background: #f8f9fa;
+    border: 1px solid rgba(140, 119, 208, 0.2);
+    border-radius: 10px;
+    color: #333333;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+#adminNotificationForm textarea:focus {
+    background: #ffffff;
+    border-color: #8c77d0;
+    box-shadow: 0 0 15px rgba(140, 119, 208, 0.15);
+}
+
+#adminNotificationForm .btn-primary {
+    background: #8c77d0;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 0.8rem 2rem;
+    transition: all 0.3s ease;
+}
+
+#adminNotificationForm .btn-primary:hover {
+    background: #7b6bc3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(140, 119, 208, 0.2);
+}

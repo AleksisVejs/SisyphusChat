@@ -46,10 +46,57 @@
     </div>
 </div>
 
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card admin-card">
+            <div class="card-header">
+                <h5>Send Admin Notification</h5>
+            </div>
+            <div class="card-body">
+                <form id="adminNotificationForm">
+                    <div class="mb-3">
+                        <label for="notificationMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="notificationMessage" rows="3" required 
+                            placeholder="Enter your notification message here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Send Notification
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function previewReport(reportType) {
         window.open(`/Admin/PreviewReport?reportType=${reportType}`, '_blank');
     }
+
+    document.getElementById('adminNotificationForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = document.getElementById('notificationMessage').value;
+        
+        try {
+            const response = await fetch('/Admin/SendNotification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message })
+            });
+            
+            if (response.ok) {
+                alert('Notification sent successfully');
+                document.getElementById('notificationMessage').value = '';
+            } else {
+                alert('Failed to send notification');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to send notification');
+        }
+    });
 </script>
 
 <style scoped>
