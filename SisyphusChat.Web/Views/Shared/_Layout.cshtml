@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="~/SisyphusChat.Web.styles.css" asp-append-version="true" />
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
     (function() {
         var savedTheme = localStorage.getItem("theme") || "light";
@@ -56,6 +55,28 @@
                         {
                             var currentUser = await UserManager.GetUserAsync(User); // Get current user
 
+                            <li class="nav-item dropdown" id="notificationDropdown">
+                                <a class="nav-link" href="#" id="notificationLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge badge-danger notification-badge d-none" id="notificationCount">0</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right notification-menu" aria-labelledby="notificationLink">
+                                    <div class="notification-header d-flex justify-content-between align-items-center p-2">
+                                        <h6 class="mb-0">Notifications</h6>
+                                        <div class="notification-actions">
+                                            <button class="btn btn-sm btn-outline-primary" id="showUnreadOnly">
+                                                <i class="fas fa-filter"></i> Unread
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" id="markAllRead">
+                                                <i class="fas fa-check-double"></i> Mark All Read
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="notification-list" id="notificationList">
+                                        <!-- Notifications will be inserted here -->
+                                    </div>
+                                </div>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Account/Manage/Index" asp-area="Identity">Hello, @UserManager.GetUserName(User)</a>
                             </li>
@@ -107,12 +128,352 @@
     }
 
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+        <script>
+            let allNotifications = [];
+            let showingUnreadOnly = true;
+
+            const notificationConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub")
+                .build();
+
+            async function startNotificationConnection() {
+                try {
+                    await notificationConnection.start();
+                    console.log("NotificationHub Connected.");
+                    await loadNotifications();
+                } catch (err) {
+                    console.error("NotificationHub Connection Error: ", err);
+                    setTimeout(startNotificationConnection, 5000);
+                }
+            }
+
+            async function loadNotifications() {
+                await notificationConnection.invoke("GetNotificationsAsync");
+            }
+
+            notificationConnection.on("ReceiveNotifications", (notifications) => {
+                allNotifications = notifications;
+                updateNotificationUI(notifications);
+            });
+
+            notificationConnection.on("ReceiveNotification", (notification) => {
+                allNotifications.unshift(notification);
+                updateNotificationUI(allNotifications);
+            });
+
+            notificationConnection.on("NotificationsUpdated", () => {
+                loadNotifications();
+            });
+
+            function updateNotificationUI(notifications) {
+                const notificationList = document.getElementById("notificationList");
+                const notificationCount = document.getElementById("notificationCount");
+                const notificationBadge = document.querySelector(".notification-badge");
+                
+                // Sort notifications: unread first, then by date
+                const sortedNotifications = [...notifications].sort((a, b) => {
+                    if (a.isRead !== b.isRead) return a.isRead ? 1 : -1;
+                    return new Date(b.timeCreated) - new Date(a.timeCreated);
+                });
+                
+                // Filter notifications if showing unread only
+                const displayedNotifications = showingUnreadOnly 
+                    ? sortedNotifications.filter(n => !n.isRead)
+                    : sortedNotifications;
+                
+                notificationList.innerHTML = "";
+                
+                // Count unread notifications
+                const unreadCount = notifications.filter(n => !n.isRead).length;
+                
+                // Update badge
+                if (unreadCount > 0) {
+                    notificationCount.textContent = unreadCount;
+                    notificationCount.classList.remove("d-none");
+                } else {
+                    notificationCount.textContent = "";
+                    notificationCount.classList.add("d-none");
+                }
+
+                // Update notification list
+                if (displayedNotifications.length > 0) {
+                    displayedNotifications.forEach(notification => {
+                        const notificationItem = createNotificationElement(notification);
+                        notificationList.appendChild(notificationItem);
+                    });
+                } else {
+                    notificationList.innerHTML = '<div class="dropdown-item">No notifications</div>';
+                }
+
+                updateFilterButton();
+            }
+
+            function createNotificationElement(notification) {
+                const div = document.createElement("div");
+                div.className = `notification-item ${notification.isRead ? 'read' : 'unread'}`;
+                
+                // Add special styling for friend requests
+                if (notification.type === 1) { // NotificationType.FriendRequest = 1
+                    div.classList.add('friend-request');
+                }
+                
+                const formattedDate = new Date(notification.timeCreated).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                
+                div.innerHTML = `
+                    <div class="notification-content" onclick="handleNotificationClick('${notification.type}', '${notification.relatedEntityId}')">
+                        <div class="notification-header">
+                            <span class="sender">${notification.senderUsername}</span>
+                            <span class="time">${formattedDate}</span>
+                        </div>
+                        <p class="message">${notification.message}</p>
+                    </div>
+                    <div class="notification-actions">
+                        ${!notification.isRead ? 
+                            `<button class="btn btn-sm btn-outline-primary mark-read" onclick="markAsRead('${notification.id}', event)">
+                                <i class="fas fa-check"></i> Mark as Read
+                            </button>` : ''
+                        }
+                    </div>
+                `;
+                console.log("Created notification element with ID:", notification.id);
+                
+                return div;
+            }
+
+            function handleNotificationClick(type, relatedEntityId) {
+                if (type === '1') { // NotificationType.FriendRequest
+                    window.location.href = '/Friends/Requests';
+                } else if (type === '0') { // NotificationType.Message
+                    window.location.href = `/Chat/ChatRoom?chatId=${relatedEntityId}`;
+                }
+            }
+
+async function openChat(chatId) {
+    try {
+        console.log("Attempting to mark chat notifications as read for chatId:", chatId);
+        // Get the current user ID
+        const userId = "@UserManager.GetUserId(User)";
+        console.log("Current userId:", userId);
+        
+        // Wait for the notifications to be marked as read
+        await notificationConnection.invoke("MarkMessageNotificationsAsRead", chatId, userId);
+        console.log("Successfully marked chat notifications as read");
+        
+        // Update local notifications state
+        await loadNotifications();
+        
+        // Small delay to ensure UI updates
+        setTimeout(() => {
+            // Navigate to chat
+            window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
+        }, 100);
+    } catch (err) {
+        console.error("Error in openChat:", err);
+        // Navigate anyway if there's an error
+        window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
+    }
+}
+
+            async function markAsRead(notificationId, event) {
+                event.stopPropagation(); // Prevent opening chat when clicking mark as read
+                console.log("Attempting to mark as read notification with ID:", notificationId);
+                try {
+                    console.log("Invoking MarkSingleNotificationAsRead with ID:", notificationId);
+                    await notificationConnection.invoke("MarkSingleNotificationAsRead", notificationId);
+                    console.log("Successfully marked notification as read:", notificationId);
+                    
+                    // Update local state after successful mark as read
+                    const notification = allNotifications.find(n => n.id === notificationId);
+                    if (notification) {
+                        notification.isRead = true;
+                        updateNotificationUI(allNotifications);
+                    }
+                } catch (err) {
+                    console.error("Error marking notification as read:", err);
+                    console.error("Notification ID that failed:", notificationId);
+                }
+            }
+
+            async function markAllAsRead() {
+                const unreadNotifications = allNotifications.filter(n => !n.isRead);
+                for (const notification of unreadNotifications) {
+                    await notificationConnection.invoke("MarkMessageNotificationsAsRead", 
+                        notification.relatedEntityId, 
+                        "@UserManager.GetUserId(User)");
+                }
+            }
+
+            function updateFilterButton() {
+                const button = document.getElementById('showUnreadOnly');
+                if (showingUnreadOnly) {
+                    button.innerHTML = '<i class="fas fa-filter"></i> All';
+                } else {
+                    button.innerHTML = '<i class="fas fa-filter"></i> Unread';
+                }
+            }
+
+            document.getElementById('showUnreadOnly').addEventListener('click', () => {
+                showingUnreadOnly = !showingUnreadOnly;
+                updateNotificationUI(allNotifications);
+            });
+
+            document.getElementById('markAllRead').addEventListener('click', markAllAsRead);
+
+            startNotificationConnection().then(() => {
+                updateFilterButton();
+            });
+
+            $(document).ready(function() {
+                // Replace the previous dropdown initialization with this
+                $('#notificationLink').on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const menu = $(this).next('.dropdown-menu');
+                    $('.dropdown-menu').not(menu).removeClass('show');
+                    menu.toggleClass('show');
+                });
+
+                // Close dropdown when clicking outside
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#notificationDropdown').length) {
+                        $('.notification-menu').removeClass('show');
+                    }
+                });
+
+                // Prevent dropdown from closing when clicking inside
+                $('.notification-menu').on('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        </script>
+
+        <style>
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                padding: 3px 6px;
+                font-size: 0.75rem;
+                border-radius: 50%;
+                background-color: #dc3545;
+                color: white;
+                min-width: 18px;
+                text-align: center;
+                display: inline-block !important;
+            }
+
+            .notification-menu {
+                width: 350px;
+                max-height: 400px;
+                position: absolute;
+                right: 0;
+                left: auto;
+                top: 100%;
+                margin-top: 0.5rem;
+                z-index: 1000;
+                background-color: white;
+                border: 1px solid rgba(0,0,0,.15);
+                border-radius: 0.25rem;
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+            }
+
+
+            .notification-item {
+                padding: 12px 15px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+            }
+
+            .notification-item.unread {
+                background-color: #f8f9fa;
+                border-left: 3px solid #007bff;
+            }
+
+            .notification-item:hover {
+                background-color: #f0f2f5;
+            }
+
+            .notification-content {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .notification-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 6px;
+            }
+
+            .notification-actions {
+                margin-top: 8px;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .sender {
+                font-weight: 600;
+                color: #2c3e50;
+                font-size: 0.95rem;
+            }
+
+            .time {
+                color: #6c757d;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .message {
+                margin: 0;
+                color: #4a5568;
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+
+            #notificationDropdown {
+                position: relative;
+            }
+
+            .dropdown-menu {
+                display: none;
+            }
+
+            .dropdown-menu.show {
+                display: block !important;
+            }
+
+            /* Add this to ensure the notification container is visible */
+            .navbar-nav .dropdown {
+                position: static;
+            }
+
+            /* Add this to your existing notification styles */
+            .notification-item.friend-request {
+                background-color: #ffebee;
+                border-left: 3px solid #ef5350;
+            }
+
+            .notification-item.friend-request:hover {
+                background-color: #ffcdd2;
+            }
+        </style>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

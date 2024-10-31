@@ -16,6 +16,8 @@ namespace SisyphusChat.Core.Interfaces
         IReportRepository ReportRepository { get; }
 
         IUserRepository UserRepository { get; }
+
+        INotificationRepository NotificationRepository { get; }
         
         Task SaveAsync();
     }

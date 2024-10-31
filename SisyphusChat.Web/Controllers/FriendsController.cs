@@ -8,11 +8,12 @@ using SisyphusChat.Web.Models;
 using NuGet.Protocol.Plugins;
 using SisyphusChat.Infrastructure.Exceptions;
 using SisyphusChat.Core.Models;
-
+using Microsoft.AspNetCore.SignalR;
+// ... existing using statements ...
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class FriendsController(IFriendService friendService, IUserService userService) : Controller
+    public class FriendsController(IFriendService friendService, IUserService userService,IHubContext<NotificationHub> notificationHubContext,INotificationService notificationService) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -41,6 +42,7 @@ namespace SisyphusChat.Web.Controllers
 
             var currentUser = await userService.GetCurrentContextUserAsync();
             var receiverUser = await userService.GetByUsernameAsync(receiverUsername);
+            
 
             if (receiverUser == null)
             {
@@ -51,10 +53,27 @@ namespace SisyphusChat.Web.Controllers
             try
             {
                 await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
+                
+                // Create and send notification
+                var notification = new NotificationModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = receiverUser.Id,
+                    Message = $"{currentUser.UserName} sent you a friend request",
+                    Type = NotificationType.FriendRequest,
+                    TimeCreated = DateTime.UtcNow,
+                    IsRead = false,
+                    RelatedEntityId = Guid.NewGuid().ToString(),
+                    SenderUsername = currentUser.UserName
+                };
+                await notificationService.CreateAsync(notification);
+                
+                // Send real-time notification
+                await notificationHubContext.Clients.User(receiverUser.Id)
+                    .SendAsync("ReceiveNotification", notification);
 
-                // Set a success message
                 TempData["SuccessMessage"] = "Friend request sent successfully!";
-                return RedirectToAction("Add"); // Redirect to the Add view
+                return RedirectToAction("Add");
             }
             catch (InvalidOperationException ex)
             {

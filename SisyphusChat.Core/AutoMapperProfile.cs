@@ -52,6 +52,22 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.ReqReceiver, opt => opt.MapFrom(src => src.ReqReceiver))
                 .ForMember(dest => dest.IsAccepted, opt => opt.MapFrom(src => src.IsAccepted))
                 .ReverseMap();
+
+            CreateMap<Notification, NotificationModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
+                .ForMember(dest => dest.SenderUserId, opt => opt.MapFrom(src => src.SenderUsername))
+                .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.SenderUsername))
+                .ForMember(dest => dest.TimeCreated, opt => opt.MapFrom(src => src.TimeCreated))
+                .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
+                .ForMember(dest => dest.RelatedEntityId, opt => opt.MapFrom(src => src.RelatedEntityId))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ReverseMap();
+
         }
     }
 }
