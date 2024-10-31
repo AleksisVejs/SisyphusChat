@@ -138,238 +138,37 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+        <script src="~/js/notifications.js"></script>
         <script>
-            let allNotifications = [];
-            let showingUnreadOnly = true;
-
-            const notificationConnection = new signalR.HubConnectionBuilder()
-                .withUrl("/notificationHub")
-                .build();
-
-            async function startNotificationConnection() {
-                try {
-                    await notificationConnection.start();
-                    console.log("NotificationHub Connected.");
-                    await loadNotifications();
-                } catch (err) {
-                    console.error("NotificationHub Connection Error: ", err);
-                    setTimeout(startNotificationConnection, 5000);
-                }
-            }
-
-            async function loadNotifications() {
-                await notificationConnection.invoke("GetNotificationsAsync");
-            }
-
-            notificationConnection.on("ReceiveNotifications", (notifications) => {
-                allNotifications = notifications;
-                updateNotificationUI(notifications);
-            });
-
-            notificationConnection.on("ReceiveNotification", (notification) => {
-                allNotifications.unshift(notification);
-                updateNotificationUI(allNotifications);
-            });
-
-            notificationConnection.on("NotificationsUpdated", () => {
-                loadNotifications();
-            });
-
-            function updateNotificationUI(notifications) {
-                const notificationList = document.getElementById("notificationList");
-                const notificationCount = document.getElementById("notificationCount");
-                const notificationBadge = document.querySelector(".notification-badge");
-                
-                // Sort notifications: unread first, then by date
-                const sortedNotifications = [...notifications].sort((a, b) => {
-                    if (a.isRead !== b.isRead) return a.isRead ? 1 : -1;
-                    return new Date(b.timeCreated) - new Date(a.timeCreated);
-                });
-                
-                // Filter notifications if showing unread only
-                const displayedNotifications = showingUnreadOnly 
-                    ? sortedNotifications.filter(n => !n.isRead)
-                    : sortedNotifications;
-                
-                notificationList.innerHTML = "";
-                
-                // Count unread notifications
-                const unreadCount = notifications.filter(n => !n.isRead).length;
-                
-                // Update badge
-                if (unreadCount > 0) {
-                    notificationBadge.textContent = unreadCount;
-                    notificationBadge.classList.add("show");
-                } else {
-                    notificationBadge.textContent = "";
-                    notificationBadge.classList.remove("show");
-                }
-
-                // Update notification list
-                if (displayedNotifications.length > 0) {
-                    displayedNotifications.forEach(notification => {
-                        const notificationItem = createNotificationElement(notification);
-                        notificationList.appendChild(notificationItem);
-                    });
-                } else {
-                    notificationList.innerHTML = '<div class="dropdown-item">No notifications</div>';
-                }
-
-                updateFilterButton();
-            }
-
-            function createNotificationElement(notification) {
-                const div = document.createElement("div");
-                div.className = `notification-item ${notification.isRead ? 'read' : 'unread'}`;
-                
-                // Check if the message contains a group chat indicator [GroupName]
-                const isGroupMessage = notification.message.match(/^\[(.*?)\]/);
-                const groupName = isGroupMessage ? isGroupMessage[1] : null;
-                const actualMessage = isGroupMessage 
-                    ? notification.message.substring(isGroupMessage[0].length).trim()
-                    : notification.message;
-                
-                const formattedDate = new Date(notification.timeCreated).toLocaleString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true
-                });
-                
-                div.innerHTML = `
-                    <div class="notification-content" onclick="handleNotificationClick('${notification.type}', '${notification.relatedEntityId}')">
-                        <div class="notification-header">
-                            ${groupName 
-                                ? `<span class="notification-group">${groupName}</span>`
-                                : `<span class="notification-sender">${notification.senderUsername}</span>`
-                            }
-                            <span class="notification-time">${formattedDate}</span>
-                        </div>
-                        <div class="notification-subheader">
-                            ${groupName 
-                                ? `<span class="notification-sender">${notification.senderUsername}</span>`
-                                : ''
-                            }
-                        </div>
-                        <p class="notification-message">${actualMessage}</p>
-                    </div>
-                    <div class="notification-actions">
-                        ${!notification.isRead ? 
-                            `<button class="btn btn-sm btn-outline-primary mark-read" onclick="markAsRead('${notification.id}', event)">
-                                <i class="fas fa-check"></i> Mark as Read
-                            </button>` : ''
-                        }
-                    </div>
-                `;
-                
-                return div;
-            }
-
-            function handleNotificationClick(type, relatedEntityId) {
-                if (type === '1') { // NotificationType.FriendRequest
-                    window.location.href = '/Friends/Requests';
-                } else if (type === '0') { // NotificationType.Message
-                    window.location.href = `/Chat/ChatRoom?chatId=${relatedEntityId}`;
-                }
-            }
-
-            async function openChat(chatId) {
-                try {
-                    console.log("Attempting to mark chat notifications as read for chatId:", chatId);
-                    // Get the current user ID
-                    const userId = "@UserManager.GetUserId(User)";
-                    console.log("Current userId:", userId);
-                    
-                    // Wait for the notifications to be marked as read
-                    await notificationConnection.invoke("MarkMessageNotificationsAsRead", chatId, userId);
-                    console.log("Successfully marked chat notifications as read");
-                    
-                    // Update local notifications state
-                    await loadNotifications();
-                    
-                    // Small delay to ensure UI updates
-                    setTimeout(() => {
-                        // Navigate to chat
-                        window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
-                    }, 100);
-                } catch (err) {
-                    console.error("Error in openChat:", err);
-                    // Navigate anyway if there's an error
-                    window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
-                }
-            }
-
-            async function markAsRead(notificationId, event) {
-                event.stopPropagation(); // Prevent opening chat when clicking mark as read
-                console.log("Attempting to mark as read notification with ID:", notificationId);
-                try {
-                    console.log("Invoking MarkSingleNotificationAsRead with ID:", notificationId);
-                    await notificationConnection.invoke("MarkSingleNotificationAsRead", notificationId);
-                    console.log("Successfully marked notification as read:", notificationId);
-                    
-                    // Update local state after successful mark as read
-                    const notification = allNotifications.find(n => n.id === notificationId);
-                    if (notification) {
-                        notification.isRead = true;
-                        updateNotificationUI(allNotifications);
-                    }
-                } catch (err) {
-                    console.error("Error marking notification as read:", err);
-                    console.error("Notification ID that failed:", notificationId);
-                }
-            }
-
-            async function markAllAsRead() {
-                const unreadNotifications = allNotifications.filter(n => !n.isRead);
-                for (const notification of unreadNotifications) {
-                    await notificationConnection.invoke("MarkMessageNotificationsAsRead", 
-                        notification.relatedEntityId, 
-                        "@UserManager.GetUserId(User)");
-                }
-            }
-
-            function updateFilterButton() {
-                const button = document.getElementById('showUnreadOnly');
-                if (showingUnreadOnly) {
-                    button.innerHTML = '<i class="fas fa-filter"></i> All';
-                } else {
-                    button.innerHTML = '<i class="fas fa-filter"></i> Unread';
-                }
-            }
-
-            document.getElementById('showUnreadOnly').addEventListener('click', () => {
-                showingUnreadOnly = !showingUnreadOnly;
-                updateNotificationUI(allNotifications);
-            });
-
-            document.getElementById('markAllRead').addEventListener('click', markAllAsRead);
-
-            startNotificationConnection().then(() => {
-                updateFilterButton();
-            });
-
-            $(document).ready(function() {
-                // Replace the previous dropdown initialization with this
-                $('#notificationLink').on('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const menu = $(this).next('.dropdown-menu');
-                    $('.dropdown-menu').not(menu).removeClass('show');
-                    menu.toggleClass('show');
-                });
-
-                // Close dropdown when clicking outside
-                $(document).on('click', function(e) {
-                    if (!$(e.target).closest('#notificationDropdown').length) {
-                        $('.notification-menu').removeClass('show');
-                    }
-                });
-
+            document.addEventListener('DOMContentLoaded', function() {
                 // Prevent dropdown from closing when clicking inside
-                $('.notification-menu').on('click', function(e) {
-                    e.stopPropagation();
+                document.querySelector('.notification-menu').addEventListener('click', function(event) {
+                    event.stopPropagation();
                 });
+
+                var connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                connection.on("ReceiveNotification", function(notification) {
+                    if (notification) {
+                        updateNotificationUI([notification]);
+                    }
+                });
+
+                async function startConnection() {
+                    try {
+                        await connection.start();
+                        console.log("Connected to SignalR hub");
+                        initializeNotifications(connection);
+                    } catch (err) {
+                        console.error("Error connecting to hub:", err);
+                        setTimeout(startConnection, 5000);
+                    }
+                }
+
+                startConnection();
             });
         </script>
     }

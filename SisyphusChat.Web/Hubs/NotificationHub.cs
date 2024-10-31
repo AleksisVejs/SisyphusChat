@@ -44,24 +44,22 @@ public class NotificationHub : Hub
         _logger.LogInformation("⭐ Starting GetNotificationsAsync");
         try
         {
-            _logger.LogInformation("📍 Attempting to get current user");
             var currentUser = await _userService.GetCurrentContextUserAsync();
 
             if (currentUser == null)
             {
                 _logger.LogWarning("❌ Current user is null");
-                await Clients.Caller.SendAsync("ReceiveNotifications", null);
+                await Clients.Caller.SendAsync("ReceiveNotifications", Array.Empty<NotificationModel>());
                 return;
             }
 
-            _logger.LogInformation($"👤 Got current user with ID: {currentUser.Id}");
-
-            _logger.LogInformation("📍 Fetching notifications for user");
             var notifications = await _notificationService.GetNotificationsByUserId(currentUser.Id);
-
-            _logger.LogInformation($"📫 Retrieved {notifications?.Count() ?? 0} notifications");
-
-            await Clients.Caller.SendAsync("ReceiveNotifications", notifications);
+            
+            // Ensure we always return an array, even if empty
+            var notificationArray = notifications?.ToArray() ?? Array.Empty<NotificationModel>();
+            
+            _logger.LogInformation($"📫 Retrieved {notificationArray.Length} notifications");
+            await Clients.Caller.SendAsync("ReceiveNotifications", notificationArray);
             _logger.LogInformation("✅ Successfully sent notifications to client");
         }
         catch (Exception ex)
@@ -93,18 +91,47 @@ public class NotificationHub : Hub
         }
     }
 
-    public async Task MarkSingleNotificationAsRead(string notificationId)
+    public async Task MarkNotificationAsRead(string notificationId)
     {
         try
         {
-            _logger.LogInformation($"Marking single notification as read: {notificationId}");
+            _logger.LogInformation($"Marking notification as read: {notificationId}");
             await _notificationService.MarkAsRead(notificationId);
             var currentUser = await _userService.GetCurrentContextUserAsync();
             await Clients.User(currentUser.Id).SendAsync("NotificationsUpdated");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "❌ Error marking single notification as read");
+            _logger.LogError(ex, "❌ Error marking notification as read");
+            throw;
+        }
+    }
+
+    public async Task MarkAllNotificationsAsRead()
+    {
+        try
+        {
+            _logger.LogInformation("Marking all notifications as read");
+            var currentUser = await _userService.GetCurrentContextUserAsync();
+            
+            if (currentUser == null)
+            {
+                _logger.LogWarning("❌ Current user is null");
+                return;
+            }
+
+            var notifications = await _notificationService.GetUnreadNotificationsByUserId(currentUser.Id);
+            foreach (var notification in notifications)
+            {
+                await _notificationService.MarkAsRead(notification.Id);
+            }
+
+            await Clients.User(currentUser.Id).SendAsync("NotificationsUpdated");
+            _logger.LogInformation("✅ Successfully marked all notifications as read");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Error marking all notifications as read");
             throw;
         }
     }
