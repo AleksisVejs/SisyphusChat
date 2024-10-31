@@ -96,8 +96,16 @@ function setTypeFilter(type, event) {
     
     // Update active state of filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', 
-            btn.innerText.toLowerCase() === type);
+        // Remove case sensitivity and trim whitespace
+        const buttonType = btn.textContent.trim().toLowerCase();
+        const selectedType = type.toLowerCase();
+        
+        // Handle 'group' vs 'groups' difference
+        const isActive = buttonType === selectedType || 
+                        (buttonType === 'groups' && selectedType === 'group') ||
+                        (buttonType === 'group' && selectedType === 'groups');
+                        
+        btn.classList.toggle('active', isActive);
     });
     
     updateNotifications();
@@ -211,9 +219,17 @@ function createNotificationGroupElement(group) {
         hour12: true
     });
 
+    // Add icons based on type
+    const groupIcon = group.type === 'group' 
+        ? '<i class="fas fa-users notification-icon"></i>' 
+        : '<i class="fas fa-user notification-icon"></i>';
+
     div.innerHTML = `
         <div class="notification-group-header">
-            <span class="notification-group-name">${group.name}</span>
+            <div class="notification-group-title">
+                ${groupIcon}
+                <span class="notification-group-name">${group.name}</span>
+            </div>
             <span class="notification-time">${formattedDate}</span>
         </div>
         <div class="notification-group-content">

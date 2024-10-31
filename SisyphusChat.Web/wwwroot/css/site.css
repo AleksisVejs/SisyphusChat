@@ -597,3 +597,23 @@ p {
     margin-top: 4px;
     line-height: 1.4;
 }
+
+.notification-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-icon {
+    font-size: 0.9rem;
+    color: #8c77d0;
+    width: 16px;
+}
+
+.notification-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    margin-bottom: 8px;
+}
