@@ -34,7 +34,7 @@ button#theme-switcher {
 }
 
 .toggle-password:focus {
-  outline: none; 
+  outline: none;
 }
 
 .toggle-password i {
@@ -47,7 +47,6 @@ button#theme-switcher {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 
 /* Chat */
 #chatPageContainer {
@@ -128,7 +127,7 @@ button#theme-switcher {
 /* Chat header */
 .chat-header {
   padding: 1rem 0 0 1rem;
-  border-radius: 18px 18px 0 0; 
+  border-radius: 18px 18px 0 0;
 }
 
 .username-text {
@@ -148,7 +147,7 @@ button#theme-switcher {
   height: calc(100vh - 150px); /* Adjust height based on footer/header */
   display: flex;
   flex-direction: column; /* Ensures messages stack vertically */
-  gap: 10px; /* Adds space between messages */  
+  gap: 10px; /* Adds space between messages */
 }
 
 /* Individual message styles */
@@ -161,7 +160,7 @@ button#theme-switcher {
   font-size: 14px;
   position: relative; /* Allows positioning of time element */
   word-wrap: break-word; /* Prevents long words from breaking layout */
-  word-break: break-all; /* Breaks long words */  
+  word-break: break-all; /* Breaks long words */
   line-height: 1; /* Adjusts line height for readability */
 }
 
@@ -180,8 +179,7 @@ button#theme-switcher {
 /* Time stamp for messages */
 .time {
   color: #a5a5a5;
-  font-size: 12px;
-  position: absolute; /* Position the time relative to the message box */
+  font-size: 12px; /* Position the time relative to the message box */
   bottom: -15px; /* Adjusts position of time */
   right: 0; /* Aligns time to the right of the message */
   min-width: 60px; /* Set a minimum width for the time stamp */
@@ -222,7 +220,7 @@ button#theme-switcher {
 }
 
 p {
-  margin-block-end: 0;  
+  margin-block-end: 0;
 }
 
 #chatContainer-chat {
@@ -243,34 +241,45 @@ p {
 }
 
 .notification-dropdown {
-    position: relative;
+  position: relative;
 }
 
 .notification-bubble {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 5px;
-    font-size: 12px;
-    display: none; /* Initially hidden */
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 5px;
+  font-size: 12px;
+  display: none; /* Initially hidden */
 }
 
 .notification-list {
-    display: none; /* Hide by default */
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 300px;
-    max-height: 400px;
-    overflow-y: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
-    .notification-list.show {
-        display: block; /* Show when needed */
-    }
+.notification-list.show {
+  display: block; /* Show when needed */
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px; /* Adjust position */
+  right: -5px; /* Adjust position */
+  padding: 3px 6px;
+  font-size: 0.75rem;
+  border-radius: 50%;
+  background-color: #dc3545; /* Bootstrap danger color */
+  color: white;
+  min-width: 18px;
+  text-align: center;
+  display: inline-block !important; /* Override d-none initially */
+}

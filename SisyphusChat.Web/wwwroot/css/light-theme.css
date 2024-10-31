@@ -43,7 +43,7 @@ a.navbar-brand {
 }
 
 a.navbar-brand:hover {
-  color: #333333 !important;  
+  color: #333333 !important;
 }
 
 .navbar-light .navbar-nav .nav-link,
@@ -51,7 +51,7 @@ a.nav-link,
 .navbar-light .navbar-nav .nav-link.active,
 button.nav-link {
   color: #333333 !important;
-  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1) !important; 
+  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1) !important;
   transition: color 0.3s ease;
 }
 
@@ -106,19 +106,18 @@ footer {
   transition: box-shadow 0.3s ease;
 }
 
-
 .btn-primary:focus,
 .btn-primary.focus,
 .btn-primary:active {
   background-color: #7b6bc3 !important;
-  border-color: #7b6bc3 !important; 
+  border-color: #7b6bc3 !important;
   box-shadow: 0 0 10px rgba(123, 107, 195, 0.5) !important;
 }
 
 .btn-primary:hover {
   background-color: #7867b3;
   border-color: #7867b3;
-  box-shadow: 0 0 10px rgba(120, 103, 179, 0.5);  
+  box-shadow: 0 0 10px rgba(120, 103, 179, 0.5);
 }
 
 .btn-secondary:focus,
@@ -130,7 +129,7 @@ footer {
 }
 
 .btn-secondary:hover {
-  color:#333333;
+  color: #333333;
   background-color: #f0f0f0 !important;
   border-color: #f0f0f0 !important;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
@@ -178,7 +177,7 @@ a:focus {
 
 .search-container {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .chat-header {
@@ -189,12 +188,12 @@ a:focus {
 
 .chat-messages {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .chat-footer {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .sent {
@@ -210,8 +209,8 @@ a:focus {
 
 #messageInput {
   background-color: #e4e6eb;
-  color:#333333;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+  color: #333333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #sendMessageButton {
@@ -226,5 +225,5 @@ a:focus {
 
 #chatContainer-chat {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }

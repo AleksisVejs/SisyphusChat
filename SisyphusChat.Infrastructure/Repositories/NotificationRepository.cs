@@ -19,8 +19,6 @@ namespace SisyphusChat.Infrastructure.Repositories
         }
         public async Task AddAsync(Notification entity)
         {
-            entity.Id = Guid.NewGuid().ToString();
-            entity.TimeCreated = DateTime.Now;
             await context.Notifications.AddAsync(entity);
             await context.SaveChangesAsync();
         }

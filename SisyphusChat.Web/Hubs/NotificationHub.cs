@@ -92,4 +92,22 @@ public class NotificationHub : Hub
             _logger.LogError(ex, "❌ Error marking message notifications as read");
         }
     }
+
+    public async Task MarkSingleNotificationAsRead(string notificationId)
+    {
+        try
+        {
+            _logger.LogInformation($"Marking single notification as read: {notificationId}");
+            await _notificationService.MarkAsRead(notificationId);
+            var currentUser = await _userService.GetCurrentContextUserAsync();
+            await Clients.User(currentUser.Id).SendAsync("NotificationsUpdated");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Error marking single notification as read");
+            throw;
+        }
+    }
+
+    
 }
