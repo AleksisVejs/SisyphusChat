@@ -18,8 +18,13 @@ namespace SisyphusChat.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
-            var friends = await friendService.GetAllFriendsAsync(currentUser.Id);
-            return View(friends);
+            var model = new FRequestModel
+            {
+                Friends = await friendService.GetAllFriendsAsync(currentUser.Id),
+                SentRequests = await friendService.GetAllSentRequestsAsync(currentUser.Id),
+                ReceivedRequests = await friendService.GetAllReceivedRequestsAsync(currentUser.Id)
+            };
+            return View(model);
         }
 
         public async Task<IActionResult> Add()
@@ -88,7 +93,7 @@ namespace SisyphusChat.Web.Controllers
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             await friendService.DeleteByIdAsync(currentUser.Id + ' ' + receiverId);
-            return RedirectToAction("Requests");
+            return RedirectToAction("Index");
         }
 
         // Accepts friendship request
@@ -98,7 +103,7 @@ namespace SisyphusChat.Web.Controllers
             var currentUser = await userService.GetCurrentContextUserAsync();
             var friend = await friendService.GetByIdAsync(senderId + ' ' + currentUser.Id);
             await friendService.UpdateAsync(friend);
-            return RedirectToAction("Requests");
+            return RedirectToAction("Index");
         }
 
         // Denies friendship request
@@ -107,7 +112,7 @@ namespace SisyphusChat.Web.Controllers
         {
             var currentUser = await userService.GetCurrentContextUserAsync();
             await friendService.DeleteByIdAsync(senderId + ' ' + currentUser.Id);
-            return RedirectToAction("Requests");
+            return RedirectToAction("Index");
         }
 
         // Stops friendship
