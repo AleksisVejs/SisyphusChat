@@ -12,7 +12,8 @@ public class ChatHub(
     IChatService chatService,
     IHubContext<NotificationHub> notificationHubContext,
     INotificationService notificationService,
-    ILogger<ChatHub> logger
+    ILogger<ChatHub> logger,
+    IFriendService friendService
     ) : Hub
 {
     public override async Task OnConnectedAsync()
@@ -70,26 +71,40 @@ public class ChatHub(
             {
                 logger.LogInformation($"Creating notification for user {member.UserId} from {currentUserModel.UserName}");
                 
-                var notification = new NotificationModel
+                // For group chats, always send notifications
+                // For direct messages, only send if they are friends
+                bool shouldSendNotification = chat.Type == ChatType.Group;
+                
+                if (!shouldSendNotification)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    UserId = member.UserId,
-                    SenderUsername = currentUserModel.UserName,
-                    Message = chat.Type == ChatType.Group ? $"[{chat.Name}] {message}" : message,
-                    TimeCreated = DateTime.UtcNow,
-                    IsRead = false,
-                    Type = NotificationType.Message,
-                    RelatedEntityId = chatId
-                };
+                    // Check if users are friends
+                    var areFriends = await friendService.GetAllFriendsAsync(member.UserId);
+                    shouldSendNotification = areFriends.Any(f => f.Id == currentUserModel.Id);
+                }
 
-                logger.LogInformation($"Attempting to save notification: {notification.Id} to database");
-                await notificationService.CreateAsync(notification);
-                logger.LogInformation($"✅ Successfully saved notification {notification.Id} to database");
+                if (shouldSendNotification)
+                {
+                    var notification = new NotificationModel
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserId = member.UserId,
+                        SenderUsername = currentUserModel.UserName,
+                        Message = chat.Type == ChatType.Group ? $"[{chat.Name}] {message}" : message,
+                        TimeCreated = DateTime.UtcNow,
+                        IsRead = false,
+                        Type = NotificationType.Message,
+                        RelatedEntityId = chatId
+                    };
 
-                logger.LogInformation($"Attempting to send notification to user {member.UserId}");
-                await notificationHubContext.Clients.User(member.UserId)
-                    .SendAsync("ReceiveNotification", notification);
-                logger.LogInformation($"✅ Successfully sent notification to user {member.UserId}");
+                    logger.LogInformation($"Attempting to save notification: {notification.Id} to database");
+                    await notificationService.CreateAsync(notification);
+                    logger.LogInformation($"✅ Successfully saved notification {notification.Id} to database");
+
+                    logger.LogInformation($"Attempting to send notification to user {member.UserId}");
+                    await notificationHubContext.Clients.User(member.UserId)
+                        .SendAsync("ReceiveNotification", notification);
+                    logger.LogInformation($"✅ Successfully sent notification to user {member.UserId}");
+                }
             }
             catch (Exception ex)
             {

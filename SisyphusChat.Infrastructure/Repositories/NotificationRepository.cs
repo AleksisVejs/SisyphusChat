@@ -32,14 +32,72 @@ namespace SisyphusChat.Infrastructure.Repositories
             return notification;
         }
 
-        public Task<List<Notification>> GetNotificationsByUserId(string userId)
+        public async Task<List<Notification>> GetNotificationsByUserId(string userId)
         {
-            return Task.FromResult(context.Notifications.Where(n => n.UserId == userId).ToList());
+            // Get all notifications for the user
+            var notifications = await context.Notifications
+                .Where(n => n.UserId == userId)
+                .ToListAsync();
+
+            // Filter out direct message notifications from non-friends
+            var filteredNotifications = new List<Notification>();
+            
+            foreach (var notification in notifications)
+            {
+                // Always include non-message notifications and group messages
+                if (notification.Type != NotificationType.Message || notification.Message.StartsWith("["))
+                {
+                    filteredNotifications.Add(notification);
+                    continue;
+                }
+
+                // For direct messages, check if users are friends
+                var friendship1 = await context.Friends
+                    .FirstOrDefaultAsync(f => 
+                        (f.ReqSenderId == userId && f.ReqReceiverId == notification.SenderUsername) || 
+                        (f.ReqReceiverId == userId && f.ReqSenderId == notification.SenderUsername));
+
+                if (friendship1 != null && friendship1.IsAccepted)
+                {
+                    filteredNotifications.Add(notification);
+                }
+            }
+
+            return filteredNotifications;
         }
 
-        public Task<List<Notification>> GetUnreadNotificationsByUserId(string userId)
+        public async Task<List<Notification>> GetUnreadNotificationsByUserId(string userId)
         {
-            return Task.FromResult(context.Notifications.Where(n => n.UserId == userId && !n.IsRead).ToList());
+            // Get all unread notifications for the user
+            var notifications = await context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ToListAsync();
+
+            // Filter out direct message notifications from non-friends
+            var filteredNotifications = new List<Notification>();
+            
+            foreach (var notification in notifications)
+            {
+                // Always include non-message notifications and group messages
+                if (notification.Type != NotificationType.Message || notification.Message.StartsWith("["))
+                {
+                    filteredNotifications.Add(notification);
+                    continue;
+                }
+
+                // For direct messages, check if users are friends
+                var friendship1 = await context.Friends
+                    .FirstOrDefaultAsync(f => 
+                        (f.ReqSenderId == userId && f.ReqReceiverId == notification.SenderUsername) || 
+                        (f.ReqReceiverId == userId && f.ReqSenderId == notification.SenderUsername));
+
+                if (friendship1 != null && friendship1.IsAccepted)
+                {
+                    filteredNotifications.Add(notification);
+                }
+            }
+
+            return filteredNotifications;
         }
 
         public async Task DeleteByIdAsync(string id)
