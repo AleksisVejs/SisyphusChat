@@ -407,3 +407,117 @@ a:focus {
   scrollbar-width: thin;
   scrollbar-color: #8c77d0 #f0f0f0;
 }
+
+/* Light Theme Notification Styles */
+.notification-menu {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.notification-header {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.notification-actions button {
+    background: rgba(140, 119, 208, 0.08);
+    color: #8c77d0;
+}
+
+.notification-actions button:hover {
+    background: rgba(140, 119, 208, 0.12);
+}
+
+.notification-item {
+    background: transparent;
+}
+
+.notification-item.unread {
+    background: rgba(140, 119, 208, 0.04);
+    border-left-color: #8c77d0;
+}
+
+.notification-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.notification-sender {
+    color: #1a1a1a;
+}
+
+.notification-time {
+    color: #65676b;
+}
+
+.notification-message {
+    color: #4a5568;
+}
+
+.mark-read {
+    background: rgba(140, 119, 208, 0.08);
+    color: #8c77d0;
+}
+
+.mark-read:hover {
+    background: rgba(140, 119, 208, 0.12);
+}
+
+/* Light Theme Scrollbar */
+.notification-list::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 119, 208, 0.2);
+}
+
+.notification-list:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 119, 208, 0.3);
+}
+
+/* Firefox Scrollbar - Light Theme */
+.notification-list {
+    scrollbar-color: rgba(140, 119, 208, 0.2) transparent;
+}
+
+.notification-list:hover {
+    scrollbar-color: rgba(140, 119, 208, 0.3) transparent;
+}
+
+/* Light Theme Notification Items */
+.notification-item {
+    background: rgba(140, 119, 208, 0.02);
+    border-left: 2px solid transparent;
+}
+
+.notification-item.unread {
+    background: rgba(140, 119, 208, 0.05);
+    border-left-color: #8c77d0;
+}
+
+.notification-item:hover {
+    background: rgba(140, 119, 208, 0.08);
+    transform: translateX(2px);
+}
+
+.notification-sender {
+    color: #1a1a1a;
+}
+
+.notification-time {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.notification-message {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.mark-read {
+    background: rgba(140, 119, 208, 0.1);
+    color: #8c77d0;
+    border: none;
+}
+
+.mark-read:hover {
+    background: rgba(140, 119, 208, 0.2);
+}
+
+.notification-list .dropdown-item {
+  color: #333333;
+}

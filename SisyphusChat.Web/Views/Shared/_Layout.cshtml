@@ -65,10 +65,12 @@
                                         <h6 class="mb-0">Notifications</h6>
                                         <div class="notification-actions">
                                             <button class="btn btn-sm btn-outline-primary" id="showUnreadOnly">
-                                                <i class="fas fa-filter"></i> Unread
+                                                <i class="fas fa-filter"></i>
+                                                <span>Filter</span>
                                             </button>
                                             <button class="btn btn-sm btn-outline-success" id="markAllRead">
-                                                <i class="fas fa-check-double"></i> Mark All Read
+                                                <i class="fas fa-check-double"></i>
+                                                <span>Mark all read</span>
                                             </button>
                                         </div>
                                     </div>
@@ -196,11 +198,11 @@
                 
                 // Update badge
                 if (unreadCount > 0) {
-                    notificationCount.textContent = unreadCount;
-                    notificationCount.classList.remove("d-none");
+                    notificationBadge.textContent = unreadCount;
+                    notificationBadge.classList.add("show");
                 } else {
-                    notificationCount.textContent = "";
-                    notificationCount.classList.add("d-none");
+                    notificationBadge.textContent = "";
+                    notificationBadge.classList.remove("show");
                 }
 
                 // Update notification list
@@ -236,10 +238,10 @@
                 div.innerHTML = `
                     <div class="notification-content" onclick="handleNotificationClick('${notification.type}', '${notification.relatedEntityId}')">
                         <div class="notification-header">
-                            <span class="sender">${notification.senderUsername}</span>
-                            <span class="time">${formattedDate}</span>
+                            <span class="notification-sender">${notification.senderUsername}</span>
+                            <span class="notification-time">${formattedDate}</span>
                         </div>
-                        <p class="message">${notification.message}</p>
+                        <p class="notification-message">${notification.message}</p>
                     </div>
                     <div class="notification-actions">
                         ${!notification.isRead ? 
@@ -360,119 +362,6 @@ async function openChat(chatId) {
                 });
             });
         </script>
-
-        <style>
-            .notification-badge {
-                position: absolute;
-                top: -5px;
-                right: -5px;
-                padding: 3px 6px;
-                font-size: 0.75rem;
-                border-radius: 50%;
-                background-color: #dc3545;
-                color: white;
-                min-width: 18px;
-                text-align: center;
-                display: inline-block !important;
-            }
-
-            .notification-menu {
-                width: 350px;
-                max-height: 400px;
-                position: absolute;
-                right: 0;
-                left: auto;
-                top: 100%;
-                margin-top: 0.5rem;
-                z-index: 1000;
-                background-color: white;
-                border: 1px solid rgba(0,0,0,.15);
-                border-radius: 0.25rem;
-                box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
-            }
-
-
-            .notification-item {
-                padding: 12px 15px;
-                border-bottom: 1px solid #eee;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-            }
-
-            .notification-item.unread {
-                background-color: #f8f9fa;
-                border-left: 3px solid #007bff;
-            }
-
-            .notification-item:hover {
-                background-color: #f0f2f5;
-            }
-
-            .notification-content {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .notification-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 6px;
-            }
-
-            .notification-actions {
-                margin-top: 8px;
-                display: flex;
-                justify-content: flex-end;
-            }
-
-            .sender {
-                font-weight: 600;
-                color: #2c3e50;
-                font-size: 0.95rem;
-            }
-
-            .time {
-                color: #6c757d;
-                font-size: 0.8rem;
-                white-space: nowrap;
-            }
-
-            .message {
-                margin: 0;
-                color: #4a5568;
-                font-size: 0.9rem;
-                line-height: 1.4;
-            }
-
-            #notificationDropdown {
-                position: relative;
-            }
-
-            .dropdown-menu {
-                display: none;
-            }
-
-            .dropdown-menu.show {
-                display: block !important;
-            }
-
-            /* Add this to ensure the notification container is visible */
-            .navbar-nav .dropdown {
-                position: static;
-            }
-
-            /* Add this to your existing notification styles */
-            .notification-item.friend-request {
-                background-color: #ffebee;
-                border-left: 3px solid #ef5350;
-            }
-
-            .notification-item.friend-request:hover {
-                background-color: #ffcdd2;
-            }
-        </style>
     }
     @await RenderSectionAsync("Scripts", required: false)
 </body>

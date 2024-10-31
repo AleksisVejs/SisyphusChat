@@ -424,3 +424,121 @@ a:focus {
   scrollbar-width: thin;
   scrollbar-color: #4f388a #2c2f33;
 }
+
+/* Dark Theme Notification Styles */
+.notification-menu {
+    background: #1a1b1e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.notification-header {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.notification-actions button {
+    background: rgba(255, 255, 255, 0.06);
+    color: #b197fc;
+}
+
+.notification-actions button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.notification-item {
+    background: transparent;
+}
+
+.notification-item.unread {
+    background: rgba(177, 151, 252, 0.06);
+    border-left-color: #b197fc;
+}
+
+.notification-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.notification-sender {
+    color: #e4e6eb;
+}
+
+.notification-time {
+    color: #8b8d91;
+}
+
+.notification-message {
+    color: #b1b3b8;
+}
+
+.mark-read {
+    background: rgba(177, 151, 252, 0.1);
+    color: #b197fc;
+}
+
+.mark-read:hover {
+    background: rgba(177, 151, 252, 0.15);
+}
+
+.notification-header h6 {
+    color: #e4e6eb;
+}
+
+/* Dark Theme Scrollbar */
+.notification-list::-webkit-scrollbar-thumb {
+    background-color: rgba(177, 151, 252, 0.2);
+}
+
+.notification-list:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(177, 151, 252, 0.3);
+}
+
+/* Firefox Scrollbar - Dark Theme */
+.notification-list {
+    scrollbar-color: rgba(177, 151, 252, 0.2) transparent;
+}
+
+.notification-list:hover {
+    scrollbar-color: rgba(177, 151, 252, 0.3) transparent;
+}
+
+/* Dark Theme Notification Items */
+.notification-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 2px solid transparent;
+}
+
+.notification-item.unread {
+    background: rgba(177, 151, 252, 0.06);
+    border-left-color: #b197fc;
+}
+
+.notification-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(2px);
+}
+
+.notification-sender {
+    color: #e4e6eb;
+}
+
+.notification-time {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.notification-message {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.mark-read {
+    background: rgba(177, 151, 252, 0.15);
+    color: #b197fc;
+    border: none;
+}
+
+.mark-read:hover {
+    background: rgba(177, 151, 252, 0.25);
+}
+
+.notification-list .dropdown-item {
+  color: #ffffff;
+}
