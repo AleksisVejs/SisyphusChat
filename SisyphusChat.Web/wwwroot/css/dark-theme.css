@@ -542,3 +542,30 @@ a:focus {
 .notification-list .dropdown-item {
   color: #ffffff;
 }
+
+/* Notification Styles */
+.notification-group {
+    font-weight: 600;
+    color: #b197fc;
+    font-size: 1.1rem;
+}
+
+.notification-subheader {
+    margin: 2px 0;
+}
+
+.notification-subheader .notification-sender {
+    font-size: 0.9rem;
+    color: #8b8d91;
+    font-weight: 500;
+}
+
+.notification-item.unread .notification-group {
+    color: #4f388a;
+}
+
+.notification-message {
+    margin-top: 4px;
+    line-height: 1.4;
+    color: #b1b3b8;
+}

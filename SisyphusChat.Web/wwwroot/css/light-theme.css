@@ -521,3 +521,30 @@ a:focus {
 .notification-list .dropdown-item {
   color: #333333;
 }
+
+/* Notification Styles */
+.notification-group {
+    font-weight: 600;
+    color: #8c77d0; /* Using existing purple accent color */
+    font-size: 1.1rem;
+}
+
+.notification-subheader {
+    margin: 2px 0;
+}
+
+.notification-subheader .notification-sender {
+    font-size: 0.9rem;
+    color: #65676b; /* Using existing muted text color */
+    font-weight: 500;
+}
+
+.notification-item.unread .notification-group {
+    color: #7b6bc3; /* Using existing darker purple */
+}
+
+.notification-message {
+    margin-top: 4px;
+    line-height: 1.4;
+    color: #4a5568; /* Using existing message text color */
+}

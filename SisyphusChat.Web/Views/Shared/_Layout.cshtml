@@ -222,10 +222,12 @@
                 const div = document.createElement("div");
                 div.className = `notification-item ${notification.isRead ? 'read' : 'unread'}`;
                 
-                // Add special styling for friend requests
-                if (notification.type === 1) { // NotificationType.FriendRequest = 1
-                    div.classList.add('friend-request');
-                }
+                // Check if the message contains a group chat indicator [GroupName]
+                const isGroupMessage = notification.message.match(/^\[(.*?)\]/);
+                const groupName = isGroupMessage ? isGroupMessage[1] : null;
+                const actualMessage = isGroupMessage 
+                    ? notification.message.substring(isGroupMessage[0].length).trim()
+                    : notification.message;
                 
                 const formattedDate = new Date(notification.timeCreated).toLocaleString('en-US', {
                     month: 'short',
@@ -238,10 +240,19 @@
                 div.innerHTML = `
                     <div class="notification-content" onclick="handleNotificationClick('${notification.type}', '${notification.relatedEntityId}')">
                         <div class="notification-header">
-                            <span class="notification-sender">${notification.senderUsername}</span>
+                            ${groupName 
+                                ? `<span class="notification-group">${groupName}</span>`
+                                : `<span class="notification-sender">${notification.senderUsername}</span>`
+                            }
                             <span class="notification-time">${formattedDate}</span>
                         </div>
-                        <p class="notification-message">${notification.message}</p>
+                        <div class="notification-subheader">
+                            ${groupName 
+                                ? `<span class="notification-sender">${notification.senderUsername}</span>`
+                                : ''
+                            }
+                        </div>
+                        <p class="notification-message">${actualMessage}</p>
                     </div>
                     <div class="notification-actions">
                         ${!notification.isRead ? 
@@ -251,7 +262,6 @@
                         }
                     </div>
                 `;
-                console.log("Created notification element with ID:", notification.id);
                 
                 return div;
             }
@@ -264,31 +274,31 @@
                 }
             }
 
-async function openChat(chatId) {
-    try {
-        console.log("Attempting to mark chat notifications as read for chatId:", chatId);
-        // Get the current user ID
-        const userId = "@UserManager.GetUserId(User)";
-        console.log("Current userId:", userId);
-        
-        // Wait for the notifications to be marked as read
-        await notificationConnection.invoke("MarkMessageNotificationsAsRead", chatId, userId);
-        console.log("Successfully marked chat notifications as read");
-        
-        // Update local notifications state
-        await loadNotifications();
-        
-        // Small delay to ensure UI updates
-        setTimeout(() => {
-            // Navigate to chat
-            window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
-        }, 100);
-    } catch (err) {
-        console.error("Error in openChat:", err);
-        // Navigate anyway if there's an error
-        window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
-    }
-}
+            async function openChat(chatId) {
+                try {
+                    console.log("Attempting to mark chat notifications as read for chatId:", chatId);
+                    // Get the current user ID
+                    const userId = "@UserManager.GetUserId(User)";
+                    console.log("Current userId:", userId);
+                    
+                    // Wait for the notifications to be marked as read
+                    await notificationConnection.invoke("MarkMessageNotificationsAsRead", chatId, userId);
+                    console.log("Successfully marked chat notifications as read");
+                    
+                    // Update local notifications state
+                    await loadNotifications();
+                    
+                    // Small delay to ensure UI updates
+                    setTimeout(() => {
+                        // Navigate to chat
+                        window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
+                    }, 100);
+                } catch (err) {
+                    console.error("Error in openChat:", err);
+                    // Navigate anyway if there's an error
+                    window.location.href = `/Chat/ChatRoom?chatId=${chatId}`;
+                }
+            }
 
             async function markAsRead(notificationId, event) {
                 event.stopPropagation(); // Prevent opening chat when clicking mark as read

@@ -560,3 +560,40 @@ p {
   text-decoration: none;
   background-color: transparent;
 }
+
+.notification-group-name {
+    color: #6c757d;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.notification-message-content {
+    color: inherit;
+}
+
+.notification-item.group-message .notification-message {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: baseline;
+}
+
+.notification-group {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.notification-subheader {
+    margin: 2px 0;
+}
+
+.notification-subheader .notification-sender {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.notification-message {
+    margin-top: 4px;
+    line-height: 1.4;
+}

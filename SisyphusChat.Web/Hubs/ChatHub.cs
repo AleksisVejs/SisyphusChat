@@ -75,7 +75,7 @@ public class ChatHub(
                     Id = Guid.NewGuid().ToString(),
                     UserId = member.UserId,
                     SenderUsername = currentUserModel.UserName,
-                    Message = message,
+                    Message = chat.Type == ChatType.Group ? $"[{chat.Name}] {message}" : message,
                     TimeCreated = DateTime.UtcNow,
                     IsRead = false,
                     Type = NotificationType.Message,
