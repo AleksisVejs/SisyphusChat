@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="~/SisyphusChat.Web.styles.css" asp-append-version="true" />
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
     (function() {
         var savedTheme = localStorage.getItem("theme") || "light";
@@ -56,6 +55,30 @@
                         {
                             var currentUser = await UserManager.GetUserAsync(User); // Get current user
 
+                            <li class="nav-item dropdown" id="notificationDropdown">
+                                <a class="nav-link" href="#" id="notificationLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge badge-danger notification-badge d-none" id="notificationCount">0</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right notification-menu" aria-labelledby="notificationLink">
+                                    <div class="notification-header d-flex justify-content-between align-items-center p-2">
+                                        <h6 class="mb-0">Notifications</h6>
+                                        <div class="notification-actions">
+                                            <button class="btn btn-sm btn-outline-primary" id="showUnreadOnly">
+                                                <i class="fas fa-filter"></i>
+                                                <span>Filter</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" id="markAllRead">
+                                                <i class="fas fa-check-double"></i>
+                                                <span>Mark all read</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="notification-list" id="notificationList">
+                                        <!-- Notifications will be inserted here -->
+                                    </div>
+                                </div>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Account/Manage/Index" asp-area="Identity">Hello, @UserManager.GetUserName(User)</a>
                             </li>
@@ -107,12 +130,48 @@
     }
 
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+        <script src="~/js/notifications.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Prevent dropdown from closing when clicking inside
+                document.querySelector('.notification-menu').addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+
+                var connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                connection.on("ReceiveNotification", function(notification) {
+                    if (notification) {
+                        updateNotificationUI([notification]);
+                    }
+                });
+
+                async function startConnection() {
+                    try {
+                        await connection.start();
+                        console.log("Connected to SignalR hub");
+                        initializeNotifications(connection);
+                    } catch (err) {
+                        console.error("Error connecting to hub:", err);
+                        setTimeout(startConnection, 5000);
+                    }
+                }
+
+                startConnection();
+            });
+        </script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -15,7 +15,8 @@ public class UnitOfWork : IUnitOfWork
         IFriendRepository friendRepository,
         IMessageRepository messageRepository,
         IReportRepository reportRepository,
-        IUserRepository userRepository
+        IUserRepository userRepository,
+        INotificationRepository notificationRepository
         )
     {
         _context = context;
@@ -25,6 +26,7 @@ public class UnitOfWork : IUnitOfWork
         MessageRepository = messageRepository;
         ReportRepository = reportRepository;
         UserRepository = userRepository;
+        NotificationRepository = notificationRepository;
     }
 
     public IAttachmentRepository AttachmentRepository { get; }
@@ -38,6 +40,8 @@ public class UnitOfWork : IUnitOfWork
     public IReportRepository ReportRepository { get; }
 
     public IUserRepository UserRepository { get; }
+    public INotificationRepository NotificationRepository { get; }
+
 
     public Task SaveAsync()
     {
