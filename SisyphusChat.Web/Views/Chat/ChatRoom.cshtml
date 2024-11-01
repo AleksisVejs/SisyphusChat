@@ -188,34 +188,50 @@
             scrollToBottom();
         });
 
-        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt) => {
+        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt, profilePicture) => {
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
                 messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
 
-                // Create a span to hold the sender's username
+                // Create message header div
+                const messageHeader = document.createElement("div");
+                messageHeader.classList.add("message-header");
+
+                // Create and set up profile picture
+                const profileImg = document.createElement("img");
+                profileImg.classList.add("message-profile-pic");
+                if (profilePicture) {
+                    profileImg.src = `data:image/jpeg;base64,${profilePicture}`;
+                } else {
+                    profileImg.src = "/images/default_pfp.jpg";
+                }
+                profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
+
+                // Create sender name span
                 const senderNameSpan = document.createElement("span");
                 senderNameSpan.classList.add("sender-name");
                 senderNameSpan.textContent = user;
 
-                // Create a paragraph to hold the message content
+                // Create message content
                 const messageContent = document.createElement("p");
                 messageContent.textContent = message;
 
-                // Create a span to hold the timestamp
+                // Create timestamp span
                 const timestampSpan = document.createElement("span");
                 timestampSpan.classList.add("time");
                 timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
 
-                // Append the sender's name, message content, and timestamp to the message div
-                messageDiv.appendChild(senderNameSpan);
+                // Append elements to message header
+                messageHeader.appendChild(profileImg);
+                messageHeader.appendChild(senderNameSpan);
+
+                // Append all elements to message div
+                messageDiv.appendChild(messageHeader);
                 messageDiv.appendChild(messageContent);
                 messageDiv.appendChild(timestampSpan);
 
-                // Append the message div to the chat messages container
+                // Append to chat messages container and scroll
                 document.querySelector(".chat-messages").appendChild(messageDiv);
-
-                // Scroll to the bottom to see the new message
                 document.querySelector(".chat-messages").scrollTop = document.querySelector(".chat-messages").scrollHeight;
             } else {
                 const errorContainer = document.getElementById("errorMessage");

@@ -59,7 +59,14 @@ public class ChatHub(
 
         await messageService.CreateAsync(messageModel);
 
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, chatMembersUserNames, messageModel.TimeCreated.ToString("o"));
+        // Convert profile picture to base64 if it exists
+        string profilePicture = null;
+        if (currentUserModel.Picture != null && currentUserModel.Picture.Length > 0)
+        {
+            profilePicture = Convert.ToBase64String(currentUserModel.Picture);
+        }
+
+        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, chatMembersUserNames, messageModel.TimeCreated.ToString("o"), profilePicture);
 
         var otherMembers = chat.ChatUsers
             .Where(cu => cu.UserId != currentUserModel.Id)
