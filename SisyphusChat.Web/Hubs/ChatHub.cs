@@ -70,8 +70,8 @@ public class ChatHub(
             message, 
             chatMembersUserNames, 
             messageModel.TimeCreated.ToString("o"),
-            profilePicture,
-            messageModel.Id);
+            messageModel.Id,
+            profilePicture);
 
         var otherMembers = chat.ChatUsers
             .Where(cu => cu.UserId != currentUserModel.Id)

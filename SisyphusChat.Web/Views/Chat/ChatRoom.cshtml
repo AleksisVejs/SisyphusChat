@@ -218,51 +218,46 @@
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
                 messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
-                
-                // Use the real message ID from the server
                 messageDiv.dataset.messageId = messageId;
 
-                // Create message header div
+                // Create message header div with flex layout
                 const messageHeader = document.createElement("div");
                 messageHeader.classList.add("message-header");
+                messageHeader.style.display = "flex";
+                messageHeader.style.alignItems = "center";
+                messageHeader.style.gap = "8px";  // Add some spacing between image and name
 
                 // Create and set up profile picture
                 const profileImg = document.createElement("img");
                 profileImg.classList.add("message-profile-pic");
                 if (profilePicture) {
                     profileImg.src = `data:image/jpeg;base64,${profilePicture}`;
+                    profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
                 } else {
                     profileImg.src = "/images/default_pfp.jpg";
+                    profileImg.alt = "Default Profile Picture";
                 }
-                profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
 
                 // Create sender name span
                 const senderNameSpan = document.createElement("span");
                 senderNameSpan.classList.add("sender-name");
                 senderNameSpan.textContent = user;
 
+                // Append elements in correct order
+                messageHeader.appendChild(profileImg);
+                messageHeader.appendChild(senderNameSpan);
+                messageDiv.appendChild(messageHeader);
+
                 const messageContent = document.createElement("p");
                 messageContent.classList.add("message-content");
                 messageContent.textContent = message;
+                messageDiv.appendChild(messageContent);
 
-                // Create timestamp span
                 const timestampSpan = document.createElement("span");
                 timestampSpan.classList.add("time");
                 timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-
-
-                // Append elements to message header
-                messageHeader.appendChild(profileImg);
-                messageHeader.appendChild(senderNameSpan);
-
-                // Append all elements to message div
-                messageDiv.appendChild(messageHeader);
-                messageDiv.appendChild(messageContent);
                 messageDiv.appendChild(timestampSpan);
 
-                // Append to chat messages container and scroll
-                document.querySelector(".chat-messages").appendChild(messageDiv);
-                document.querySelector(".chat-messages").scrollTop = document.querySelector(".chat-messages").scrollHeight;
                 // Add edit button for own messages
                 if (user === currentUser) {
                     const messageActions = document.createElement("div");
@@ -279,11 +274,6 @@
                     messageActions.appendChild(editButton);
                     messageDiv.appendChild(messageActions);
                 }
-
-                // Append all elements
-                messageDiv.appendChild(senderNameSpan);
-                messageDiv.appendChild(messageContent);
-                messageDiv.appendChild(timestampSpan);
 
                 document.querySelector(".chat-messages").appendChild(messageDiv);
                 scrollToBottom();
