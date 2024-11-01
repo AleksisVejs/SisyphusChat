@@ -488,6 +488,7 @@ p {
   padding: 4px;
   max-height: 360px;
   scrollbar-width: thin;
+  padding-bottom: 32px; /* Add extra padding at bottom */
 }
 
 /* Webkit Scrollbar (Chrome, Safari, Edge) */
@@ -643,16 +644,46 @@ p {
   justify-content: space-between;
   align-items: flex-start; /* Changed to flex-start to align with top of text */
   width: 100%;
-  gap: 10px; /* Ensure some space between message and buttons */
+  gap: 12px;
 }
 
 .notification-message {
   margin: 0;
-  flex-grow: 1;
-  overflow-wrap: break-word; /* Allow long words to break */
+  flex: 1;
+  min-width: 0; /* Important for text wrapping */
+  white-space: pre-wrap; /* Preserve line breaks and spaces */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
   word-break: break-word;
-  max-width: calc(100% - 100px); /* Reserve space for buttons */
-  line-height: 1.4; /* Better readability for multi-line text */
+  hyphens: auto;
+  line-height: 1.4;
+  padding: 4px 0;
+  max-height: 100px; /* Set a max height */
+  overflow-y: auto; /* Add vertical scrolling if needed */
+}
+
+/* Style the scrollbar for the message */
+.notification-message::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-message::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-message::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.3);
+  border-radius: 4px;
+}
+
+.notification-message:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.5);
+}
+
+/* Firefox scrollbar */
+.notification-message {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 119, 208, 0.3) transparent;
 }
 
 .notification-item-actions {
@@ -728,4 +759,58 @@ p {
 .delete-notification:hover {
   background-color: #dc3545;
   color: white;
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 12px;
+}
+
+.notification-message {
+  margin: 0;
+  flex: 1;
+  min-width: 0; /* Important for text wrapping */
+  white-space: normal; /* Allow text to wrap */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.4;
+  padding: 4px 0;
+}
+
+.notification-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.notification-item {
+  padding: 8px 15px;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  max-width: 100%;
+}
+
+.notification-item.unread {
+  border-left-color: #8c77d0;
+  background: rgba(140, 119, 208, 0.04);
+}
+
+.notification-item:hover {
+  background: rgba(140, 119, 208, 0.08);
+}
+
+/* Last notification item specific margin */
+.notification-item:last-child {
+  margin-bottom: 8px; /* Ensure last item has bottom margin */
 }
