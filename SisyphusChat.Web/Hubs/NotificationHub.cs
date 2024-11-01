@@ -136,5 +136,21 @@ public class NotificationHub : Hub
         }
     }
 
+    public async Task DeleteNotification(string notificationId)
+    {
+        try
+        {
+            _logger.LogInformation($"Deleting notification: {notificationId}");
+            await _notificationService.DeleteByIdAsync(notificationId);
+            var currentUser = await _userService.GetCurrentContextUserAsync();
+            await Clients.User(currentUser.Id).SendAsync("NotificationsUpdated");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Error deleting notification");
+            throw;
+        }
+    }
+
     
 }
