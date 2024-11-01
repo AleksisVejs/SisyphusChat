@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR;
 using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
 using Microsoft.Extensions.Logging;
@@ -19,9 +19,6 @@ public class ChatHub(
     public override async Task OnConnectedAsync()
     {
         logger.LogInformation("⭐ Client connecting to ChatHub");
-
-
-        
         await userService.GetCurrentContextUserAsync();
         await base.OnConnectedAsync();
     }
@@ -51,10 +48,12 @@ public class ChatHub(
         var currentUserModel = await userService.GetCurrentContextUserAsync();
         var messageModel = new MessageModel
         {
+            Id = Guid.NewGuid().ToString(),
             ChatId = chatId,
             Content = message,
             SenderId = currentUserModel.Id,
-            TimeCreated = DateTime.UtcNow,
+            TimeCreated = DateTime.Now,
+            LastUpdated = DateTime.Now,
         };
 
         await messageService.CreateAsync(messageModel);
@@ -66,7 +65,13 @@ public class ChatHub(
             profilePicture = Convert.ToBase64String(currentUserModel.Picture);
         }
 
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", user, message, chatMembersUserNames, messageModel.TimeCreated.ToString("o"), profilePicture);
+        await Clients.Group(chatId).SendAsync("ReceiveMessage", 
+            user, 
+            message, 
+            chatMembersUserNames, 
+            messageModel.TimeCreated.ToString("o"),
+            profilePicture,
+            messageModel.Id);
 
         var otherMembers = chat.ChatUsers
             .Where(cu => cu.UserId != currentUserModel.Id)
@@ -78,13 +83,10 @@ public class ChatHub(
             {
                 logger.LogInformation($"Creating notification for user {member.UserId} from {currentUserModel.UserName}");
                 
-                // For group chats, always send notifications
-                // For direct messages, only send if they are friends
                 bool shouldSendNotification = chat.Type == ChatType.Group;
-                
+
                 if (!shouldSendNotification)
                 {
-                    // Check if users are friends
                     var areFriends = await friendService.GetAllFriendsAsync(member.UserId);
                     shouldSendNotification = areFriends.Any(f => f.Id == currentUserModel.Id);
                 }
@@ -120,4 +122,33 @@ public class ChatHub(
         }
     }
 
+    public async Task EditMessage(string messageId, string newContent, string chatId)
+    {
+        try
+        {
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var message = await messageService.GetByIdAsync(messageId);
+
+            if (message.SenderId != currentUser.Id)
+            {
+                await Clients.Caller.SendAsync("ReceiveError", "You can only edit your own messages.");
+                return;
+            }
+
+            message.Content = newContent;
+            message.LastUpdated = DateTime.UtcNow;
+
+            await messageService.UpdateAsync(message);
+
+            await Clients.Group(chatId).SendAsync("MessageEdited", 
+                messageId, 
+                newContent, 
+                message.LastUpdated.ToString("o"));
+        }
+        catch (Exception ex)
+        {
+            await Clients.Caller.SendAsync("ReceiveError", "Failed to edit message.");
+            throw;
+        }
+    }
 }

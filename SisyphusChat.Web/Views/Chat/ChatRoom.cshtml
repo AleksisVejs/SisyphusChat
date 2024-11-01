@@ -1,4 +1,4 @@
-﻿@using SisyphusChat.Infrastructure.Entities
+@using SisyphusChat.Infrastructure.Entities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ChatPageViewModel
 
@@ -138,26 +138,52 @@
         <div class="chat-messages">
             @foreach (var message in Model.ChatViewModel.Chat.Messages)
             {
-                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")">
+                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")" 
+                     data-message-id="@message.Id">
                     <div class="message-header">
-                        @if (message.Sender.Picture.Length > 0)
+                      @if (message.Sender.Picture.Length > 0)
+                      {
+                          var base64Image = Convert.ToBase64String(@message.Sender.Picture);
+                          var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                          <img class="message-profile-pic" src="@imgSrc" alt="User Avatar" />
+                      }
+                      else
+                      {
+                          <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="message-profile-pic" />
+                      }
+                    <span class="sender-name">@message.Sender.UserName</span>
+                    </div>
+                    <p class="message-content">@message.Content</p>
+                    <span class="time">
+                        @if (message.LastUpdated == DateTime.MinValue || message.LastUpdated == message.TimeCreated)
                         {
-                            var base64Image = Convert.ToBase64String(@message.Sender.Picture);
-                            var imgSrc = $"data:image/jpeg;base64,{base64Image}";
-                            <img class="message-profile-pic" src="@imgSrc" alt="User Avatar" />
+                            @message.TimeCreated.ToString("dd/MM/yyyy', ' HH:mm")
                         }
                         else
                         {
-                            <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="message-profile-pic" />
+                            @message.LastUpdated.ToString("dd/MM/yyyy', ' HH:mm")
+                            <span class="edited-indicator">(edited)</span>
                         }
-                        <span class="sender-name">@message.Sender.UserName</span>
-                    </div>
-                    <p>@message.Content</p>
-                    <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
+                    </span>
+                    @if (message.Sender.Id == Model.UserViewModel.CurrentUser.Id)
+                    {
+                        <div class="message-actions">
+                            <button class="edit-message-btn" onclick="startEditMessage(this)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    }
                 </div>
             }
         </div>
-
+        <!-- Add edit message form -->
+        <div id="editMessageForm" class="edit-message-form d-none">
+            <input type="text" id="editMessageInput" />
+            <div class="edit-actions">
+                <button onclick="saveEditMessage()">Save</button>
+                <button onclick="cancelEditMessage()">Cancel</button>
+            </div>
+        </div>
         <div class="chat-footer">
             <input type="text" id="messageInput" placeholder="Type a message..." />
             <button id="sendMessageButton">
@@ -188,10 +214,13 @@
             scrollToBottom();
         });
 
-        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt, profilePicture) => {
+        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt, messageId, profilePicture) => {
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
                 messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
+                
+                // Use the real message ID from the server
+                messageDiv.dataset.messageId = messageId;
 
                 // Create message header div
                 const messageHeader = document.createElement("div");
@@ -212,14 +241,15 @@
                 senderNameSpan.classList.add("sender-name");
                 senderNameSpan.textContent = user;
 
-                // Create message content
                 const messageContent = document.createElement("p");
+                messageContent.classList.add("message-content");
                 messageContent.textContent = message;
 
                 // Create timestamp span
                 const timestampSpan = document.createElement("span");
                 timestampSpan.classList.add("time");
                 timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+
 
                 // Append elements to message header
                 messageHeader.appendChild(profileImg);
@@ -233,14 +263,35 @@
                 // Append to chat messages container and scroll
                 document.querySelector(".chat-messages").appendChild(messageDiv);
                 document.querySelector(".chat-messages").scrollTop = document.querySelector(".chat-messages").scrollHeight;
+                // Add edit button for own messages
+                if (user === currentUser) {
+                    const messageActions = document.createElement("div");
+                    messageActions.classList.add("message-actions");
+                    
+                    const editButton = document.createElement("button");
+                    editButton.classList.add("edit-message-btn");
+                    editButton.onclick = function() { startEditMessage(this); };
+                    
+                    const editIcon = document.createElement("i");
+                    editIcon.classList.add("fas", "fa-edit");
+                    
+                    editButton.appendChild(editIcon);
+                    messageActions.appendChild(editButton);
+                    messageDiv.appendChild(messageActions);
+                }
+
+                // Append all elements
+                messageDiv.appendChild(senderNameSpan);
+                messageDiv.appendChild(messageContent);
+                messageDiv.appendChild(timestampSpan);
+
+                document.querySelector(".chat-messages").appendChild(messageDiv);
+                scrollToBottom();
             } else {
                 const errorContainer = document.getElementById("errorMessage");
                 const errorMessageText = document.getElementById("errorMessageText");
-
                 errorMessageText.textContent = "You are no longer a member of this chat.";
-
                 errorContainer.classList.remove("d-none");
-
                 document.getElementById("messageInput").disabled = true;
                 document.getElementById("sendMessageButton").disabled = true;
             }
@@ -345,6 +396,70 @@
                 }
             });
         });
+
+        // Add these functions after your existing SignalR setup
+        let currentEditMessageId = null;
+        let originalMessage = null;
+
+        function startEditMessage(button) {
+            const messageDiv = button.closest('.message');
+            const messageContent = messageDiv.querySelector('.message-content');
+            currentEditMessageId = messageDiv.dataset.messageId;
+            originalMessage = messageContent.textContent;
+
+            const editForm = document.getElementById('editMessageForm');
+            const editInput = document.getElementById('editMessageInput');
+            
+            editInput.value = originalMessage;
+            editForm.classList.remove('d-none');
+            messageContent.parentNode.insertBefore(editForm, messageContent.nextSibling);
+            messageContent.style.display = 'none';
+            editInput.focus();
+        }
+
+        function saveEditMessage() {
+            const editInput = document.getElementById('editMessageInput');
+            const newContent = editInput.value.trim();
+            
+            if (newContent === '' || newContent === originalMessage) {
+                cancelEditMessage();
+                return;
+            }
+
+            try {
+                connection.invoke("EditMessage", currentEditMessageId, newContent, chatId);
+            } catch (err) {
+                console.error("Error editing message:", err);
+                const errorContainer = document.getElementById("errorMessage");
+                errorContainer.textContent = "Failed to edit message";
+                errorContainer.classList.remove("d-none");
+            }
+
+            cancelEditMessage();
+        }
+
+        function cancelEditMessage() {
+            const editForm = document.getElementById('editMessageForm');
+            const messageDiv = document.querySelector(`[data-message-id="${currentEditMessageId}"]`);
+            const messageContent = messageDiv.querySelector('.message-content');
+            
+            editForm.classList.add('d-none');
+            messageContent.style.display = 'block';
+            currentEditMessageId = null;
+            originalMessage = null;
+        }
+
+        // Add MessageEdited handler
+        connection.on("MessageEdited", (messageId, newContent, lastUpdated) => {
+            const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageDiv) {
+                const messageContent = messageDiv.querySelector('.message-content');
+                const timeSpan = messageDiv.querySelector('.time');
+                
+                messageContent.textContent = newContent;
+                timeSpan.innerHTML = `${new Date(lastUpdated).toLocaleString()} <span class="edited-indicator">(edited)</span>`;
+            }
+        });
     </script>
 }
 
@@ -378,4 +493,71 @@
         margin-left: auto;
         margin-right: 1%;
     }
+
+.message-actions {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: none;
+}
+
+.message:hover .message-actions {
+    display: block;
+}
+
+.edit-message-btn {
+    background: none;
+    border: none;
+    padding: 2px 5px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.edit-message-btn:hover {
+    color: #e0e0e0;
+}
+
+.edit-message-form {
+    margin: 5px 0;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-message-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-actions button {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-actions button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-actions button:last-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+.edited-indicator {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 5px;
+}
 </style>

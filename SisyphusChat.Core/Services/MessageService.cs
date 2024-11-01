@@ -19,11 +19,12 @@ namespace SisyphusChat.Core.Services
 
         public async Task UpdateAsync(MessageModel model)
         {
-            ArgumentNullException.ThrowIfNull(model);
+            var message = await unitOfWork.MessageRepository.GetByIdAsync(model.Id);
 
-            var messageEntity = mapper.Map<Message>(model);
+            message.Content = model.Content;
+            message.LastUpdated = model.LastUpdated;
 
-            await unitOfWork.MessageRepository.UpdateAsync(messageEntity);
+            await unitOfWork.MessageRepository.UpdateAsync(message);
             await unitOfWork.SaveAsync();
         }
 
