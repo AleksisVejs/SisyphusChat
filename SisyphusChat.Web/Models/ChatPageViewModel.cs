@@ -9,4 +9,6 @@ public class ChatPageViewModel
     public ChatViewModel ChatViewModel { get; set; }
 
     public UserViewModel UserViewModel { get; set; }
+
+    public ReportModel ReportModel { get; set; }
 }

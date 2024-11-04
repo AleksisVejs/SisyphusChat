@@ -60,12 +60,14 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
+
 
 // Map the AutoMapper profile
 var mapperConfig = new MapperConfiguration(mc =>

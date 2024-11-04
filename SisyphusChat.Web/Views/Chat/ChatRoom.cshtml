@@ -109,6 +109,7 @@
                     <span class="sender-name">@message.Sender.UserName</span>
                     <p>@message.Content</p>
                     <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
+                    <a href="javascript:void(0);" onclick="openReportModal('@message.Id')" class="text-red-600 hover:underline">Report</a>
                 </div>
             }
         </div>
@@ -122,6 +123,39 @@
         </div>
     </div>
 </div>
+
+<!-- Report Popup Modal -->
+<div id="reportModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h2 class="text-lg font-semibold mb-4">Report Content</h2>
+
+        <form asp-action="ReportMessage" method="post" id="reportForm">
+            <input type="hidden" id="chatId" name="chatId" value="@Model.ChatViewModel.Chat.Id"/>
+            <input type="hidden" id="messageId" name="messageId"/>
+
+            <div class="mb-4">
+                <label for="Type" class="block text-sm font-medium">Report Type:</label>
+                <select id="reportType" name="type" class="form-select mt-1 block w-full">
+                    @foreach (var reportType in Enum.GetValues(typeof(ReportType)))
+                    {
+                        <option value="@reportType">@reportType</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="Reason" class="block text-sm font-medium">Explanation:</label>
+                <textarea id="reason" name="reason" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Explain your reason for reporting..."></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                <button type="button" onclick="closeReportModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Cancel</button>
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 
 @section Scripts {
@@ -285,37 +319,71 @@
                 }
             });
         });
+
+        // Open and close the modal
+        function openReportModal(messageId) {
+            document.getElementById('reportModal').style.display = 'flex';
+            document.getElementById("messageId").value = messageId;
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
     </script>
 }
 
 
 <style scoped>
-html, body {
-    margin: 0;
-    padding: 0;
-}
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
 
-.container {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
+    .container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
 
-.icon-container-large {
-    display: flex;
-    align-items: center; /* Aligns items vertically in the center */
-}
+    .icon-container-large {
+        display: flex;
+        align-items: center; /* Aligns items vertically in the center */
+    }
 
-main[b-fefn0adsrq] {
-    margin: 0;
-}
+    main[b-fefn0adsrq] {
+        margin: 0;
+    }
 
-.sender-name {
-    font-weight: bold;
-}
+    .sender-name {
+        font-weight: bold;
+    }
 
-.gcsettings {
-    margin-left: auto;
-    margin-right: 1%;
-}
+    .gcsettings {
+        margin-left: auto;
+        margin-right: 1%;
+    }
+
+    /* Modal container styles */
+    #reportModal {
+        display: none; /* Hide initially */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    /* Modal content styles */
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
 </style>

@@ -52,6 +52,18 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.ReqReceiver, opt => opt.MapFrom(src => src.ReqReceiver))
                 .ForMember(dest => dest.IsAccepted, opt => opt.MapFrom(src => src.IsAccepted))
                 .ReverseMap();
+
+            CreateMap<Report, ReportModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom((src) => src.Id))
+                .ForMember(dest => dest.ChatId, opt => opt.MapFrom((src) => src.ChatId))
+                .ForMember(dest => dest.Chat, opt => opt.MapFrom((src) => src.Chat))
+                .ForMember(dest => dest.MessageId, opt => opt.MapFrom((src) => src.MessageId))
+                .ForMember(dest => dest.Message, opt => opt.MapFrom((src) => src.Message))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom((src) => src.Type))
+                .ForMember(dest => dest.Reason, opt => opt.MapFrom((src) => src.Reason))
+                .ForMember(dest => dest.TimeCreated, opt => opt.MapFrom((src) => src.TimeCreated))
+                .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom((src) => src.LastUpdated))
+                .ReverseMap();
         }
     }
 }
