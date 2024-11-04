@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="~/SisyphusChat.Web.styles.css" asp-append-version="true" />
     <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/css/shepherd.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/js/shepherd.min.js"></script>
     <script>
     (function() {
         var savedTheme = localStorage.getItem("theme") || "light";
@@ -26,6 +28,7 @@
 </script>
 </head>
 <body>
+    <partial name="_TutorialOverlay" />
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom">
             <div class="container-fluid">
@@ -135,6 +138,7 @@
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
     @if (SignInManager.IsSignedIn(User))
     {
         <script src="~/js/signalr/dist/browser/signalr.min.js"></script>

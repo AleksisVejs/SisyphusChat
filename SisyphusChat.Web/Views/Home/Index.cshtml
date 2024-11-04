@@ -10,22 +10,94 @@
     <p class="lead">Why Sisyphus?</p>
     <p class="small">Sisyphus represents persistence, pushing forward despite challenges. Sisyphus Chat embodies this spirit by ensuring your privacy in a world where it is increasingly compromised. Trust Sisyphus to protect your conversations, secure from start to finish.</p>
     <hr />
-    <p class="lead">Features</p>
-    <div class="row">
-        <div class="col-md-4">
-            <i class="fa fa-lock fa-2x"></i>
-            <h2>Secure</h2>
-            <p class="small">End-to-end encryption ensures your messages are secure from start to finish.</p>
+    <p class="lead">Getting Started</p>
+    <div class="tutorial-container">
+        <div class="tutorial-step">
+            <div class="step-number">1</div>
+            <i class="fa fa-user-plus fa-2x"></i>
+            <h3>Create Account</h3>
+            <p class="small">Sign up for a free account to start chatting securely.</p>
+            <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-primary">Register Now</a>
         </div>
-        <div class="col-md-4">
-            <i class="fa fa-user-secret fa-2x"></i>    
-            <h2>Private</h2>
-            <p class="small">Private chats ensure only you and the recipient can see your messages.</p>
+        <div class="tutorial-step">
+            <div class="step-number">2</div>
+            <i class="fa fa-user-friends fa-2x"></i>
+            <h3>Add Friends</h3>
+            <p class="small">Connect with friends using their usernames.</p>
         </div>
-        <div class="col-md-4">
-            <i class="fa fa-users fa-2x"></i>
-            <h2>Group</h2>
-            <p class="small">Group chats allow you to communicate with multiple people at once.</p>
+        <div class="tutorial-step">
+            <div class="step-number">3</div>
+            <i class="fa fa-comments fa-2x"></i>
+            <h3>Start Chatting</h3>
+            <p class="small">Begin private conversations or create group chats.</p>
         </div>
     </div>
 </div>
+
+<style>
+.tutorial-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.tutorial-step {
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.tutorial-step:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background: var(--accent-color, #8c77d0);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.tutorial-step i {
+    color: var(--accent-color, #8c77d0);
+    margin: 1rem 0;
+}
+
+.tutorial-step h3 {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.tutorial-step .btn {
+    margin-top: 1rem;
+    background: var(--accent-color, #8c77d0);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    transition: background 0.3s ease;
+}
+
+.tutorial-step .btn:hover {
+    background: var(--accent-color-dark, #7b6bc3);
+}
+</style>

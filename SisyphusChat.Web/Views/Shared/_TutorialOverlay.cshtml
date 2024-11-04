@@ -1,0 +1,875 @@
+<div class="tutorial-overlay" id="tutorial-overlay">
+    <div class="tutorial-controls">
+        <button class="btn btn-outline-light skip-tutorial">Skip Tutorial</button>
+    </div>
+
+    <div class="tutorial-step-overlay" id="step1">
+        <div class="tutorial-content">
+            <span class="step-indicator">1/5</span>
+            <h3>Welcome to Sisyphus Chat!</h3>
+            <p>Let's take a quick tour to help you get started. We'll show you how to customize your profile, add friends, and start chatting.</p>
+            <div class="tutorial-actions">
+                <button class="btn btn-light next-step">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tutorial-step-overlay d-none" id="step2">
+        <div class="tutorial-content">
+            <div class="tutorial-arrow-up"></div>
+            <span class="step-indicator">2/5</span>
+            <h3>Your Profile</h3>
+            <p>Click here to customize your profile, change your avatar, and update your settings. Make yourself at home!</p>
+            <div class="tutorial-actions">
+                <button class="btn btn-outline-light prev-step">Back</button>
+                <button class="btn btn-light next-step">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tutorial-step-overlay d-none" id="step3">
+        <div class="tutorial-content">
+            <div class="tutorial-arrow-up"></div>
+            <span class="step-indicator">3/5</span>
+            <h3>Find Friends</h3>
+            <p>Visit the Friends section to connect with others. You can search for friends and manage your friend requests here.</p>
+            <div class="tutorial-actions">
+                <button class="btn btn-outline-light prev-step">Back</button>
+                <button class="btn btn-light next-step">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tutorial-step-overlay d-none" id="step4">
+        <div class="tutorial-content">
+            <div class="tutorial-arrow-up"></div>
+            <span class="step-indicator">4/5</span>
+            <h3>Start Chatting</h3>
+            <p>Head to the Chat section to start private conversations or create group chats with your friends.</p>
+            <div class="tutorial-actions">
+                <button class="btn btn-outline-light prev-step">Back</button>
+                <button class="btn btn-light next-step">Next</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tutorial-step-overlay d-none" id="step5">
+        <div class="tutorial-content">
+            <div class="tutorial-arrow-up"></div>
+            <span class="step-indicator">5/5</span>
+            <h3>Notifications</h3>
+            <p>You'll receive notifications here for new messages, friend requests, and important updates. Let's see how they work!</p>
+            <div class="tutorial-actions">
+                <button class="btn btn-outline-light prev-step">Back</button>
+                <button class="btn btn-light next-step">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Base styles */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.65);
+}
+
+/* Modern content styling */
+.tutorial-content {
+    position: relative;
+    background: rgba(140, 119, 208, 0.97);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    max-width: 400px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    margin: 15px;
+    pointer-events: auto;
+    z-index: 10000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Welcome step */
+#step1 {
+    background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: all;
+}
+
+#step1 .tutorial-content {
+    background: rgba(140, 119, 208, 0.97);
+    transform: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Profile step */
+#step2 .tutorial-content {
+    max-width: 500px;
+    padding: 3rem;
+}
+
+/* Modern headings */
+.tutorial-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+/* Modern paragraph text */
+.tutorial-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+}
+
+/* Step indicator */
+.step-indicator {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+/* Modern buttons */
+.tutorial-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 2rem;
+}
+
+.tutorial-actions button {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.tutorial-actions .btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-actions .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.tutorial-actions .btn-light {
+    background: white;
+    color: var(--accent-color, #8c77d0);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tutorial-actions .btn-light:hover {
+    background: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Skip tutorial button */
+.tutorial-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2003;
+    pointer-events: all;
+}
+
+.tutorial-controls button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+}
+
+.tutorial-controls button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Spotlight styling */
+.tutorial-spotlight {
+    position: fixed;
+    background: transparent;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+    border: 2px solid rgba(140, 119, 208, 0.8);
+    border-radius: 8px;
+    z-index: 9998;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Arrow styling */
+.tutorial-arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid rgba(140, 119, 208, 0.97);
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Navigation controls for filter tutorial */
+.tutorial-nav-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10002;
+    display: flex;
+    gap: 12px;
+    pointer-events: all;
+}
+
+.tutorial-nav-controls button {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Final step styling */
+#finalStep .tutorial-content {
+    text-align: center;
+    max-width: 450px;
+}
+
+#finalStep .tutorial-actions {
+    justify-content: center;
+    gap: 12px;
+}
+
+.replay-tutorial {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.replay-tutorial:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Animations */
+@@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(140, 119, 208, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(140, 119, 208, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(140, 119, 208, 0);
+    }
+}
+
+/* Ensure notification menu stays above backdrop */
+.notification-menu.show {
+    z-index: 10001 !important;
+}
+
+/* Highlighted element */
+.tutorial-highlight {
+    position: relative;
+    z-index: 2002;
+    pointer-events: all !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Z-index hierarchy */
+.tutorial-backdrop {
+    z-index: 9999;
+}
+
+.notification-menu.show {
+    z-index: 10001 !important;
+}
+
+.tutorial-tooltip {
+    z-index: 10002 !important;
+}
+
+.tutorial-nav-controls {
+    z-index: 10003 !important;
+}
+
+/* Ensure tooltips are visible */
+.tutorial-tooltip .tutorial-content {
+    pointer-events: none;
+}
+
+/* Ensure notification menu is interactive */
+.notification-menu.show {
+    pointer-events: all !important;
+}
+</style>
+
+<script>
+let currentStep = 0;
+let spotlight = null;
+
+function initializeTutorial() {
+    // Clean up any existing tutorial elements first
+    endTutorial();
+    currentStep = 0;
+    
+    const overlay = document.getElementById('tutorial-overlay');
+    if (!overlay) return;
+    
+    // Get steps after DOM is ready
+    const steps = Array.from(document.querySelectorAll('.tutorial-step-overlay'));
+    if (!steps.length) return;
+    
+    // Show the overlay and first step
+    overlay.classList.remove('d-none');
+    steps[0].classList.remove('d-none');
+    
+    // Add event listeners using event delegation
+    overlay.addEventListener('click', function(e) {
+        const target = e.target;
+        
+        if (target.classList.contains('next-step')) {
+            e.preventDefault();
+            e.stopPropagation();
+            nextStep(steps);
+        } else if (target.classList.contains('prev-step')) {
+            e.preventDefault();
+            e.stopPropagation();
+            prevStep(steps);
+        } else if (target.classList.contains('skip-tutorial')) {
+            e.preventDefault();
+            e.stopPropagation();
+            endTutorial();
+        }
+    });
+
+    // Create spotlight after showing first step
+    spotlight = createSpotlight();
+    
+    // Position first step
+    positionStep(0, steps);
+}
+
+function createSpotlight() {
+    const spotlight = document.createElement('div');
+    spotlight.className = 'tutorial-spotlight';
+    document.body.appendChild(spotlight);
+    return spotlight;
+}
+
+function positionStep(stepIndex, steps) {
+    const step = steps[stepIndex];
+    let targetElement;
+
+    switch(stepIndex) {
+        case 0:
+            if (spotlight) spotlight.style.display = 'none';
+            break;
+
+        case 1:
+            targetElement = document.querySelector('a[href*="/Identity/Account/Manage"]');
+            if (targetElement) {
+                highlightElement(targetElement, step);
+            }
+            break;
+
+        case 2:
+            targetElement = document.querySelector('a[href*="/Friends"]');
+            if (targetElement) {
+                highlightElement(targetElement, step);
+            }
+            break;
+
+        case 3:
+            targetElement = document.querySelector('a[href*="/Chat"]');
+            if (targetElement) {
+                highlightElement(targetElement, step);
+            }
+            break;
+
+        case 4:
+            targetElement = document.querySelector('#notificationLink');
+            if (targetElement) {
+                highlightElement(targetElement, step);
+                setTimeout(showDemoNotification, 500);
+            }
+            break;
+    }
+}
+
+function highlightElement(element, step) {
+    const rect = element.getBoundingClientRect();
+    const padding = 5;
+
+    if (spotlight) {
+        spotlight.style.display = 'block';
+        spotlight.style.top = `${rect.top - padding}px`;
+        spotlight.style.left = `${rect.left - padding}px`;
+        spotlight.style.width = `${rect.width + (padding * 2)}px`;
+        spotlight.style.height = `${rect.height + (padding * 2)}px`;
+    }
+
+    step.style.position = 'fixed';
+    step.style.top = `${rect.bottom + 20}px`;
+    step.style.left = `${rect.left + (rect.width / 2)}px`;
+    step.style.transform = 'translateX(-50%)';
+
+    element.classList.add('tutorial-highlight');
+}
+
+function removeHighlight() {
+    document.querySelectorAll('.tutorial-highlight').forEach(element => {
+        element.classList.remove('tutorial-highlight');
+    });
+}
+
+function nextStep(steps) {
+    if (currentStep >= 0 && currentStep < steps.length) {
+        steps[currentStep].classList.add('d-none');
+        removeHighlight();
+        currentStep++;
+        
+        if (currentStep === 5) {
+            showNotificationTutorial();
+            return;
+        }
+        
+        if (currentStep < steps.length) {
+            steps[currentStep].classList.remove('d-none');
+            positionStep(currentStep, steps);
+        }
+    }
+}
+
+function prevStep(steps) {
+    if (currentStep > 0) {
+        if (steps[currentStep]) {
+            steps[currentStep].classList.add('d-none');
+        }
+        removeHighlight();
+        currentStep--;
+        if (steps[currentStep]) {
+            steps[currentStep].classList.remove('d-none');
+            positionStep(currentStep, steps);
+        }
+    }
+}
+
+function endTutorial() {
+    // Remove all tutorial elements
+    removeHighlight();
+    const overlay = document.getElementById('tutorial-overlay');
+    overlay.classList.add('d-none');
+    
+    // Remove any spotlights
+    if (spotlight) {
+        spotlight.remove();
+        spotlight = null;
+    }
+    
+    // Remove any remaining backdrops
+    const backdrops = document.querySelectorAll('.tutorial-backdrop');
+    backdrops.forEach(backdrop => backdrop.remove());
+    
+    // Remove navigation controls
+    const navControls = document.querySelector('.tutorial-nav-controls');
+    if (navControls) navControls.remove();
+    
+    // Remove final step if it exists
+    const finalStep = document.getElementById('finalStep');
+    if (finalStep) finalStep.remove();
+    
+    // Reset all steps to initial state
+    const steps = document.querySelectorAll('.tutorial-step-overlay');
+    steps.forEach(step => {
+        step.classList.add('d-none');
+        const content = step.querySelector('.tutorial-content');
+        if (content) content.style.display = '';
+    });
+    
+    // Close notification dropdown if open
+    const notificationLink = document.getElementById('notificationLink');
+    if (notificationLink) {
+        $(notificationLink).dropdown('hide');
+    }
+}
+
+function showDemoNotification() {
+    // Create a demo notification
+    const demoNotification = {
+        id: 'demo',
+        type: 2,
+        senderId: 'system',
+        senderUsername: 'Tutorial',
+        message: 'This is a demo notification! Click notifications to see friend requests, messages, and updates. Try clicking this notification!',
+        timestamp: new Date().toISOString(),
+        isRead: false,
+        relatedEntityId: null
+    };
+
+    // Update the notification UI
+    const notificationList = document.getElementById('notificationList');
+    const notificationHtml = `
+        <div class="notification-item unread" data-notification-id="demo">
+            <div class="notification-content">
+                <div class="notification-message">
+                    <strong>Tutorial</strong>
+                    <p>${demoNotification.message}</p>
+                    <small class="text-muted">Just now</small>
+                </div>
+                <button class="btn btn-sm mark-read" onclick="event.stopPropagation();">
+                    <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add the notification to the list
+    notificationList.insertAdjacentHTML('afterbegin', notificationHtml);
+
+    // Show the notification badge
+    const badge = document.getElementById('notificationCount');
+    if (badge) {
+        badge.textContent = '1';
+        badge.classList.remove('d-none');
+    }
+
+    // Open the dropdown
+    const notificationLink = document.getElementById('notificationLink');
+    if (notificationLink) {
+        $(notificationLink).dropdown('show');
+    }
+
+    // Make sure the notification menu is visible and above the tutorial
+    const notificationMenu = document.querySelector('.notification-menu');
+    if (notificationMenu) {
+        notificationMenu.style.zIndex = '10001';
+    }
+
+    // Add click handler for the demo notification
+    const demoItem = notificationList.querySelector('[data-notification-id="demo"]');
+    if (demoItem) {
+        demoItem.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Mark as read visually
+            this.classList.remove('unread');
+            
+            // Hide the badge
+            if (badge) {
+                badge.classList.add('d-none');
+            }
+            
+            // Close dropdown manually
+            $(notificationLink).dropdown('hide');
+            
+            // Progress tutorial
+            showNotificationTutorial();
+        });
+    }
+
+    // Prevent dropdown from closing when clicking inside
+    document.querySelector('.notification-menu').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Prevent tutorial from closing when interacting with notifications
+    notificationLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+}
+
+function showNotificationTutorial() {
+    // Hide all previous steps
+    const steps = document.querySelectorAll('.tutorial-step-overlay');
+    steps.forEach(step => {
+        step.classList.add('d-none');
+        const content = step.querySelector('.tutorial-content');
+        if (content) content.style.display = 'none';
+    });
+    
+    // Remove any existing spotlights
+    if (spotlight) {
+        spotlight.style.display = 'none';
+    }
+
+    // Remove any existing navigation controls or backdrops
+    const existingControls = document.querySelector('.tutorial-nav-controls');
+    if (existingControls) existingControls.remove();
+    
+    const existingBackdrop = document.querySelector('.tutorial-backdrop');
+    if (existingBackdrop) existingBackdrop.remove();
+
+    // Ensure the notification dropdown is visible
+    const notificationLink = document.getElementById('notificationLink');
+    if (notificationLink) {
+        $(notificationLink).dropdown('show');
+    }
+    
+    // Add semi-transparent backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'tutorial-backdrop';
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 9999;
+        pointer-events: none;
+    `;
+    document.body.appendChild(backdrop);
+
+    // Create navigation controls
+    const navControls = document.createElement('div');
+    navControls.className = 'tutorial-nav-controls';
+    navControls.innerHTML = `
+        <button class="btn btn-outline-light prev-filter" style="display: none;">Previous</button>
+        <button class="btn btn-light next-filter">Next</button>
+    `;
+    document.body.appendChild(navControls);
+
+    // Define tutorial steps
+    const filterSteps = [
+        {
+            elementId: 'showUnreadOnly',
+            message: 'Toggle between showing all or only unread notifications'
+        },
+        {
+            elementId: 'markAllRead',
+            message: 'Mark all notifications as read at once'
+        },
+        {
+            elements: '.filter-btn',
+            message: 'Filter notifications by type: All, Groups, or Direct messages'
+        }
+    ];
+
+    let currentFilterStep = 0;
+
+    function showFilterStep(stepIndex) {
+        // Remove any existing tooltips
+        const existingTooltips = document.querySelectorAll('.tutorial-tooltip');
+        existingTooltips.forEach(tooltip => tooltip.remove());
+        
+        // Update navigation buttons
+        const prevBtn = document.querySelector('.prev-filter');
+        const nextBtn = document.querySelector('.next-filter');
+        
+        prevBtn.style.display = stepIndex > 0 ? 'block' : 'none';
+        nextBtn.textContent = stepIndex === filterSteps.length - 1 ? 'Finish' : 'Next';
+
+        const step = filterSteps[stepIndex];
+        if (step.elementId) {
+            highlightFilterControl(step.elementId, step.message);
+        } else if (step.elements) {
+            const elements = document.querySelectorAll(step.elements);
+            highlightElements(elements, step.message);
+        }
+    }
+
+    // Add event listeners for navigation
+    navControls.querySelector('.next-filter').addEventListener('click', function() {
+        if (currentFilterStep < filterSteps.length - 1) {
+            currentFilterStep++;
+            showFilterStep(currentFilterStep);
+        } else {
+            navControls.remove();
+            showFinalStep();
+        }
+    });
+
+    navControls.querySelector('.prev-filter').addEventListener('click', function() {
+        if (currentFilterStep > 0) {
+            currentFilterStep--;
+            showFilterStep(currentFilterStep);
+        }
+    });
+
+    // Show first step
+    showFilterStep(0);
+}
+
+function highlightFilterControl(elementId, message) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    // Ensure the notification menu stays above the backdrop
+    const notificationMenu = document.querySelector('.notification-menu');
+    if (notificationMenu) {
+        notificationMenu.style.zIndex = '10001';
+    }
+
+    // Create tooltip with higher z-index
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tutorial-tooltip';
+    tooltip.style.zIndex = '10002';
+    tooltip.innerHTML = `
+        <div class="tutorial-content" style="max-width: 300px; padding: 1rem;">
+            <p style="margin: 0;">${message}</p>
+        </div>
+    `;
+    
+    // Position tooltip
+    const rect = element.getBoundingClientRect();
+    tooltip.style.position = 'fixed';
+    tooltip.style.top = `${rect.bottom + 10}px`;
+    tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+    tooltip.style.transform = 'translateX(-50%)';
+    
+    // Add highlight effect
+    element.style.position = 'relative';
+    element.style.zIndex = '10001';
+    element.style.animation = 'pulse 1s infinite';
+    
+    document.body.appendChild(tooltip);
+    
+    // Remove after delay
+    setTimeout(() => {
+        tooltip.remove();
+        element.style.animation = '';
+        element.style.zIndex = '';
+    }, 1500);
+}
+
+function highlightElements(elements, message) {
+    elements.forEach(element => {
+        element.style.position = 'relative';
+        element.style.zIndex = '10001';
+        element.style.animation = 'pulse 1s infinite';
+    });
+
+    // Create single tooltip for the group
+    const firstElement = elements[0];
+    if (!firstElement) return;
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tutorial-tooltip';
+    tooltip.style.zIndex = '10002';
+    tooltip.innerHTML = `
+        <div class="tutorial-content" style="max-width: 300px; padding: 1rem;">
+            <p style="margin: 0;">${message}</p>
+        </div>
+    `;
+    
+    const rect = firstElement.getBoundingClientRect();
+    tooltip.style.position = 'fixed';
+    tooltip.style.top = `${rect.bottom + 10}px`;
+    tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+    tooltip.style.transform = 'translateX(-50%)';
+    
+    document.body.appendChild(tooltip);
+    
+    setTimeout(() => {
+        tooltip.remove();
+        elements.forEach(element => {
+            element.style.animation = '';
+            element.style.zIndex = '';
+        });
+    }, 1500);
+}
+
+function showFinalStep() {
+    // Clean up any existing final steps
+    const existingFinal = document.getElementById('finalStep');
+    if (existingFinal) existingFinal.remove();
+    
+    // Remove the backdrop
+    const backdrop = document.querySelector('.tutorial-backdrop');
+    if (backdrop) backdrop.remove();
+
+    // Close notification dropdown
+    const notificationLink = document.getElementById('notificationLink');
+    if (notificationLink) {
+        $(notificationLink).dropdown('hide');
+    }
+
+    // Show final step
+    const finalStep = document.createElement('div');
+    finalStep.className = 'tutorial-step-overlay';
+    finalStep.id = 'finalStep';
+    finalStep.innerHTML = `
+        <div class="tutorial-content" style="animation: fadeIn 0.3s ease-out;">
+            <span class="step-indicator">Complete!</span>
+            <h3>You're All Set!</h3>
+            <p>You've learned all the basics of Sisyphus Chat. Ready to start chatting?</p>
+            <div class="tutorial-actions">
+                <button class="btn btn-outline-light replay-tutorial">Replay Tutorial</button>
+                <button class="btn btn-light finish-tutorial">Start Chatting!</button>
+            </div>
+        </div>
+    `;
+
+    document.querySelector('.tutorial-overlay').appendChild(finalStep);
+
+    // Style the final step
+    finalStep.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 10000;
+    `;
+
+    // Add click handlers
+    finalStep.querySelector('.finish-tutorial').addEventListener('click', endTutorial);
+    finalStep.querySelector('.replay-tutorial').addEventListener('click', function() {
+        endTutorial();
+        initializeTutorial();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Remove the completion check to always show tutorial
+    initializeTutorial();
+});
+</script>
