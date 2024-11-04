@@ -10,6 +10,9 @@
   --input-focus-bg: rgba(255, 255, 255, 0.08);
   --shadow-color: rgba(0, 0, 0, 0.3);
   --hover-bg: rgba(177, 151, 252, 0.1);
+  --bg-color-rgb: 44, 47, 51;
+  --text-color-rgb: 228, 230, 235;
+  --accent-color-rgb: 177, 151, 252;
 }
 
 body {

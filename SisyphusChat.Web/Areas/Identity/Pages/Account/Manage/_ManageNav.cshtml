@@ -4,6 +4,55 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
+<style>
+    .nav-pills {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-pills .nav-link {
+        color: var(--text-color);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-pills .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--accent-color);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 0;
+    }
+
+    .nav-pills .nav-link:hover {
+        transform: translateX(5px);
+        background: rgba(var(--accent-color-rgb), 0.1);
+    }
+
+    .nav-pills .nav-link.active {
+        background: rgba(var(--accent-color-rgb), 0.2);
+        color: var(--accent-color);
+        font-weight: 600;
+        box-shadow: 0 2px 8px var(--shadow-color);
+    }
+
+    .nav-pills .nav-link.active::before {
+        opacity: 0.1;
+    }
+</style>
 <ul class="nav nav-pills flex-column">
     <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
