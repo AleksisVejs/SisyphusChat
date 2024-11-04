@@ -28,7 +28,6 @@
 </script>
 </head>
 <body>
-    <partial name="_TutorialOverlay" />
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom">
             <div class="container-fluid">
@@ -132,8 +131,6 @@
         </footer>
     }
 
-
-
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -177,6 +174,8 @@
         </script>
     }
     @await RenderSectionAsync("Scripts", required: false)
+
+    <partial name="_TutorialOverlay" />
 </body>
 </html>
 
