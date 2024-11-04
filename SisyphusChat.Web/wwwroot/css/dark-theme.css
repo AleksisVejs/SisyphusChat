@@ -441,8 +441,6 @@ a:focus {
 
 /* Dark Theme Notification Styles */
 .notification-menu {
-    background: #1a1b1e;
-    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
