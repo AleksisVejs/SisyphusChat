@@ -678,45 +678,181 @@ main[b-fefn0adsrq] {
 .edit-actions button:hover {
   transform: translateY(-2px);
 }
-    .gcsettings {
-        margin-left: auto;
-        margin-right: 1%;
-    }
+.gcsettings {
+    margin-left: auto;
+    margin-right: 1%;
+}
 
-    /* Modal container styles */
-    #reportModal {
-        display: none; /* Hide initially */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
+/* Modal container styles */
+#reportModal,
+#chatReportModal {
+    backdrop-filter: blur(12px);
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
 
-    #chatReportModal {
-        display: none; /* Hide initially */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
+#reportModal .bg-white,
+#chatReportModal .bg-white {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-radius: 24px;
+    max-width: 500px;
+    width: 90%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+}
 
-    /* Modal content styles */
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 500px;
-        width: 90%;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+#reportModal h2,
+#chatReportModal h2 {
+    color: var(--text-color);
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--text-color) 0%, rgba(var(--text-color-rgb), 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+#reportModal select,
+#chatReportModal select {
+    background: rgba(var(--bg-color-rgb), 0.3);
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    border-radius: 16px;
+    padding: 1rem;
+    width: 100%;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5em;
+    cursor: pointer;
+}
+
+#reportModal textarea,
+#chatReportModal textarea {
+    background: rgba(var(--bg-color-rgb), 0.3);
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    border-radius: 16px;
+    padding: 1rem;
+    min-height: 120px;
+    width: 100%;
+    resize: vertical;
+    margin: 1rem 0;
+}
+
+#reportModal select:focus,
+#chatReportModal select:focus,
+#reportModal textarea:focus,
+#chatReportModal textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.2);
+    outline: none;
+}
+
+#reportModal label,
+#chatReportModal label {
+    color: var(--text-color);
+    opacity: 0.9;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+/* Modal Buttons Container */
+#reportModal .flex,
+#chatReportModal .flex {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: flex-end;
+}
+
+/* Modal Buttons */
+#reportModal button,
+#chatReportModal button {
+    padding: 0.875rem 1.75rem;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#reportModal button[type="submit"],
+#chatReportModal button[type="submit"] {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+#reportModal button[type="submit"]:hover,
+#chatReportModal button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+#reportModal button[type="button"],
+#chatReportModal button[type="button"] {
+    background: rgba(var(--text-color-rgb), 0.1);
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    color: var(--text-color);
+}
+
+#reportModal button[type="button"]:hover,
+#chatReportModal button[type="button"]:hover {
+    background: rgba(var(--text-color-rgb), 0.15);
+    transform: translateY(-2px);
+}
+
+/* Overlay Background */
+#reportModal::before,
+#chatReportModal::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+/* Animation */
+@@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%);
     }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+#reportModal .bg-white,
+#chatReportModal .bg-white {
+    animation: modalFadeIn 0.3s ease-out;
+}
 </style>
