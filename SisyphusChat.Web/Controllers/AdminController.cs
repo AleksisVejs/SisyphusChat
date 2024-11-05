@@ -79,12 +79,34 @@ namespace SisyphusChat.Web.Controllers
                 return RedirectToAction("AccessDenied", "Home");
             }
 
-            var currentUser = await _userManager.GetUserAsync(User);
             var users = await _userManager.Users
-                .Where(u => u.Id != currentUser.Id) // Exclude current user
+                .Where(u => !u.IsAdmin)
+                .ToListAsync();
+            
+            var reports = await _context.Reports
+                .Include(r => r.Chat)
+                .Include(r => r.Message)
+                .Include(r => r.ReportedUser)
+                .OrderByDescending(r => r.TimeCreated)
                 .ToListAsync();
 
-            return View(new AdminViewModel { Users = users });
+            // Calculate report counts for each user
+            var userReportCounts = await _context.Reports
+                .GroupBy(r => r.ReportedUserId)
+                .Select(g => new { UserId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(
+                    x => x.UserId,
+                    x => x.Count
+                );
+
+            var viewModel = new AdminViewModel
+            {
+                Users = users,
+                Reports = reports,
+                UserReportCounts = userReportCounts
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -226,6 +248,19 @@ namespace SisyphusChat.Web.Controllers
             await _userManager.UpdateAsync(user);
 
             TempData["SuccessMessage"] = $"User {user.UserName} has been unbanned.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteReport(string reportId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || !user.IsAdmin)
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            await _adminService.DeleteReportAsync(reportId);
             return RedirectToAction(nameof(Index));
         }
     }

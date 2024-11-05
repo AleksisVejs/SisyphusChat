@@ -20,6 +20,9 @@
         <button class="tab-button" data-tab="users">
             <i class="fas fa-users"></i> Users
         </button>
+        <button class="tab-button" data-tab="reports-list">
+            <i class="fas fa-flag"></i> Reports
+        </button>
     </div>
 
     <div class="tab-content">
@@ -100,6 +103,7 @@
                             <th>Email</th>
                             <th>Status</th>
                             <th>Last Login</th>
+                            <th>Reports</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -129,6 +133,13 @@
                                     </span>
                                 </td>
                                 <td>@(user.LastLogin?.ToString("g") ?? "Never")</td>
+                                <td>
+                                    @{
+                                        var reportCount = Model.UserReportCounts.ContainsKey(user.Id) ? Model.UserReportCounts[user.Id] : 0;
+                                        var badgeClass = reportCount > 0 ? "bg-danger" : "bg-secondary";
+                                    }
+                                    <span class="badge rounded-pill @badgeClass">@reportCount</span>
+                                </td>
                                 <td class="text-end">
                                     @if (!user.IsBanned)
                                     {
@@ -169,6 +180,59 @@
                                             </button>
                                         </form>
                                     }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reports List Tab -->
+        <div id="reports-list" class="tab-pane">
+            <div class="reports-table-container">
+                <table class="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Reason</th>
+                            <th>Chat</th>
+                            <th>Message</th>
+                            <th>Reported User</th>
+                            <th>Date Reported</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var report in Model.Reports)
+                        {
+                           <tr class="report-row">
+                                <td>
+                                    <span class="report-type-badge @report.Type.ToString().ToLower()">
+                                        @report.Type
+                                    </span>
+                                </td>
+                                <td>@report.Reason</td>
+                                <td>@report.Chat.Name</td>
+                                <td>
+                                    @if (report.Message != null)
+                                    {
+                                        <span class="message-preview">@report.Message.Content</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+                                <td>@report.ReportedUser.UserName</td>
+                                <td>@report.TimeCreated.ToString("g")</td>
+                                <td class="text-end">
+                                    <form asp-action="DeleteReport" method="post" class="d-inline">
+                                        <input type="hidden" name="reportId" value="@report.Id" />
+                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this report?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         }
@@ -576,6 +640,103 @@
     .users-table {
         min-width: 800px;
     }
+}
+
+.reports-table-container {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    overflow: hidden;
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+    padding: 1rem;
+    text-align: left;
+}
+
+.reports-table th {
+    background: rgba(var(--bg-color-rgb), 0.8);
+    font-weight: 600;
+}
+
+.reports-table td {
+    border-top: 1px solid rgba(var(--text-color-rgb), 0.1);
+}
+
+.report-type-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.report-type-badge.racist {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.report-type-badge.sexist {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+}
+
+.report-type-badge.ableist {
+    background: rgba(111, 66, 193, 0.1);
+    color: #6f42c1;
+}
+
+.message-preview {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.btn-delete {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: none;
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: rgba(220, 53, 69, 0.2);
+    transform: translateY(-2px);
+}
+
+.btn-delete i:hover {
+    color: #dc3545;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.badge:hover {
+    transform: scale(1.1);
+}
+
+.bg-danger {
+    background: rgba(220, 53, 69, 0.9) !important;
+}
+
+.bg-secondary {
+    background: rgba(var(--text-color-rgb), 0.2) !important;
+    color: var(--text-color) !important;
 }
 </style>
 

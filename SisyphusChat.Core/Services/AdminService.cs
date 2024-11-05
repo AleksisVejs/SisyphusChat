@@ -399,5 +399,11 @@ namespace SisyphusChat.Core.Services
             }
         }
 
+        public async Task DeleteReportAsync(string reportId)
+        {
+            await _unitOfWork.ReportRepository.DeleteByIdAsync(reportId);
+            await _unitOfWork.SaveAsync();
+        }
+
     }
 }

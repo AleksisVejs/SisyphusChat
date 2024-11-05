@@ -80,7 +80,7 @@
                                 </div>
                             </div>
                             
-                            @if (currentUser.IsAdmin)
+                            @if (currentUser != null && currentUser.IsAdmin)
                             {
                                 <a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a>
                             }

@@ -19,6 +19,13 @@ public class Report : BaseEntity
     public Message? Message { get; set; }
 
     [Required]
+    public string ReportedUserId { get; set; }
+    
+    [Required]
+    [ForeignKey(nameof(ReportedUserId))]
+    public User ReportedUser { get; set; }
+
+    [Required]
     public ReportType Type { get; set; }
     
     [Required]
