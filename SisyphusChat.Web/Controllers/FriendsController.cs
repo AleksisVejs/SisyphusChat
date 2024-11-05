@@ -56,10 +56,7 @@ namespace SisyphusChat.Web.Controllers
 
             if (receiverUser.IsBanned)
             {
-                string banMessage = receiverUser.BanStart.HasValue && !receiverUser.BanEnd.HasValue 
-                    ? "This user is temporarily banned."
-                    : "This user is permanently banned.";
-                ModelState.AddModelError("receiverUsername", banMessage);
+                ModelState.AddModelError("receiverUsername", "This user cannot be added at this time.");
                 return View("Add");
             }
 
