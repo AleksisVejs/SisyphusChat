@@ -574,6 +574,12 @@ function endTutorial() {
         $(notificationLink).dropdown('hide');
     }
     
+    //remove tutorial tooltip
+    const tutorialTooltip = document.querySelector('.tutorial-tooltip');
+    if (tutorialTooltip) {
+        tutorialTooltip.remove();
+    }
+    
     // Reset currentStep
     currentStep = 0;
     

@@ -26,6 +26,29 @@
         document.head.appendChild(themeLink);
     })();
 </script>
+    <style scoped>
+    .tutorial-btn {
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        color: var(--text-color);
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .tutorial-btn:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+        color: var(--accent-color);
+    }
+
+    .tutorial-btn i {
+        font-size: 1.2rem;
+    }
+    </style>
 </head>
 <body>
     <header>
@@ -95,6 +118,9 @@
                                     <button type="submit" class="nav-link btn btn-link">Logout</button>
                                 </form>
                             </li>
+                            <button id="start-tutorial" class="nav-link tutorial-btn" type="button">
+                                <i class="fas fa-graduation-cap"></i>
+                            </button>
                         }
                         else
                         {
@@ -176,6 +202,16 @@
     @await RenderSectionAsync("Scripts", required: false)
 
     <partial name="_TutorialOverlay" />
+
+    <script>
+    document.getElementById('start-tutorial')?.addEventListener('click', function() {
+        const tutorialOverlay = document.getElementById('tutorial-overlay');
+        if (tutorialOverlay) {
+            tutorialOverlay.classList.remove('d-none');
+            initializeTutorial();
+        }
+    });
+    </script>
 </body>
 </html>
 
