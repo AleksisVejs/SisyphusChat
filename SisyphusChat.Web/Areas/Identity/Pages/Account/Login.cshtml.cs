@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-
+using SisyphusChat.Infrastructure.Data;
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
@@ -21,11 +21,12 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
 
         private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
+        private readonly ApplicationDbContext _context;
+        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -75,28 +76,33 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl ??= Url.Content("~/");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
-                // Use FindByEmailAsync to find the user by email
                 var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
-
+                var banResult = await _signInManager.CheckBanStatusAsync(Input.Email, _context);
+                if (banResult == Microsoft.AspNetCore.Identity.SignInResult.NotAllowed)
+                {
+                    ModelState.AddModelError(string.Empty, "This account has been permanently banned.");
+                    return Page();
+                }
+                else if (banResult == Microsoft.AspNetCore.Identity.SignInResult.LockedOut)
+                {
+                    var banEndDate = user?.BanEnd?.ToString("g") ?? "unknown date";
+                    ModelState.AddModelError(string.Empty, $"This account is temporarily banned until {banEndDate}.");
+                    return Page();
+                }
                 
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "The email does not exist.");
-
                     return Page();
                 }
 
-                
                 var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                
 
                 if (result.Succeeded)
                 {
@@ -109,7 +115,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { RememberMe = Input.RememberMe });
                 }
 
                 if (result.IsLockedOut)
@@ -128,6 +134,6 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
         }
 
 
-            
+
     }
 }

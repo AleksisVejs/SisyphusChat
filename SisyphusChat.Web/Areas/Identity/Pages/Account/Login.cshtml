@@ -3,54 +3,207 @@
 @{
     ViewData["Title"] = "Log in";
 }
-<h1 class="row justify-content-center">@ViewData["Title"]</h1>
-<div class="row justify-content-center">
-    <!-- Centered row -->
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+<div class="auth-container">
+    <div class="auth-box">
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Please sign in to continue</p>
+        
+        <form id="account" method="post" class="auth-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating mb-3 position-relative">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" id="password" />
+                <label asp-for="Input.Password">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <button type="button" id="togglePasswordVisibility" class="toggle-password">
+                    <i id="passwordIcon" class="fas fa-eye"></i>
+                </button>
+            </div>
+            
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="Input.RememberMe" id="rememberMe" />
+                    <label class="form-check-label" asp-for="Input.RememberMe">
+                        Remember me
+                    </label>
                 </div>
-                <div class="form-floating mb-3 position-relative">
-                    <!-- Added position-relative -->
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" id="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    <a href="#" id="togglePasswordVisibility" class="toggle-password">
-                        <i id="passwordIcon" class="fas fa-eye"></i>
-                    </a>
-                </div>
-                <div class="mb-3 d-flex align-items-center">
-                    <!-- Flexbox for alignment -->
-                    <div class="form-check">
-                        <input class="form-check-input" asp-for="Input.RememberMe" id="rememberMe" />
-                        <label class="form-check-label" asp-for="Input.RememberMe">
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+                <a id="forgot-password" class="auth-link" asp-page="./ForgotPassword">Forgot password?</a>
+            </div>
+
+            <button id="login-submit" type="submit" class="w-100 btn btn-primary auth-button">
+                Sign in
+            </button>
+        </form>
+
+        <div class="auth-footer-container">
+            <span>Don't have an account?</span>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="auth-link">Create one</a>
+        </div>
     </div>
 </div>
+
+<style>
+.auth-container {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-box {
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--muted-color);
+    margin-bottom: 30px;
+}
+
+.form-floating > .form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.form-floating > .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(140, 119, 208, 0.25);
+}
+
+.form-floating > label {
+    color: var(--muted-color);
+}
+
+.form-floating.position-relative {
+    display: block;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 0;           
+    transform: none;  
+    background: none;
+    border: none;
+    color: var(--muted-color);
+    cursor: pointer;
+    padding: 0;
+    z-index: 4;
+    height: 58px;     
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password i {
+    font-size: 16px;
+}
+
+.form-floating > input[type="password"],
+.form-floating > input[type="text"] {
+    padding-right: 45px !important;
+}
+
+.form-floating {
+    position: relative;
+}
+
+.form-floating.mb-3 {
+    margin-bottom: 25px !important;
+}
+
+.form-floating > .text-danger {
+    position: static;
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #ff4d4d !important;
+}
+
+.mb-3.d-flex {
+    margin-top: 10px;
+    margin-bottom: 25px !important;
+}
+
+.auth-button {
+    background: var(--accent-color);
+    border: none;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-button:hover {
+    background: var(--accent-color-dark);
+    transform: translateY(-2px);
+}
+
+.auth-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: var(--accent-color-dark);
+}
+
+.auth-footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted-color);
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.auth-footer-container .auth-link {
+    white-space: nowrap;
+}
+
+.auth-form {
+    margin-bottom: 40px;
+}
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

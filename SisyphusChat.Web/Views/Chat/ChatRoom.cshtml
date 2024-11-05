@@ -1,4 +1,4 @@
-﻿@using SisyphusChat.Infrastructure.Entities
+@using SisyphusChat.Infrastructure.Entities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ChatPageViewModel
 
@@ -50,7 +50,16 @@
                     <li class="user-item flex items-center gap-3" data-type="user">
                         <a href="@Url.Action("CreateOrOpenChat", "Chat", new { recipientUserId = user.Id })" class="flex items-center gap-3 w-full">
                             <div class="icon-container">
-                                <i class="fas fa-user user-icon"></i>
+                                @if (user.Picture.Length > 0)
+                                {
+                                    var base64Image = Convert.ToBase64String(@user.Picture);
+                                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                                    <img class="profile-image" src="@imgSrc" alt="User Avatar" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="profile-pic" />
+                                }
                             </div>
                             <span class="flex-grow text-blue-600 font-semibold truncate">@user.UserName</span>
                             <span class="status-indicator @(user.IsOnline ? "bg-green-500" : "bg-gray-500")"></span>
@@ -65,33 +74,57 @@
         <div id="chatHeader" class="chat-header @(Model.ChatViewModel.Chat.Type == ChatType.Group ? "" : "no-clickable")">
             <div class="header-content flex items-center gap-3 pb-3">
                 @if (Model.ChatViewModel.Chat.Type == ChatType.Group)
-                {
-                        <!-- Group chat -->
-                        <div class="icon-container-large flex items-center">
-                            <i class="fas fa-users group-icon-large"></i>
-                            <div class="username-status flex flex-col ml-2">
-                                <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
-                                <span id="groupUsers">
-                                    @{
-                                        var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
-                                        var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
+{
+    <div class="icon-container-large flex items-center">
+        @if (Model.ChatViewModel.Chat.ChatUsers.Any(u => u.User.Picture != null))
+        {
+            <div class="group-images-stack">
+                @foreach (var chatUser in Model.ChatViewModel.Chat.ChatUsers.Take(4))
+                            {
+                                <div class="stacked-image">
+                                    @if (chatUser.User.Picture.Length > 0)
+                                    {
+                                        var base64Image = Convert.ToBase64String(@chatUser.User.Picture);
+                                        var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                                        <img class="profile-image" src="@imgSrc" alt="User Avatar" />
                                     }
-                                    @displayMembersList
-                                </span>
-                            </div>
-                            <a href="@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })" type="button" class="btn btn-primary w-10 gcsettings">Settings</a>
-                            <a href="javascript:void(0);" onclick="openChatReportModal()" class="text-red-600 hover:underline">Report</a>
+                                    else
+                                    {
+                                        <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" />
+                                    }
+                                </div>
+                            }
                         </div>
-                        
-                }
+                    }
+                    else
+                    {
+                        <i class="fas fa-users group-icon-large"></i>
+                    }
+                    <div class="username-status flex flex-col ml-2">
+                        <span class="username-text">@Model.ChatViewModel.Chat.Name</span>
+                        <span id="groupUsers">
+                            @{
+                                var membersList = string.Join(", ", Model.ChatViewModel.Chat.ChatUsers.Select(m => m.User.UserName));
+                                var displayMembersList = membersList.Length > 90 ? membersList[..87] + "..." : membersList;
+                            }
+                            @displayMembersList
+                        </span>
+                    </div>
+                    <a href="@Url.Action("Index", "ChatSettings" , new { chatId=Model.ChatViewModel.Chat.Id })" type="button" class="btn btn-primary w-10 gcsettings">Settings</a>
+                    <a href="javascript:void(0);" onclick="openChatReportModal()" class="text-red-600 hover:underline">Report</a>
+                </div>
+            }
                 else
                 {
                         <!-- Private chat -->
+                        <!-- ChatRoom.cshtml -->
                         <div class="icon-container-large flex items-center">
                             <i class="fas fa-user user-icon-large"></i>
                             <div class="username-status flex flex-col ml-2">
                                 <span class="username-text">
-                                    @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
+                                    <a href="@Url.Action("Profile", "Friends", new { username = Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName })" class="text-blue-500 hover:underline">
+                                        @Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.UserName
+                                    </a>
                                 </span>
                                 <span class="status-text @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "text-green-500" : "text-gray-500")">
                                     @(Model.ChatViewModel.Chat.ChatUsers.First(m => m.UserId != Model.UserViewModel.CurrentUser.Id).User.IsOnline ? "Online" : "Offline")
@@ -106,16 +139,58 @@
         <div class="chat-messages">
             @foreach (var message in Model.ChatViewModel.Chat.Messages)
             {
-                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")">
-                    <span class="sender-name">@message.Sender.UserName</span>
-                    <p>@message.Content</p>
-                    <span class="time">@message.TimeCreated.ToString("dd/mm/yyyy', ' HH:mm")</span>
-                    <a href="javascript:void(0);" onclick="openReportModal('@message.Id')" class="text-red-600 hover:underline">Report</a>
+                <div class="message @(message.Sender.Id == Model.UserViewModel.CurrentUser.Id ? "sent" : "received")" 
+                     data-message-id="@message.Id">
+                    <div class="message-header">
+                      @if (message.Sender.Picture.Length > 0)
+                      {
+                          var base64Image = Convert.ToBase64String(@message.Sender.Picture);
+                          var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                          <img class="message-profile-pic" src="@imgSrc" alt="User Avatar" />
+                      }
+                      else
+                      {
+                          <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="message-profile-pic" />
+                      }
+                    <span class="sender-name">
+                        @message.Sender.UserName
+                    </span>
+                    </div>
+                    <p class="message-content">@message.Content</p>
+                    <span class="time">
+                        @if (message.LastUpdated == DateTime.MinValue || message.LastUpdated == message.TimeCreated)
+                        {
+                            @message.TimeCreated.ToString("dd/MM/yyyy', ' HH:mm")
+                        }
+                        else
+                        {
+                            @message.LastUpdated.ToString("dd/MM/yyyy', ' HH:mm")
+                            <span class="edited-indicator">(edited)</span>
+                        }
+                    </span>
+                    @if (message.Sender.Id == Model.UserViewModel.CurrentUser.Id)
+                    {
+                        <div class="message-actions">
+                            <button class="edit-message-btn" onclick="startEditMessage(this)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);" onclick="openChatReportModal()" class="text-red-600 hover:underline">Report</a>
+                    }
                 </div>
             }
         </div>
-
-
+        <!-- Add edit message form -->
+        <div id="editMessageForm" class="edit-message-form d-none">
+            <input type="text" id="editMessageInput" />
+            <div class="edit-actions">
+                <button onclick="saveEditMessage()">Save</button>
+                <button onclick="cancelEditMessage()">Cancel</button>
+            </div>
+        </div>
         <div class="chat-footer">
             <input type="text" id="messageInput" placeholder="Type a message..." />
             <button id="sendMessageButton">
@@ -209,43 +284,74 @@
             scrollToBottom();
         });
 
-        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt) => {
+        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt, messageId, profilePicture) => {
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
                 messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
+                messageDiv.dataset.messageId = messageId;
 
-                // Create a span to hold the sender's username
+                // Create message header div with flex layout
+                const messageHeader = document.createElement("div");
+                messageHeader.classList.add("message-header");
+                messageHeader.style.display = "flex";
+                messageHeader.style.alignItems = "center";
+                messageHeader.style.gap = "8px";  // Add some spacing between image and name
+
+                // Create and set up profile picture
+                const profileImg = document.createElement("img");
+                profileImg.classList.add("message-profile-pic");
+                if (profilePicture) {
+                    profileImg.src = `data:image/jpeg;base64,${profilePicture}`;
+                    profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
+                } else {
+                    profileImg.src = "/images/default_pfp.jpg";
+                    profileImg.alt = "Default Profile Picture";
+                }
+
+                // Create sender name span
                 const senderNameSpan = document.createElement("span");
                 senderNameSpan.classList.add("sender-name");
                 senderNameSpan.textContent = user;
 
-                // Create a paragraph to hold the message content
-                const messageContent = document.createElement("p");
-                messageContent.textContent = message;
+                // Append elements in correct order
+                messageHeader.appendChild(profileImg);
+                messageHeader.appendChild(senderNameSpan);
+                messageDiv.appendChild(messageHeader);
 
-                // Create a span to hold the timestamp
+                const messageContent = document.createElement("p");
+                messageContent.classList.add("message-content");
+                messageContent.textContent = message;
+                messageDiv.appendChild(messageContent);
+
                 const timestampSpan = document.createElement("span");
                 timestampSpan.classList.add("time");
                 timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-
-                // Append the sender's name, message content, and timestamp to the message div
-                messageDiv.appendChild(senderNameSpan);
-                messageDiv.appendChild(messageContent);
                 messageDiv.appendChild(timestampSpan);
 
-                // Append the message div to the chat messages container
-                document.querySelector(".chat-messages").appendChild(messageDiv);
+                // Add edit button for own messages
+                if (user === currentUser) {
+                    const messageActions = document.createElement("div");
+                    messageActions.classList.add("message-actions");
+                    
+                    const editButton = document.createElement("button");
+                    editButton.classList.add("edit-message-btn");
+                    editButton.onclick = function() { startEditMessage(this); };
+                    
+                    const editIcon = document.createElement("i");
+                    editIcon.classList.add("fas", "fa-edit");
+                    
+                    editButton.appendChild(editIcon);
+                    messageActions.appendChild(editButton);
+                    messageDiv.appendChild(messageActions);
+                }
 
-                // Scroll to the bottom to see the new message
-                document.querySelector(".chat-messages").scrollTop = document.querySelector(".chat-messages").scrollHeight;
+                document.querySelector(".chat-messages").appendChild(messageDiv);
+                scrollToBottom();
             } else {
                 const errorContainer = document.getElementById("errorMessage");
                 const errorMessageText = document.getElementById("errorMessageText");
-
                 errorMessageText.textContent = "You are no longer a member of this chat.";
-
                 errorContainer.classList.remove("d-none");
-
                 document.getElementById("messageInput").disabled = true;
                 document.getElementById("sendMessageButton").disabled = true;
             }
@@ -351,6 +457,100 @@
             });
         });
 
+        // Add these functions after your existing SignalR setup
+        let currentEditMessageId = null;
+        let originalMessage = null;
+
+        function startEditMessage(button) {
+            const messageDiv = button.closest('.message');
+            const messageContent = messageDiv.querySelector('.message-content');
+            currentEditMessageId = messageDiv.dataset.messageId;
+            originalMessage = messageContent.textContent;
+
+            const editForm = document.getElementById('editMessageForm');
+            const editInput = document.getElementById('editMessageInput');
+            
+            editInput.value = originalMessage;
+            editForm.classList.remove('d-none');
+            messageContent.parentNode.insertBefore(editForm, messageContent.nextSibling);
+            messageContent.style.display = 'none';
+            editInput.focus();
+        }
+
+        function saveEditMessage() {
+            const editInput = document.getElementById('editMessageInput');
+            const newContent = editInput.value.trim();
+            
+            if (newContent === '' || newContent === originalMessage) {
+                cancelEditMessage();
+                return;
+            }
+
+            try {
+                connection.invoke("EditMessage", currentEditMessageId, newContent, chatId);
+            } catch (err) {
+                console.error("Error editing message:", err);
+                const errorContainer = document.getElementById("errorMessage");
+                errorContainer.textContent = "Failed to edit message";
+                errorContainer.classList.remove("d-none");
+            }
+
+            cancelEditMessage();
+        }
+
+        function cancelEditMessage() {
+            const editForm = document.getElementById('editMessageForm');
+            const messageDiv = document.querySelector(`[data-message-id="${currentEditMessageId}"]`);
+            const messageContent = messageDiv.querySelector('.message-content');
+            
+            editForm.classList.add('d-none');
+            messageContent.style.display = 'block';
+            currentEditMessageId = null;
+            originalMessage = null;
+        }
+
+        // Add MessageEdited handler
+        connection.on("MessageEdited", (messageId, newContent, lastUpdated) => {
+            const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageDiv) {
+                const messageContent = messageDiv.querySelector('.message-content');
+                const timeSpan = messageDiv.querySelector('.time');
+                
+                messageContent.textContent = newContent;
+                timeSpan.innerHTML = `${new Date(lastUpdated).toLocaleString()} <span class="edited-indicator">(edited)</span>`;
+            }
+        });
+
+        // Add this after your other connection.on handlers
+        connection.on("UserDeleted", function (userId, newUsername) {
+            // Update usernames in chat list
+            const userItems = document.querySelectorAll('.user-item');
+            userItems.forEach(item => {
+                const usernameSpan = item.querySelector('.text-blue-600');
+                if (usernameSpan && usernameSpan.textContent === newUsername) {
+                    usernameSpan.textContent = newUsername;
+                }
+            });
+
+            // Update usernames in messages
+            const senderNames = document.querySelectorAll('.sender-name');
+            senderNames.forEach(span => {
+                if (span.textContent === newUsername) {
+                    span.textContent = newUsername;
+                }
+            });
+
+            // Update group chat members list if present
+            const groupUsers = document.getElementById('groupUsers');
+            if (groupUsers) {
+                const members = groupUsers.textContent.split(', ');
+                const updatedMembers = members.map(member => 
+                    member === newUsername ? newUsername : member
+                );
+                groupUsers.textContent = updatedMembers.join(', ');
+            }
+        });
+
         // Open and close the modal
         function openReportModal(messageId) {
             document.getElementById('reportModal').style.display = 'flex';
@@ -398,6 +598,77 @@
         font-weight: bold;
     }
 
+    .gcsettings {
+        margin-left: auto;
+        margin-right: 1%;
+    }
+
+.message-actions {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: none;
+}
+
+.message:hover .message-actions {
+    display: block;
+}
+
+.edit-message-btn {
+    background: none;
+    border: none;
+    padding: 2px 5px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.edit-message-btn:hover {
+    color: #e0e0e0;
+}
+
+.edit-message-form {
+    margin: 5px 0;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-message-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-actions button {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-actions button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-actions button:last-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+.edited-indicator {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 5px;
+}
     .gcsettings {
         margin-left: auto;
         margin-right: 1%;

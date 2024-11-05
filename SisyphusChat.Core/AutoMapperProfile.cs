@@ -10,12 +10,20 @@ namespace SisyphusChat.Core
         {
             CreateMap<User, UserModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => 
+                    src.IsDeleted ? "Deleted User" : src.UserName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => 
+                    src.IsDeleted ? "deleted@deleted.com" : src.Email))
+                .ForMember(dest => dest.IsAdmin, opt => opt.MapFrom(src => src.IsAdmin))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ForMember(dest => dest.IsBanned, opt => opt.MapFrom(src => src.IsBanned))
+                .ForMember(dest => dest.IsOnline, opt => opt.MapFrom(src => 
+                    src.IsDeleted ? false : src.IsOnline))
+                .ForMember(dest => dest.TimeCreated, opt => opt.MapFrom(src => src.TimeCreated))
                 .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(src => src.LastUpdated))
-                .ForMember(dest => dest.IsOnline, opt => opt.MapFrom(src => src.IsOnline))
-                .ForMember(dest => dest.Chats, opt => opt.MapFrom(src => src.Chats))
-                .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
-                .ForMember(dest => dest.Friends, opt => opt.MapFrom(src => src.Friends))
+                .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.LastLogin))
+                .ForMember(dest => dest.Picture, opt => opt.MapFrom(src => 
+                    src.IsDeleted ? null : src.Picture))
                 .ReverseMap();
 
             CreateMap<Chat, ChatModel>()
@@ -32,7 +40,8 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.ChatId))
                 .ForMember(dest => dest.Chat, opt => opt.MapFrom(src => src.Chat))
-                .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.SenderId))
+                .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => 
+                    src.Sender.IsDeleted ? "DELETED_USER" : src.SenderId))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
                 .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(src => src.LastUpdated))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
@@ -64,6 +73,22 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.TimeCreated, opt => opt.MapFrom((src) => src.TimeCreated))
                 .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom((src) => src.LastUpdated))
                 .ReverseMap();
+
+            CreateMap<Notification, NotificationModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
+                .ForMember(dest => dest.SenderUserId, opt => opt.MapFrom(src => src.SenderUsername))
+                .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.SenderUsername))
+                .ForMember(dest => dest.TimeCreated, opt => opt.MapFrom(src => src.TimeCreated))
+                .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
+                .ForMember(dest => dest.RelatedEntityId, opt => opt.MapFrom(src => src.RelatedEntityId))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ReverseMap();
+
         }
     }
 }

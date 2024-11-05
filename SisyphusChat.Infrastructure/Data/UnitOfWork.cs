@@ -1,6 +1,7 @@
 ﻿using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace SisyphusChat.Infrastructure.Data;
 
@@ -16,7 +17,8 @@ public class UnitOfWork : IUnitOfWork
         IFriendRepository friendRepository,
         IMessageRepository messageRepository,
         IReportRepository reportRepository,
-        IUserRepository userRepository
+        IUserRepository userRepository,
+        INotificationRepository notificationRepository
         )
     {
         _context = context;
@@ -27,6 +29,7 @@ public class UnitOfWork : IUnitOfWork
         MessageRepository = messageRepository;
         ReportRepository = reportRepository;
         UserRepository = userRepository;
+        NotificationRepository = notificationRepository;
     }
 
     public IAdminRepository AdminRepository { get; }
@@ -42,9 +45,16 @@ public class UnitOfWork : IUnitOfWork
     public IReportRepository ReportRepository { get; }
 
     public IUserRepository UserRepository { get; }
+    public INotificationRepository NotificationRepository { get; }
+
 
     public Task SaveAsync()
     {
         return _context.SaveChangesAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

@@ -47,7 +47,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
             .Include(c => c.Messages
             .OrderBy(m => m.TimeCreated))
             .ThenInclude(m => m.Sender)
-            .FirstOrDefaultAsync(g => g.Id.ToString() == id);
+            .FirstOrDefaultAsync(g => g.Id == id);
 
         if (chat == null)
         {

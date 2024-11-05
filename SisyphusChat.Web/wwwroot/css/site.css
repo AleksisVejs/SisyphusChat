@@ -34,7 +34,7 @@ button#theme-switcher {
 }
 
 .toggle-password:focus {
-  outline: none; 
+  outline: none;
 }
 
 .toggle-password i {
@@ -48,30 +48,33 @@ button#theme-switcher {
   transform: translate(-50%, -50%);
 }
 
-
 /* Chat */
 #chatPageContainer {
   display: flex;
-  height: 91vh;
+  height: calc(100vh - 75px); /* Adjust for navbar height */
   width: 100vw;
+  gap: 1rem;
 }
 
 #sidebar {
-  width: 280px;
-  height: 88vh;
+  width: 300px;
+  height: calc(100% - 2rem); /* Account for margins */
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  border-radius: 18px;
+  padding: 1.5rem;
+  border-radius: 12px;
   margin: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #chatContainer {
   flex: 1;
+  height: calc(100% - 2rem); /* Account for margins */
   display: flex;
   flex-direction: column;
-  border-radius: 18px;
+  border-radius: 12px;
   margin: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-item {
@@ -82,14 +85,16 @@ button#theme-switcher {
   display: flex;
   align-items: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.3s, transform 0.2s; /* Smooth transition */
   border-radius: 8px;
   margin: 0.5rem 0;
-  padding: 0.5rem;
+  padding: 0.75rem; /* Increased padding for better touch targets */
+  text-decoration: none;
 }
 
 .user-item a:hover {
-  border-radius: 8px;
+  transform: scale(1.02); /* Slight scale effect on hover */
+  text-decoration: none;
 }
 
 .icon-container {
@@ -128,7 +133,7 @@ button#theme-switcher {
 /* Chat header */
 .chat-header {
   padding: 1rem 0 0 1rem;
-  border-radius: 18px 18px 0 0; 
+  border-radius: 18px 18px 0 0;
 }
 
 .username-text {
@@ -143,12 +148,13 @@ button#theme-switcher {
 
 /* Chat messages */
 .chat-messages {
-  padding: 1rem;
+  padding: 1.5rem; /* Increased padding for better spacing */
   overflow-y: auto;
-  height: calc(100vh - 150px); /* Adjust height based on footer/header */
+  height: calc(100vh - 200px); /* Adjust height based on footer/header */
   display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Increased gap between messages */
   flex-direction: column; /* Ensures messages stack vertically */
-  gap: 10px; /* Adds space between messages */  
 }
 
 /* Individual message styles */
@@ -161,7 +167,7 @@ button#theme-switcher {
   font-size: 14px;
   position: relative; /* Allows positioning of time element */
   word-wrap: break-word; /* Prevents long words from breaking layout */
-  word-break: break-all; /* Breaks long words */  
+  word-break: break-all; /* Breaks long words */
   line-height: 1; /* Adjusts line height for readability */
 }
 
@@ -180,8 +186,7 @@ button#theme-switcher {
 /* Time stamp for messages */
 .time {
   color: #a5a5a5;
-  font-size: 12px;
-  position: absolute; /* Position the time relative to the message box */
+  font-size: 12px; /* Position the time relative to the message box */
   bottom: -15px; /* Adjusts position of time */
   right: 0; /* Aligns time to the right of the message */
   min-width: 60px; /* Set a minimum width for the time stamp */
@@ -192,12 +197,13 @@ button#theme-switcher {
   padding: 1rem;
   display: flex;
   align-items: center;
-  border-radius: 0 0 18px 18px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 #messageInput {
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   width: 100%;
   padding: 0.75rem;
 }
@@ -211,6 +217,11 @@ button#theme-switcher {
   border-radius: 50%;
   margin-left: 1rem;
   border: none;
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+}
+
+#sendMessageButton:hover {
+  transform: scale(1.1);
 }
 
 #sendMessageButton i {
@@ -222,7 +233,7 @@ button#theme-switcher {
 }
 
 p {
-  margin-block-end: 0;  
+  margin-block-end: 0;
 }
 
 #chatContainer-chat {
@@ -240,4 +251,668 @@ p {
   border-radius: 10px;
   width: 100%;
   padding: 0.25rem;
+}
+
+#createGroupChatButton {
+  margin: 0.5rem 0;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.message-profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.message-user-icon {
+  width: 30px;
+  height: 30px;
+  background-color: #353535;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  color: #909090;
+}
+
+.icon-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.group-images-stack {
+  display: flex;
+  margin-right: 10px;
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.stacked-image {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.stacked-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stacked-image:nth-child(1) {
+  top: 0;
+  left: 0;
+  z-index: 4;
+}
+
+.stacked-image:nth-child(2) {
+  top: 0;
+  right: 0;
+  z-index: 3;
+}
+
+.stacked-image:nth-child(3) {
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.stacked-image:nth-child(4) {
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.icon-container-large {
+  min-width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.notification-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border-radius: 8px; /* Rounded corners */
+}
+
+.notification-item.unread {
+  background-color: #f0f8ff; /* Light blue background for unread notifications */
+  border-left: 4px solid #007bff; /* Blue left border for emphasis */
+}
+
+.notification-item:hover {
+  background-color: #e6f7ff; /* Slightly darker blue on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Changed to flex-start to align with top of text */
+  width: 100%;
+  gap: 10px; /* Ensure some space between message and buttons */
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.notification-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notification-sender {
+  font-weight: 600;
+  color: #007bff; /* Changed color for notifications */
+  font-size: 1.1rem; /* Slightly larger font size for better visibility */
+}
+
+.notification-time {
+  color: #adb5bd; /* Lighter color for notification time */
+  font-size: 0.85rem; /* Smaller font size for time */
+}
+
+.notification-message {
+  margin: 0;
+  flex-grow: 1;
+  overflow-wrap: break-word; /* Allow long words to break */
+  word-break: break-word;
+  max-width: calc(100% - 100px); /* Reserve space for buttons */
+  line-height: 1.4; /* Better readability for multi-line text */
+}
+
+/* Notification badge styles */
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  padding: 3px 6px;
+  font-size: 0.75rem;
+  border-radius: 50%;
+  background-color: #dc3545;
+  color: white;
+  min-width: 18px;
+  text-align: center;
+  display: none; /* Hidden by default */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.notification-badge.show {
+  display: inline-block !important;
+}
+
+/* Notification Container */
+.notification-menu {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 300px;
+  max-height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  transform: translateX(-10px);
+}
+
+/* Header Section */
+.notification-header {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+.notification-header h6 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Action Buttons */
+.notification-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.notification-actions button {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+/* Hide button text on small screens, show only icon */
+@media (max-width: 768px) {
+  .notification-actions button span {
+    display: none;
+  }
+  .notification-actions button i {
+    margin: 0;
+  }
+}
+
+/* Notification List */
+.notification-list {
+  overflow-y: auto;
+  padding: 4px;
+  max-height: 360px;
+  scrollbar-width: thin;
+  padding-bottom: 32px; /* Add extra padding at bottom */
+}
+
+/* Webkit Scrollbar (Chrome, Safari, Edge) */
+.notification-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.notification-list:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Individual Notification */
+.notification-item {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  margin: 2px 4px;
+  border-radius: 8px;
+}
+
+.notification-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.notification-sender {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.notification-time {
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.notification-message {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mark-read {
+  align-self: flex-end;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.notification-item:hover .mark-read {
+  opacity: 1;
+}
+
+.notification-list .dropdown-item:hover {
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.notification-group-name {
+  color: #6c757d;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.notification-message-content {
+  color: inherit;
+}
+
+.notification-item.group-message .notification-message {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: baseline;
+}
+
+.notification-group {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.notification-subheader {
+  margin: 2px 0;
+}
+
+.notification-subheader .notification-sender {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.notification-message {
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.notification-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-icon {
+  font-size: 0.9rem;
+  color: #8c77d0;
+  width: 16px;
+}
+
+.notification-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  margin-bottom: 8px;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-notification {
+  background: none;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+}
+
+.delete-notification:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Changed to flex-start to align with top of text */
+  width: 100%;
+  gap: 12px;
+}
+
+.notification-message {
+  margin: 0;
+  flex: 1;
+  min-width: 0; /* Important for text wrapping */
+  white-space: pre-wrap; /* Preserve line breaks and spaces */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.4;
+  padding: 4px 0;
+  max-height: 100px; /* Set a max height */
+  overflow-y: auto; /* Add vertical scrolling if needed */
+}
+
+/* Style the scrollbar for the message */
+.notification-message::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-message::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-message::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.3);
+  border-radius: 4px;
+}
+
+.notification-message:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.5);
+}
+
+/* Firefox scrollbar */
+.notification-message {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 119, 208, 0.3) transparent;
+}
+
+.notification-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: auto;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+.notification-item:hover .notification-item-actions {
+  opacity: 1;
+}
+
+.notification-item-actions button {
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+/* Header actions (Filter and Mark all read buttons) */
+.notification-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.notification-header-actions button {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+/* Individual notification actions (Mark read and Delete buttons) */
+.notification-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.notification-item:hover .notification-item-actions {
+  opacity: 1;
+}
+
+.notification-item-actions button {
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.mark-read {
+  background: none;
+  border: 1px solid #007bff;
+  color: #007bff;
+}
+
+.mark-read:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-notification {
+  background: none;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+}
+
+.delete-notification:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 12px;
+}
+
+.notification-message {
+  margin: 0;
+  flex: 1;
+  min-width: 0; /* Important for text wrapping */
+  white-space: normal; /* Allow text to wrap */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.4;
+  padding: 4px 0;
+}
+
+.notification-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.notification-item {
+  padding: 8px 15px;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  max-width: 100%;
+}
+
+.notification-item.unread {
+  border-left-color: #8c77d0;
+  background: rgba(140, 119, 208, 0.04);
+}
+
+.notification-item:hover {
+  background: rgba(140, 119, 208, 0.08);
+}
+
+/* Last notification item specific margin */
+.notification-item:last-child {
+  margin-bottom: 8px; /* Ensure last item has bottom margin */
+}
+
+/* Modern Navbar Styles */
+.navbar {
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.nav-item {
+  margin: 0 0.5rem;
+}
+
+.nav-link {
+  position: relative;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* User section styles */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+#theme-switcher {
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+#theme-switcher:hover {
+  transform: rotate(45deg);
+}
+
+/* Notification styles in navbar */
+#notificationDropdown .nav-link {
+  padding: 0.5rem !important;
+}
+
+.notification-badge {
+  top: 0;
+  right: 0;
+}
+
+/* Mobile menu button */
+.navbar-toggler {
+  border: none;
+  padding: 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.tutorial-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.tutorial-btn:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+  color: var(--accent-color);
+}
+
+.tutorial-btn i {
+  font-size: 1.2rem;
 }

@@ -9,16 +9,16 @@
     }
 }
 
-<h1>Manage your account</h1>
-
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
+<div class="manage-container">
+    <div class="manage-header">
+        <h1>Manage your account</h1>
+    </div>
+    
+    <div class="manage-content">
+        <div class="sidebar">
             <partial name="_ManageNav" />
         </div>
-        <div class="col-md-9">
+        <div class="main-content">
             @RenderBody()
         </div>
     </div>
@@ -27,3 +27,49 @@
 @section Scripts {
     @RenderSection("Scripts", required: false)
 }
+
+<style>
+    .manage-container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .manage-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .manage-header h1 {
+        color: var(--accent-color);
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 10px var(--shadow-color);
+    }
+
+    .manage-content {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 2rem;
+        position: relative;
+    }
+
+    .sidebar {
+        background: rgba(var(--bg-color-rgb), 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-content {
+        background: rgba(var(--bg-color-rgb), 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+</style>

@@ -1,3 +1,20 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --muted-color: #666666;
+  --accent-color: #8c77d0;
+  --accent-color-dark: #7b6bc3;
+  --error-color: #ff4d4d;
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(0, 0, 0, 0.1);
+  --input-focus-bg: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: rgba(140, 119, 208, 0.1);
+  --bg-color-rgb: 255, 255, 255;
+  --text-color-rgb: 51, 51, 51;
+  --accent-color-rgb: 140, 119, 208;
+}
+
 body {
   background: linear-gradient(135deg, #f9f9f9, #e1e1e1);
   color: #333333;
@@ -43,7 +60,7 @@ a.navbar-brand {
 }
 
 a.navbar-brand:hover {
-  color: #333333 !important;  
+  color: #333333 !important;
 }
 
 .navbar-light .navbar-nav .nav-link,
@@ -51,7 +68,7 @@ a.nav-link,
 .navbar-light .navbar-nav .nav-link.active,
 button.nav-link {
   color: #333333 !important;
-  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1) !important; 
+  text-shadow: 0 0 10px rgba(51, 51, 51, 0.1) !important;
   transition: color 0.3s ease;
 }
 
@@ -106,19 +123,18 @@ footer {
   transition: box-shadow 0.3s ease;
 }
 
-
 .btn-primary:focus,
 .btn-primary.focus,
 .btn-primary:active {
   background-color: #7b6bc3 !important;
-  border-color: #7b6bc3 !important; 
+  border-color: #7b6bc3 !important;
   box-shadow: 0 0 10px rgba(123, 107, 195, 0.5) !important;
 }
 
 .btn-primary:hover {
   background-color: #7867b3;
   border-color: #7867b3;
-  box-shadow: 0 0 10px rgba(120, 103, 179, 0.5);  
+  box-shadow: 0 0 10px rgba(120, 103, 179, 0.5);
 }
 
 .btn-secondary:focus,
@@ -130,7 +146,7 @@ footer {
 }
 
 .btn-secondary:hover {
-  color:#333333;
+  color: #333333;
   background-color: #f0f0f0 !important;
   border-color: #f0f0f0 !important;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
@@ -178,7 +194,7 @@ a:focus {
 
 .search-container {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .chat-header {
@@ -189,12 +205,12 @@ a:focus {
 
 .chat-messages {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .chat-footer {
   background-color: #e4e6eb;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .sent {
@@ -210,8 +226,8 @@ a:focus {
 
 #messageInput {
   background-color: #e4e6eb;
-  color:#333333;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+  color: #333333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #sendMessageButton {
@@ -227,4 +243,463 @@ a:focus {
 #chatContainer-chat {
   background-color: #e4e6eb;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+}
+
+/* Profile Styles */
+.profile-container-page {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(140, 119, 208, 0.1);
+}
+
+.profile-image-wrapper {
+    border: 4px solid #8c77d0;
+    box-shadow: 0 4px 15px rgba(140, 119, 208, 0.2);
+}
+
+.profile-username {
+    color: #333333;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    background-color: #8c77d0;
+    color: #ffffff;
+}
+
+.back-button:hover {
+    background-color: #7b6bc3;
+    color: #ffffff;
+    transform: translateX(-5px);
+}
+
+#profileImage:hover {
+    filter: brightness(0.95);
+}
+
+/* Friends List Styles */
+.friend-card {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(140, 119, 208, 0.1);
+}
+
+.add-friend-button, 
+.manage-requests-button {
+    background-color: #8c77d0;
+    color: #ffffff;
+}
+
+.add-friend-button:hover, 
+.manage-requests-button:hover {
+    background-color: #7b6bc3;
+    color: #ffffff;
+}
+
+.friend-name a {
+    color: #333333;
+}
+
+.friend-name a:hover {
+    color: #8c77d0;
+}
+
+.status-dot {
+    border-color: #ffffff;
+}
+
+.status-dot.online {
+    background-color: #43b581;
+}
+
+.status-dot.offline {
+    background-color: #747f8d;
+}
+
+.remove-button {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+.status-dot {
+    border-color: #ffffff;
+}
+
+/* Chat Settings Styles */
+.form-container {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.centered-heading {
+    color: #8c77d0;
+}
+
+.form-control {
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.form-control:focus {
+    border-color: #8c77d0;
+    box-shadow: 0 0 0 2px rgba(140, 119, 208, 0.2);
+}
+
+.form-control[readonly] {
+  background-color: #f0f0f0;
+  color: #333333;
+  border: 1px solid #e2e8f0;
+  cursor: not-allowed;
+}
+
+.search-input {
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.user-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+    border: 2px solid #8c77d0;
+}
+
+.user-name {
+    color: #333333;
+}
+
+.chat-owner-name {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.user-checkbox {
+    accent-color: #8c77d0;
+}
+
+.user-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background: #8c77d0;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+    background: #7b6bc3;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8c77d0;
+  border-radius: 5px;
+  border: 2px solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7b6bc3;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8c77d0 #f0f0f0;
+}
+
+/* Light Theme Notification Styles */
+.notification-menu {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.notification-header {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.notification-actions button {
+    background: rgba(140, 119, 208, 0.08);
+    color: #8c77d0;
+}
+
+.notification-actions button:hover {
+    background: rgba(140, 119, 208, 0.12);
+}
+
+.notification-item {
+    background: transparent;
+}
+
+.notification-item.unread {
+    background: rgba(140, 119, 208, 0.04);
+    border-left-color: #8c77d0;
+}
+
+.notification-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.notification-sender {
+    color: #1a1a1a;
+}
+
+.notification-time {
+    color: #65676b;
+}
+
+.notification-message {
+    color: #4a5568;
+}
+
+.mark-read {
+    background: rgba(140, 119, 208, 0.08);
+    color: #8c77d0;
+}
+
+.mark-read:hover {
+    background: rgba(140, 119, 208, 0.12);
+}
+
+/* Light Theme Scrollbar */
+.notification-list::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 119, 208, 0.2);
+}
+
+.notification-list:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 119, 208, 0.3);
+}
+
+/* Firefox Scrollbar - Light Theme */
+.notification-list {
+    scrollbar-color: rgba(140, 119, 208, 0.2) transparent;
+}
+
+.notification-list:hover {
+    scrollbar-color: rgba(140, 119, 208, 0.3) transparent;
+}
+
+/* Light Theme Notification Items */
+.notification-item {
+    background: rgba(140, 119, 208, 0.02);
+    border-left: 2px solid transparent;
+}
+
+.notification-item.unread {
+    background: rgba(140, 119, 208, 0.05);
+    border-left-color: #8c77d0;
+}
+
+.notification-item:hover {
+    background: rgba(140, 119, 208, 0.08);
+    transform: translateX(2px);
+}
+
+.notification-sender {
+    color: #1a1a1a;
+}
+
+.notification-time {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.notification-message {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.mark-read {
+    background: rgba(140, 119, 208, 0.1);
+    color: #8c77d0;
+    border: none;
+}
+
+.mark-read:hover {
+    background: rgba(140, 119, 208, 0.2);
+}
+
+.notification-list .dropdown-item {
+  color: #333333;
+}
+
+/* Notification Styles */
+.notification-group {
+    font-weight: 600;
+    color: #8c77d0; /* Using existing purple accent color */
+    font-size: 1.1rem;
+}
+
+.notification-subheader {
+    margin: 2px 0;
+}
+
+.notification-subheader .notification-sender {
+    font-size: 0.9rem;
+    color: #65676b; /* Using existing muted text color */
+    font-weight: 500;
+}
+
+.notification-item.unread .notification-group {
+    color: #7b6bc3; /* Using existing darker purple */
+}
+
+.notification-message {
+    margin-top: 4px;
+    line-height: 1.4;
+    color: #4a5568; /* Using existing message text color */
+}
+
+.notification-group-container {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+}
+
+.notification-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    margin-bottom: 8px;
+}
+
+.notification-group-name {
+    font-weight: 600;
+    color: #8c77d0;
+    font-size: 0.9rem;
+}
+
+.notification-group-content {
+    padding: 0 8px;
+}
+
+.notification-group-container.has-unread .notification-group-name {
+    color: #7b6bc3;
+}
+
+.notification-filters {
+    padding: 8px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.filter-btn, .unread-filter {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(140, 119, 208, 0.2);
+    background: transparent;
+    color: #8c77d0;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover, .unread-filter:hover {
+    background: rgba(140, 119, 208, 0.1);
+}
+
+.filter-btn.active, .unread-filter.active {
+    background: #8c77d0;
+    color: white;
+    border-color: #8c77d0;
+}
+
+.empty-state {
+    padding: 20px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+    font-style: italic;
+}
+
+.notification-item.admin-notification {
+    background: rgba(220, 53, 69, 0.05);
+    border-left: 2px solid #dc3545;
+}
+
+.notification-item.admin-notification .notification-sender {
+    color: #dc3545;
+}
+
+.notification-item.admin-notification .notification-icon {
+    color: #dc3545;
+}
+
+.notification-item.admin-notification:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Admin Notification Form Styles */
+.admin-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(140, 119, 208, 0.1);
+}
+
+.admin-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.admin-card .card-header h5 {
+    color: #8c77d0;
+    font-weight: 600;
+    margin: 0;
+}
+
+.admin-card .card-body {
+    padding: 1.5rem;
+}
+
+#adminNotificationForm textarea {
+    background: #f8f9fa;
+    border: 1px solid rgba(140, 119, 208, 0.2);
+    border-radius: 10px;
+    color: #333333;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+#adminNotificationForm textarea:focus {
+    background: #ffffff;
+    border-color: #8c77d0;
+    box-shadow: 0 0 15px rgba(140, 119, 208, 0.15);
+}
+
+#adminNotificationForm .btn-primary {
+    background: #8c77d0;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 0.8rem 2rem;
+    transition: all 0.3s ease;
+}
+
+#adminNotificationForm .btn-primary:hover {
+    background: #7b6bc3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(140, 119, 208, 0.2);
 }

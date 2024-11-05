@@ -55,6 +55,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
         {
             throw new EntityNotFoundException("Entity not found");
         }
+        entity.LastUpdated = DateTime.Now;
 
         context.Messages.Update(entity);
         await context.SaveChangesAsync();

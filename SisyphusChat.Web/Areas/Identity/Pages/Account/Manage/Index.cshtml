@@ -83,15 +83,16 @@
         border-radius: 50%;
         display: flex;
         justify-content: center;
-        background-color: #f1f1f1;
+        border: 2px solid var(--accent-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
     }
 
     .image-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: all 0.3s ease;
     }
-
 
     .image-container .overlay {
         position: absolute;
@@ -103,7 +104,7 @@
         width: 100%;
         opacity: 0;
         transition: .5s ease;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: var(--shadow-color);
     }
 
     .image-container:hover .overlay {
@@ -112,13 +113,41 @@
     }
 
     .text {
-        color: white;
+        color: var(--text-color);
         font-size: 20px;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
+    }
+
+    .form-control {
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--text-color);
+        border-radius: 8px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: var(--input-focus-bg);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 2px var(--accent-color-dark);
+    }
+
+    .modal-content {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    .modal-header {
+        border-bottom-color: var(--input-border);
+    }
+
+    .modal-footer {
+        border-top-color: var(--input-border);
     }
 
     #profileImage {
@@ -150,6 +179,16 @@
     #imageToCrop {
         max-width: 100%; /* Make sure the image scales within the container */
         max-height: 400px; /* Prevent image from exceeding container height */
+    }
+
+    .modal-backdrop.fade.show {
+        z-index: -999;
+    }
+
+    /* Ensure the modal itself appears above other content */
+    .modal {
+        z-index: 1050;
+        background: rgba(0, 0, 0, 0.5);
     }
 </style>
 

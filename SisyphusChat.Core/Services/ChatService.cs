@@ -240,4 +240,19 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 
         return mapper.Map<ICollection<Chat>, ICollection<ChatModel>>(associatedChats);
     }
+
+    public async Task<ICollection<UserModel>> GetUsersNotInChatAsync(string chatId)
+    {
+        var chat = await unitOfWork.ChatRepository.GetByIdAsync(chatId);
+        var existingMemberIds = chat.ChatUsers.Select(cm => cm.UserId).ToHashSet();
+
+        var dbUsers = await unitOfWork.UserRepository.GetAllAsync();
+        var availableUsers = dbUsers.Where(u => 
+            !existingMemberIds.Contains(u.Id) && 
+            !u.IsDeleted && // Filter out deleted users
+            u.UserName != "DELETED_USER" // Filter out system deleted user
+        );
+
+        return mapper.Map<ICollection<User>, ICollection<UserModel>>(availableUsers.ToList());
+    }
 }
