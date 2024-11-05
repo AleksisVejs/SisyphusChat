@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SisyphusChat.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using SisyphusChat.Infrastructure.Entities;
-using SisyphusChat.Core.Services;
+using SisyphusChat.Core.Models;
 using SisyphusChat.Web.Models;
 using SisyphusChat.Infrastructure.Exceptions;
+
 
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class ChatController(IChatService chatService, IUserService userService, IFriendService friendService) : Controller
+    public class ChatController(IChatService chatService, IUserService userService,
+                                IFriendService friendService, IReportService reportService) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -27,7 +28,6 @@ namespace SisyphusChat.Web.Controllers
 
             return View(userViewModel);
         }
-
 
         // Creates or opens a private 1-on-1 chat
         public async Task<IActionResult> CreateOrOpenChat(string recipientUserId)
@@ -79,5 +79,50 @@ namespace SisyphusChat.Web.Controllers
 
             return RedirectToAction("ChatRoom", new { chatId = chat.Id });
         }
+
+        public async Task<IActionResult> ReportMessage(string chatId, string messageId, ReportType type, string reason)
+        {
+            var chat = await chatService.GetByIdAsync(chatId); // Retrieve Chat from the database
+            var message = chat.Messages.FirstOrDefault(m => m.Id == messageId); // Retrieve Message from Chat
+
+            if (chat == null || message == null)
+            {
+                throw new EntityNotFoundException("Chat or Message not found");
+            }
+
+            var report = new ReportModel
+            {
+                ChatId = chat.Id,
+                MessageId = message.Id,
+                Type = type,
+                Reason = reason
+            };
+
+            await reportService.CreateAsync(report);
+
+            return RedirectToAction("ChatRoom", new { chatId = chat.Id });
+        }
+
+        public async Task<IActionResult> ReportChat(string chatId, ReportType type, string reason)
+        {
+            var chat = await chatService.GetByIdAsync(chatId); // Retrieve Chat from the database
+
+            if (chat == null)
+            {
+                throw new EntityNotFoundException("Chat not found");
+            }
+
+            var report = new ReportModel
+            {
+                ChatId = chat.Id,
+                Type = type,
+                Reason = reason
+            };
+
+            await reportService.CreateAsync(report);
+
+            return RedirectToAction("ChatRoom", new { chatId = chat.Id });
+        }
+
     }
 }

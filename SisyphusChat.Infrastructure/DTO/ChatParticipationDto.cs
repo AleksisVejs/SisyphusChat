@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SisyphusChat.Infrastructure.DTO
 {
-    public class ChatParticipationReportDto
+    public class ChatParticipationDto
     {
         // Custom data transfer object for chat participation reports for specific data
         public string ChatId { get; set; }

@@ -12,7 +12,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
     {
         var chatEntity = new Chat
         {
-            Id = model.Id,
+            Id = model.Id == null ? Guid.NewGuid().ToString() : new Guid(model.Id).ToString(),
             Name = model.Name,
             Type = model.Type,
             OwnerId = model.OwnerId,

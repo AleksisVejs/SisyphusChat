@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SisyphusChat.Infrastructure.DTO
 {
-    public class AttachmentUsageReportDto
+    public class AttachmentUsageDto
     {
         //Custom data transfer object for attachment usage reports for specific data
         public string AttachmentId { get; set; }

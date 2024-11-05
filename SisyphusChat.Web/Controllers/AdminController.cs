@@ -16,33 +16,21 @@ using SisyphusChat.Infrastructure.Data;
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    [AdminOnly]
-    public class AdminController : Controller
+    public class AdminController(IAdminService adminService,
+                                 INotificationService notificationService,
+                                 UserManager<User> userManager,
+                                 IHubContext<NotificationHub> notificationHubContext,
+                                 IUserService userService,
+                                 IUserDeletionService userDeletionService,
+                                 ApplicationDbContext context) : Controller
     {
-        private readonly IReportService _reportService;
-        private readonly INotificationService _notificationService;
-        private readonly UserManager<User> _userManager;
-        private readonly IHubContext<NotificationHub> _notificationHubContext;
-        private readonly IUserService _userService;
-        private readonly IUserDeletionService _userDeletionService;
-        private readonly ApplicationDbContext _context;
-        public AdminController(
-            IReportService reportService,
-            INotificationService notificationService,
-            UserManager<User> userManager,
-            IHubContext<NotificationHub> notificationHubContext,
-            IUserService userService,
-            IUserDeletionService userDeletionService,
-            ApplicationDbContext context)
-        {
-            _reportService = reportService;
-            _notificationService = notificationService;
-            _userManager = userManager;
-            _notificationHubContext = notificationHubContext;
-            _userService = userService;
-            _userDeletionService = userDeletionService;
-            _context = context;
-        }
+        private readonly IAdminService _adminService = adminService;
+        private readonly INotificationService _notificationService = notificationService;
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly IHubContext<NotificationHub> _notificationHubContext = notificationHubContext;
+        private readonly IUserService _userService = userService;
+        private readonly IUserDeletionService _userDeletionService = userDeletionService;
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IActionResult> DownloadReport(string reportType, string format)
         {
@@ -50,12 +38,12 @@ namespace SisyphusChat.Web.Controllers
 
             if (format == "excel")
             {
-                reportBytes = await _reportService.GenerateExcelAsync(reportType);
+                reportBytes = await adminService.GenerateExcelAsync(reportType);
                 return File(reportBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{reportType}_Report.xlsx");
             }
             else
             {
-                reportBytes = await _reportService.GeneratePdfAsync(reportType);
+                reportBytes = await adminService.GeneratePdfAsync(reportType);
                 return File(reportBytes, "application/pdf", $"{reportType}_Report.pdf");
             }
         }
@@ -65,8 +53,9 @@ namespace SisyphusChat.Web.Controllers
         {
             try
             {
-                byte[] stream = await _reportService.GeneratePdfAsync(reportType);
-                return File(stream, "application/pdf");
+                // To generate a pdf report with specified parameter to preview instead of downloading
+                byte[] stream = await adminService.GeneratePdfAsync(reportType);
+                return File(stream, "application/pdf"); // return the pdf file to preview in browser instead of downloading
 
             }
             catch (Exception ex)

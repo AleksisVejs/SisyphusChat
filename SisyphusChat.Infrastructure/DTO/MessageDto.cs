@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SisyphusChat.Infrastructure.DTO
 {
-    public class MessageReportDto
+    public class MessageDto
     {
         // Custom data transfer object for message reports for specific data
         public string MessageId { get; set; }

@@ -11,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(
         ApplicationDbContext context,
+        IAdminRepository adminRepository,
         IAttachmentRepository attachmentRepository,
         IChatRepository chatRepository,
         IFriendRepository friendRepository,
@@ -21,6 +22,7 @@ public class UnitOfWork : IUnitOfWork
         )
     {
         _context = context;
+        AdminRepository = adminRepository;
         AttachmentRepository = attachmentRepository;
         ChatRepository = chatRepository;
         FriendRepository = friendRepository;
@@ -29,6 +31,8 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = userRepository;
         NotificationRepository = notificationRepository;
     }
+
+    public IAdminRepository AdminRepository { get; }
 
     public IAttachmentRepository AttachmentRepository { get; }
 
