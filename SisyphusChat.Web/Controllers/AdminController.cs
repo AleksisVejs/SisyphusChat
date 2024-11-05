@@ -16,32 +16,21 @@ using SisyphusChat.Infrastructure.Data;
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class AdminController(IAdminService adminService) : Controller
+    public class AdminController(IAdminService adminService,
+                                 INotificationService notificationService,
+                                 UserManager<User> userManager,
+                                 IHubContext<NotificationHub> notificationHubContext,
+                                 IUserService userService,
+                                 IUserDeletionService userDeletionService,
+                                 ApplicationDbContext context) : Controller
     {
-        private readonly IReportService _reportService;
-        private readonly INotificationService _notificationService;
-        private readonly UserManager<User> _userManager;
-        private readonly IHubContext<NotificationHub> _notificationHubContext;
-        private readonly IUserService _userService;
-        private readonly IUserDeletionService _userDeletionService;
-        private readonly ApplicationDbContext _context;
-        public AdminController(
-            IReportService reportService,
-            INotificationService notificationService,
-            UserManager<User> userManager,
-            IHubContext<NotificationHub> notificationHubContext,
-            IUserService userService,
-            IUserDeletionService userDeletionService,
-            ApplicationDbContext context)
-        {
-            _reportService = reportService;
-            _notificationService = notificationService;
-            _userManager = userManager;
-            _notificationHubContext = notificationHubContext;
-            _userService = userService;
-            _userDeletionService = userDeletionService;
-            _context = context;
-        }
+        private readonly IAdminService _adminService = adminService;
+        private readonly INotificationService _notificationService = notificationService;
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly IHubContext<NotificationHub> _notificationHubContext = notificationHubContext;
+        private readonly IUserService _userService = userService;
+        private readonly IUserDeletionService _userDeletionService = userDeletionService;
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IActionResult> DownloadReport(string reportType, string format)
         {
