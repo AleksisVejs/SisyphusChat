@@ -54,7 +54,7 @@ namespace SisyphusChat.Web.Controllers
                 return View("Add");
             }
 
-            if (receiverUser.IsBanned)
+            if (receiverUser.IsBanned || receiverUser.IsDeleted)
             {
                 ModelState.AddModelError("receiverUsername", "This user cannot be added at this time.");
                 return View("Add");

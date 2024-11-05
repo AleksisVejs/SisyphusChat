@@ -43,6 +43,7 @@ namespace SisyphusChat.Core.Services
                 }
 
                 await DeleteUserNotificationsAsync(userId);
+                await DeleteUserFriendRequestsAsync(userId);
 
                 user.UserName = $"DELETED_USER_{userId}";
                 user.NormalizedUserName = $"DELETED_USER_{userId}";
@@ -71,6 +72,23 @@ namespace SisyphusChat.Core.Services
             foreach (var notification in userNotifications)
             {
                 await _unitOfWork.NotificationRepository.DeleteByIdAsync(notification.Id);
+            }
+            await _unitOfWork.SaveAsync();
+        }
+
+        private async Task DeleteUserFriendRequestsAsync(string userId)
+        {
+            var friends = await _unitOfWork.FriendRepository.GetAllAsync();
+            var userFriendRequests = friends.Where(f => 
+                (f.ReqSenderId == userId || f.ReqReceiverId == userId) && 
+                !f.IsAccepted
+            ).ToList();
+
+            foreach (var request in userFriendRequests)
+            {
+                await _unitOfWork.FriendRepository.DeleteByIdAsync(
+                    request.ReqSenderId + " " + request.ReqReceiverId
+                );
             }
             await _unitOfWork.SaveAsync();
         }

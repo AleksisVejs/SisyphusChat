@@ -42,13 +42,13 @@ namespace SisyphusChat.Infrastructure.Data
                 .HasOne(f => f.ReqSender)
                 .WithMany()
                 .HasForeignKey(f => f.ReqSenderId)
-                .OnDelete(DeleteBehavior.Restrict);  // Disable cascade delete
+                .OnDelete(DeleteBehavior.NoAction);  // Change from Cascade to NoAction
 
             modelBuilder.Entity<Friend>()
                 .HasOne(f => f.ReqReceiver)
                 .WithMany()
                 .HasForeignKey(f => f.ReqReceiverId)
-                .OnDelete(DeleteBehavior.Cascade);  // Cascade delete for receiver
+                .OnDelete(DeleteBehavior.NoAction);  // Change from Cascade to NoAction
 
             modelBuilder.Entity<ChatUser>()
                 .HasOne(cu => cu.Chat)
