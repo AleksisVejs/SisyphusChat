@@ -19,7 +19,7 @@
             <div class="tutorial-arrow-up"></div>
             <span class="step-indicator">2/5</span>
             <h3>Your Profile</h3>
-            <p>Click here to customize your profile, change your avatar, and update your settings. Make yourself at home!</p>
+            <p>Click here to logout or customize your profile, change your avatar, and update your settings. Make yourself at home!</p>
             <div class="tutorial-actions">
                 <button class="btn btn-outline-light prev-step">Back</button>
                 <button class="btn btn-light next-step">Next</button>
@@ -444,7 +444,7 @@ function positionStep(stepIndex, steps) {
             break;
 
         case 1:
-            targetElement = document.querySelector('a[href*="/Identity/Account/Manage"]');
+            targetElement = document.getElementById('userDropdown');
             if (targetElement) {
                 highlightElement(targetElement, step);
             }
