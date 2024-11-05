@@ -7,159 +7,322 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/user-status.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/creategroup.css" asp-append-version="true" />
 </head>
 
-<body>
-    <div class="create-group-chat-container">
-        <a class="back-button btn btn-primary" asp-area="" asp-controller="Chat" asp-action="Index">
-            <i class="fas fa-arrow-left"></i> Back
-        </a>
+<div class="create-group-chat-container">
+    <a class="back-button" asp-area="" asp-controller="Chat" asp-action="Index">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+    <div class="header-content">
         <h1 class="page-title">Create Group Chat</h1>
         <p class="page-description">Enter a name for the group chat and select users to include.</p>
-        <hr/>
-
-        <form id="createGroupChatForm" asp-action="CreateGroupChat" asp-controller="GroupChat" method="post" class="form-container">
-            <div class="form-group mb-4">
-                <label for="groupName" class="form-label">Group Name</label>
-                <input id="groupName" name="ChatName" type="text" placeholder="Enter group name" class="form-control" asp-for="ChatName" required />
-                <span asp-validation-for="ChatName" class="text-danger text-red-500"></span>
-            </div>
-
-            <div class="mb-4">
-                <input type="text" id="searchInput" placeholder="Search users..." class="search-input mb-2" />
-                <ul id="userList" class="user-list">
-                    @foreach (var user in Model.Users.Where(u => !u.IsDeleted && u.UserName != "DELETED_USER"))
-                    {
-                        <li class="user-item mb-2" onclick="toggleCheckbox(this)">
-                            <input type="checkbox" class="user-checkbox" value="@user.UserName" />
-                            <span>@user.UserName</span>
-                            <span class="user-status @(user.IsOnline ? "bg-green-500" : "bg-gray-500") w-3 h-3 rounded-full"></span>
-                        </li>
-                    }
-                </ul>
-            </div>
-
-            <div id="selectedUsersContainer" asp-for="SelectedUserNames"></div>
-            <span asp-validation-for="SelectedUserNames" class="text-danger text-red-500"></span>
-
-            <div class="button-container">
-                <button type="submit" class="btn btn-primary w-100">Create Group Chat</button>
-            </div>
-        </form>
     </div>
 
-    @section Scripts {
-        <script type="text/javascript">
-            function updateSelectedUsers() {
-                const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
-                    .map(checkbox => checkbox.value);
+    <form id="createGroupChatForm" asp-action="CreateGroupChat" asp-controller="GroupChat" method="post">
+        <div class="form-group">
+            <label for="groupName" class="form-label">Group Name</label>
+            <input id="groupName" 
+                   name="ChatName" 
+                   type="text" 
+                   placeholder="Enter group name" 
+                   class="form-control" 
+                   asp-for="ChatName" 
+                   required />
+            <span asp-validation-for="ChatName" class="text-danger"></span>
+        </div>
 
-                const container = document.getElementById('selectedUsersContainer');
-                container.innerHTML = ''; // Clear previous inputs
+        <div class="users-section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="Search users..." 
+                       class="search-input" 
+                       autocomplete="off" />
+            </div>
+            
+            <ul id="userList" class="user-list">
+                @foreach (var user in Model.Users.Where(u => !u.IsDeleted && u.UserName != "DELETED_USER"))
+                {
+                    <li class="user-item" onclick="toggleCheckbox(this)">
+                        <div class="user-info">
+                            <input type="checkbox" class="user-checkbox" value="@user.UserName" />
+                            <div class="user-avatar">
+                                @if (user.Picture != null && user.Picture.Length > 0)
+                                {
+                                    var base64Image = Convert.ToBase64String(user.Picture);
+                                    var imgSrc = $"data:image/jpeg;base64,{base64Image}";
+                                    <img class="user-profile-pic" src="@imgSrc" alt="User Avatar" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="user-profile-pic" />
+                                }
+                            </div>
+                            <span class="username">@user.UserName</span>
+                        </div>
+                        <span class="user-status @(user.IsOnline ? "online" : "offline")"></span>
+                    </li>
+                }
+            </ul>
+        </div>
 
-                selectedUsers.forEach(user => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'SelectedUserNames';
-                    input.value = user;
-                    container.appendChild(input);
-                });
-            }
+        <div id="selectedUsersContainer"></div>
+        <span asp-validation-for="SelectedUserNames" class="text-danger"></span>
 
-            function toggleCheckbox(item) {
-                const checkbox = item.querySelector('.user-checkbox');
-                checkbox.checked = !checkbox.checked;
-                updateSelectedUsers();
-            }
+        <button type="submit" class="create-button">
+            <i class="fas fa-users"></i>
+            Create Group Chat
+        </button>
+    </form>
+</div>
 
-            document.querySelectorAll('.user-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', updateSelectedUsers);
-            });
+<style scoped>
+.create-group-chat-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-            document.getElementById('searchInput').addEventListener('input', function () {
-                const searchTerm = this.value.toLowerCase();
-                const items = document.querySelectorAll("#userList .user-item");
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
 
-                items.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    item.style.display = text.includes(searchTerm) ? "" : "none";
-                });
-            });
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(-2px);
+}
 
-            updateSelectedUsers();
-        </script>
+.header-content {
+    margin-bottom: 2rem;
+}
 
-        <partial name="_ValidationScriptsPartial" />
-    }
-</body>
+.page-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--text-color) 0%, rgba(var(--text-color-rgb), 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-<style>
-    .create-group-chat-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .back-button {
-        display: inline-block;
-        margin-bottom: 20px;
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-    
-    .page-title {
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-    
-    .page-description {
-        font-size: 16px;
-        color: #bbb;
-        margin-bottom: 20px;
-    }
-    
-    .form-group {
-        margin-bottom: 20px;
-    }
-    
-    .form-label {
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-    
-    .form-control {
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        width: 100%;
-    }
-    
-    .form-control:focus {
-        border-color: #888;
-        box-shadow: none;
-    }
+.page-description {
+    color: rgba(var(--text-color-rgb), 0.6);
+    font-size: 1rem;
+}
 
-    .user-list {
-        list-style: none;
-        padding: 0;
-    }
+.form-group {
+    margin-bottom: 1.5rem;
+}
 
-    .user-item {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
 
-    .user-checkbox {
-        margin-right: 10px;
-    }
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
 
-    .user-status {
-        margin-left: auto;
-    }
+.form-control:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(var(--text-color-rgb), 0.4);
+    pointer-events: none;
+    z-index: 1; /* Add this line */
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative; /* Add this line */
+}
+
+#searchInput {
+    padding: 0.75rem 2rem !important;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+}
+
+.search-input::placeholder {
+    color: rgba(var(--text-color-rgb), 0.4);
+}
+
+.users-section {
+    margin-bottom: 2rem;
+}
+
+.user-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.5rem;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.user-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.user-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.username {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.user-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+}
+
+.user-status.online {
+    background: #43b581;
+    box-shadow: 0 0 8px rgba(67, 181, 129, 0.4);
+}
+
+.user-status.offline {
+    background: #747f8d;
+}
+
+.create-button {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+}
+
+.create-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
 </style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('createGroupChatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get all checked checkboxes
+            const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+                
+            // Create hidden inputs for each selected user
+            selectedUsers.forEach(username => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'SelectedUserNames';
+                input.value = username;
+                this.appendChild(input);
+            });
+            
+            // Submit the form
+            this.submit();
+        });
+    </script>
+}

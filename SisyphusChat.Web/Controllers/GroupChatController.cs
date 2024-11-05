@@ -31,7 +31,7 @@ public class GroupChatController(IUserService userService, IChatService chatServ
             {
                 Name = model.ChatName,
                 Type = ChatType.Group,
-                OwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier), // Set the current user's ID as OwnerId
+                OwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier),
             };
 
             // Fetch users with resolved UserIds
@@ -44,7 +44,11 @@ public class GroupChatController(IUserService userService, IChatService chatServ
             return RedirectToAction("Index", "Chat");
         }
 
-        return View(model);
+        // If ModelState is invalid, return to Index view with the model
+        var currentUser = await userService.GetCurrentContextUserAsync();
+        var users = await friendService.GetAllFriendsAsync(currentUser.Id);
+        model.Users = users.ToList();
+        return View("Index", model);
     }
 
 }

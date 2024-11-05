@@ -18,7 +18,7 @@
         </div>
     }
 
-    @if (ViewData.ModelState["receiverUsername"] != null)
+    @if (ViewData.ModelState["receiverUsername"]?.Errors.Count > 0)
     {
         <div class="alert alert-danger">
             @ViewData.ModelState["receiverUsername"].Errors[0].ErrorMessage
