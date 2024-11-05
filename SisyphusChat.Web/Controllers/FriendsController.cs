@@ -48,18 +48,25 @@ namespace SisyphusChat.Web.Controllers
             var currentUser = await userService.GetCurrentContextUserAsync();
             var receiverUser = await userService.GetByUsernameAsync(receiverUsername);
             
-
             if (receiverUser == null)
             {
                 ModelState.AddModelError("receiverUsername", "User not found.");
-                return View("Add"); // Return to the Add view with ModelState errors
+                return View("Add");
+            }
+
+            if (receiverUser.IsBanned)
+            {
+                string banMessage = receiverUser.BanStart.HasValue && !receiverUser.BanEnd.HasValue 
+                    ? "This user is temporarily banned."
+                    : "This user is permanently banned.";
+                ModelState.AddModelError("receiverUsername", banMessage);
+                return View("Add");
             }
 
             try
             {
                 await friendService.SendRequestAsync(currentUser.Id, receiverUser.Id);
                 
-                // Create and send notification
                 var notification = new NotificationModel
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -73,7 +80,6 @@ namespace SisyphusChat.Web.Controllers
                 };
                 await notificationService.CreateAsync(notification);
                 
-                // Send real-time notification
                 await notificationHubContext.Clients.User(receiverUser.Id)
                     .SendAsync("ReceiveNotification", notification);
 
@@ -83,7 +89,7 @@ namespace SisyphusChat.Web.Controllers
             catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("receiverUsername", ex.Message);
-                return View("Add"); // Return to the Add view with ModelState errors
+                return View("Add");
             }
         }
 

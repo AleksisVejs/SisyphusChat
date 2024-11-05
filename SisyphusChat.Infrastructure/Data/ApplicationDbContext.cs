@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SisyphusChat.Infrastructure.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace SisyphusChat.Infrastructure.Data
 {
@@ -24,6 +27,7 @@ namespace SisyphusChat.Infrastructure.Data
         public DbSet<User> Users { get; set; } 
         
         public DbSet<Notification> Notifications { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,7 +66,118 @@ namespace SisyphusChat.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
 
 
+
             base.OnModelCreating(modelBuilder);
+        }
+    }
+    public static class DbInitializer
+{
+    public static async Task Initialize(IServiceProvider serviceProvider)
+    {
+        try
+        {
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+            
+            // Ensure migrations are applied
+            await context.Database.MigrateAsync();
+            
+            // Check if there are any users
+            if (await userManager.Users.AnyAsync())
+            {
+                logger.LogInformation("Database already seeded");
+                return; // DB has been seeded
+            }
+
+            logger.LogInformation("Starting database seeding...");
+
+            // Create admin users
+            var adminUsers = new[]
+            {
+                new User
+                {
+                    UserName = "admin1@example.com",
+                    Email = "admin1@example.com",
+                    EmailConfirmed = true,
+                    IsAdmin = true,
+                    TimeCreated = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow
+                },
+                new User
+                {
+                    UserName = "admin2@example.com",
+                    Email = "admin2@example.com",
+                    EmailConfirmed = true,
+                    IsAdmin = true,
+                    TimeCreated = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow
+                }
+            };
+
+            // Create regular users
+            var regularUsers = new[]
+            {
+                new User
+                {
+                    UserName = "user1@example.com",
+                    Email = "user1@example.com",
+                    EmailConfirmed = true,
+                    TimeCreated = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow
+                },
+                new User
+                {
+                    UserName = "user2@example.com",
+                    Email = "user2@example.com",
+                    EmailConfirmed = true,
+                    TimeCreated = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow
+                },
+                new User
+                {
+                    UserName = "user3@example.com",
+                    Email = "user3@example.com",
+                    EmailConfirmed = true,
+                    TimeCreated = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow
+                }
+            };
+
+            const string defaultPassword = "Test123!";
+
+            foreach (var user in adminUsers.Concat(regularUsers))
+            {
+                var result = await userManager.CreateAsync(user, defaultPassword);
+                if (!result.Succeeded)
+                {
+                    throw new Exception($"Failed to create user {user.Email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
+            }
+
+            // Create system deleted user if it doesn't exist
+            var deletedUser = await userManager.FindByNameAsync("DELETED_USER");
+            if (deletedUser == null)
+            {
+                deletedUser = new User
+                {
+                    UserName = "DELETED_USER",
+                    NormalizedUserName = "DELETED_USER",
+                    Email = "deleted@system.local",
+                    NormalizedEmail = "DELETED@SYSTEM.LOCAL",
+                    EmailConfirmed = true,
+                    IsDeleted = true
+                };
+                await userManager.CreateAsync(deletedUser);
+            }
+
+            logger.LogInformation("Seeding database completed");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while seeding the database.", ex);
+            }
         }
     }
 }

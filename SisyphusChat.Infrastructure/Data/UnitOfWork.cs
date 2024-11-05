@@ -1,6 +1,7 @@
 ﻿using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Infrastructure.Data;
 using SisyphusChat.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace SisyphusChat.Infrastructure.Data;
 
@@ -46,5 +47,10 @@ public class UnitOfWork : IUnitOfWork
     public Task SaveAsync()
     {
         return _context.SaveChangesAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

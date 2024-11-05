@@ -152,5 +152,19 @@ public class NotificationHub : Hub
         }
     }
 
+    public async Task UserDeleted(string userId, string newUsername)
+    {
+        try
+        {
+            _logger.LogInformation($"Broadcasting user deletion for userId: {userId}");
+            await Clients.All.SendAsync("UserDeleted", userId, newUsername);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Error broadcasting user deletion");
+            throw;
+        }
+    }
+
     
 }

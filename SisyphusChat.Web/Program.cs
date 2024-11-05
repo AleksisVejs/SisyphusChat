@@ -10,6 +10,8 @@ using SisyphusChat.Infrastructure.Interfaces;
 using SisyphusChat.Infrastructure.Repositories;
 using SisyphusChat.Web.Hubs;
 using Azure.Communication.Email;
+using SisyphusChat.Web.Middleware;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -47,6 +49,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFriendRepository, FriendRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IUserDeletionService, UserDeletionService>();
+
 
 builder.Services.AddHttpContextAccessor();
 
@@ -67,8 +71,30 @@ var mapperConfig = new MapperConfiguration(mc =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
+builder.Services.AddHostedService<BanExpirationService>();
+
 var app = builder.Build();
 
+// Add database initialization
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Starting database initialization");
+        
+        await DbInitializer.Initialize(services);
+        
+        logger.LogInformation("Database initialized and seeded successfully");
+    }
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while seeding the database");
+    throw; // Rethrow to prevent app from starting with unseeded database
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -111,6 +137,7 @@ app.MapHub<NotificationHub>("/notificationHub");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<BanCheckMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {

@@ -29,7 +29,7 @@
             <div class="mb-4">
                 <input type="text" id="searchInput" placeholder="Search users..." class="search-input mb-2" />
                 <ul id="userList" class="user-list">
-                    @foreach (var user in Model.Users)
+                    @foreach (var user in Model.Users.Where(u => !u.IsDeleted && u.UserName != "DELETED_USER"))
                     {
                         <li class="user-item mb-2" onclick="toggleCheckbox(this)">
                             <input type="checkbox" class="user-checkbox" value="@user.UserName" />
