@@ -106,7 +106,7 @@ namespace SisyphusChat.Web.Controllers
 
         public async Task<IActionResult> ReportChat(string chatId, ReportType type, string reason)
         {
-            var chat = await chatService.GetByIdAsync(chatId); // Retrieve Chat from the database
+            var chat = await chatService.GetByIdAsync(chatId);
 
             if (chat == null)
             {
@@ -116,6 +116,7 @@ namespace SisyphusChat.Web.Controllers
             var report = new ReportModel
             {
                 ChatId = chat.Id,
+                ReportedUserId = chat.OwnerId,
                 Type = type,
                 Reason = reason
             };

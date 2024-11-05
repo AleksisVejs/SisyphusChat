@@ -1,19 +1,19 @@
 :root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --muted-color: #666666;
-  --accent-color: #8c77d0;
-  --accent-color-dark: #7b6bc3;
-  --error-color: #ff4d4d;
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(0, 0, 0, 0.1);
-  --input-focus-bg: rgba(255, 255, 255, 0.08);
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --hover-bg: rgba(140, 119, 208, 0.1);
-  --bg-color-rgb: 255, 255, 255;
-  --text-color-rgb: 51, 51, 51;
-  --accent-color-rgb: 140, 119, 208;
-  --border-color: rgba(0, 0, 0, 0.1); 
+  --bg-color: #ffffff !important;	
+  --text-color: #333333 !important;	
+  --muted-color: #666666 !important;
+  --accent-color: #8c77d0 !important;
+  --accent-color-dark: #7b6bc3 !important;
+  --error-color: #ff4d4d !important;
+  --input-bg: rgba(255, 255, 255, 0.05) !important;
+  --input-border: rgba(0, 0, 0, 0.1) !important;
+  --input-focus-bg: rgba(255, 255, 255, 0.08) !important;
+  --shadow-color: rgba(0, 0, 0, 0.1) !important;
+  --hover-bg: rgba(140, 119, 208, 0.1) !important;
+  --bg-color-rgb: 255, 255, 255 !important;
+  --text-color-rgb: 51, 51, 51 !important;
+  --accent-color-rgb: 140, 119, 208 !important;
+  --border-color: rgba(0, 0, 0, 0.1) !important; 
 }
 
 body {
@@ -692,4 +692,20 @@ a:focus {
     background: #7b6bc3;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(140, 119, 208, 0.2);
+}
+
+.message-content {
+  color: #333333; 
+}
+
+.sender-name {
+  color: #333333;
+}
+
+.edit-message-btn .fas {
+  color: #333333;
+}
+
+.tutorial-btn i {
+  color: #333333; 
 }

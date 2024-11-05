@@ -569,6 +569,100 @@
         function closeChatReportModal() {
             document.getElementById('chatReportModal').style.display = 'none';
         }
+
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+            const MAX_CHARS = 1000;
+
+            // Clear any existing error states
+            messageInput.classList.remove("input-error");
+            
+            if (message.length > MAX_CHARS) {
+                showCharacterLimitError(message.length, MAX_CHARS);
+                messageInput.classList.add("input-error");
+                return;
+            }
+
+            // Rest of your existing send message code...
+        }
+
+        function showCharacterLimitError(currentLength, maxLength) {
+            const errorContainer = document.getElementById("errorMessage");
+            const errorMessageText = document.getElementById("errorMessageText");
+            
+            errorMessageText.innerHTML = `
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    <span>Message is too long (${currentLength}/${maxLength} characters)</span>
+                </div>`;
+            
+            errorContainer.classList.remove("d-none");
+            
+            // Auto-hide the error after 5 seconds
+            setTimeout(() => {
+                errorContainer.classList.add("d-none");
+            }, 5000);
+        }
+
+        // Add this to provide real-time feedback
+        function setupMessageInput() {
+            const messageInput = document.getElementById("messageInput");
+            const MAX_CHARS = 1000;
+            const WARN_THRESHOLD = 900; // Show warning color at 90% capacity
+            
+            // Wrap input in container if not already wrapped
+            if (!messageInput.parentElement.classList.contains('message-input-container')) {
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('message-input-container');
+                messageInput.parentNode.insertBefore(wrapper, messageInput);
+                wrapper.appendChild(messageInput);
+            }
+            
+            // Create counter if it doesn't exist
+            if (!document.getElementById("charCounter")) {
+                const counter = document.createElement("div");
+                counter.id = "charCounter";
+                counter.classList.add("char-counter");
+                messageInput.parentElement.appendChild(counter);
+            }
+            
+            messageInput.addEventListener("input", function() {
+                const charCount = this.value.length;
+                const counter = document.getElementById("charCounter");
+                
+                // Update counter text
+                counter.textContent = `${charCount}/${MAX_CHARS}`;
+                
+                // Reset classes
+                counter.classList.remove("near-limit", "over-limit");
+                messageInput.classList.remove("input-error");
+                
+                // Apply appropriate styling based on character count
+                if (charCount > MAX_CHARS) {
+                    counter.classList.add("over-limit");
+                    messageInput.classList.add("input-error");
+                } else if (charCount > WARN_THRESHOLD) {
+                    counter.classList.add("near-limit");
+                }
+                
+                // Show/hide counter based on content
+                if (charCount > 0) {
+                    counter.style.opacity = "1";
+                }
+            });
+            
+            // Hide counter when input is empty and not focused
+            messageInput.addEventListener("blur", function() {
+                const counter = document.getElementById("charCounter");
+                if (this.value.length === 0) {
+                    counter.style.opacity = "0";
+                }
+            });
+        }
+
+        // Call this when the page loads
+        document.addEventListener("DOMContentLoaded", setupMessageInput);
     </script>
 }
 

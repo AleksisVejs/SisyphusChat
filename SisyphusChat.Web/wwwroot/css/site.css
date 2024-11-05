@@ -1,3 +1,16 @@
+html, body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Main container that will handle scrolling if needed */
+.main-content {
+  overflow-y: auto;
+  position: relative;
+}
+
 html {
   font-size: 14px;
 }
@@ -178,6 +191,11 @@ button#theme-switcher {
   font-size: 0.95rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   backdrop-filter: blur(5px);
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  max-height: 300px;  /* Add max height */
+  overflow-y: auto;   /* Enable vertical scrolling if needed */
 }
 
 .sent {
@@ -364,13 +382,6 @@ p {
   margin-right: 1rem;
 }
 
-.notification-item {
-  padding: 12px 15px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  border-radius: 8px; /* Rounded corners */
-}
 
 .notification-item.unread {
   background-color: #f0f8ff; /* Light blue background for unread notifications */
@@ -380,14 +391,6 @@ p {
 .notification-item:hover {
   background-color: #e6f7ff; /* Slightly darker blue on hover */
   transform: translateY(-2px); /* Lift effect on hover */
-}
-
-.notification-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; /* Changed to flex-start to align with top of text */
-  width: 100%;
-  gap: 10px; /* Ensure some space between message and buttons */
 }
 
 .notification-header {
@@ -655,14 +658,6 @@ p {
   color: white;
 }
 
-.notification-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; /* Changed to flex-start to align with top of text */
-  width: 100%;
-  gap: 12px;
-}
-
 .notification-message {
   margin: 0;
   flex: 1;
@@ -702,26 +697,6 @@ p {
   scrollbar-color: rgba(140, 119, 208, 0.3) transparent;
 }
 
-.notification-item-actions {
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  margin-left: auto;
-  flex-shrink: 0; /* Prevent buttons from shrinking */
-}
-
-.notification-item:hover .notification-item-actions {
-  opacity: 1;
-}
-
-.notification-item-actions button {
-  padding: 3px 8px;
-  font-size: 0.7rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
 /* Header actions (Filter and Mark all read buttons) */
 .notification-header-actions {
   display: flex;
@@ -737,12 +712,6 @@ p {
 }
 
 /* Individual notification actions (Mark read and Delete buttons) */
-.notification-item-actions {
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
 
 .notification-item:hover .notification-item-actions {
   opacity: 1;
@@ -927,4 +896,180 @@ p {
 
 .tutorial-btn i {
   font-size: 1.2rem;
+}
+
+/* Style the scrollbar for messages */
+.message::-webkit-scrollbar {
+  width: 4px;
+}
+
+.message::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.message::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.3);
+  border-radius: 4px;
+}
+
+.message:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.5);
+}
+
+/* Firefox scrollbar */
+.message {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 119, 208, 0.3) transparent;
+}
+
+/* Update message content to handle overflow better */
+.message-content {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.input-error {
+    border-color: var(--bs-danger) !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.text-danger {
+    color: var(--bs-danger) !important;
+}
+
+#errorMessage {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    animation: slideDown 0.3s ease-out;
+    max-width: 90%;
+    width: auto;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+.message-input-container {
+    position: relative;
+}
+
+/* Only show counter when input is focused or near/over limit */
+.message-input:focus ~ .char-counter,
+.char-counter.near-limit,
+.char-counter.over-limit {
+    opacity: 1;
+}
+
+.char-counter.near-limit {
+    color: var(--bs-warning);
+}
+
+.char-counter.over-limit {
+    color: var(--bs-danger);
+    font-weight: 500;
+}
+
+.chat-input-area {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-color);
+    padding: 1rem;
+    border-top: 1px solid rgba(var(--border-color-rgb), 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.message-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+.message-input {
+    flex: 1;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-right: 6rem; /* Space for counter and send button */
+    border: 1px solid rgba(var(--border-color-rgb), 0.1);
+    border-radius: 24px;
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.message-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+}
+
+.char-counter {
+    right: 4.5rem; /* Adjust based on your send button width */
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    color: rgba(var(--text-color-rgb), 0.6);
+    background: rgba(var(--bg-color-rgb), 0.8);
+    border-radius: 12px;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    opacity: 0;
+}
+
+.send-button {
+    position: absolute;
+    right: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.send-button:hover {
+    background: var(--accent-color-hover);
+    transform: scale(1.05);
+}
+
+/* Character counter states */
+.char-counter.near-limit {
+    color: var(--bs-warning);
+    opacity: 1;
+}
+
+.char-counter.over-limit {
+    color: var(--bs-danger);
+    font-weight: 500;
+    opacity: 1;
+}
+
+/* Show counter when input is focused */
+.message-input:focus ~ .char-counter {
+    opacity: 1;
 }
