@@ -1,103 +1,510 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using SisyphusChat.Infrastructure.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
+    var currentUser = await UserManager.GetUserAsync(User);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Sisyphus Chat</h1>
-    <p class="lead">Push Forward with Privacy. Secure from Start to Finish.</p>
-    <img src="~/images/sisyphus.png" alt="Sisyphus" class="img-fluid" id="sisyphus-logo" style="width: 200px; height: 200px;" />
-    <hr />
-    <p class="lead">Why Sisyphus?</p>
-    <p class="small">Sisyphus represents persistence, pushing forward despite challenges. Sisyphus Chat embodies this spirit by ensuring your privacy in a world where it is increasingly compromised. Trust Sisyphus to protect your conversations, secure from start to finish.</p>
-    <hr />
-    <p class="lead">Getting Started</p>
-    <div class="tutorial-container">
-        <div class="tutorial-step">
-            <div class="step-number">1</div>
-            <i class="fa fa-user-plus fa-2x"></i>
-            <h3>Create Account</h3>
-            <p class="small">Sign up for a free account to start chatting securely.</p>
-            <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-primary">Register Now</a>
+<div class="hero-section">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div class="welcome-message">
+                    <h1>Welcome back,</h1>
+                    <h2 class="user-name">@currentUser?.UserName!</h2>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <a asp-controller="Chat" asp-action="Index" class="action-card primary">
+                    <div class="action-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Your Chats</h3>
+                        <p>Continue your conversations</p>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </a>
+
+                <a asp-controller="Friends" asp-action="Index" class="action-card secondary">
+                    <div class="action-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Friends</h3>
+                        <p>Manage your connections</p>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </a>
+
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" class="action-card tertiary">
+                    <div class="action-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Edit Profile</h3>
+                        <p>Manage your account details</p>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </a>
+            </div>
         </div>
-        <div class="tutorial-step">
-            <div class="step-number">2</div>
-            <i class="fa fa-user-friends fa-2x"></i>
-            <h3>Add Friends</h3>
-            <p class="small">Connect with friends using their usernames.</p>
+    }
+    else
+    {
+        <div class="app-branding">
+            <img src="~/images/sisyphus.png" alt="Sisyphus" class="hero-logo" />
+            <span class="brand-name">Sisyphus Chat</span>
         </div>
-        <div class="tutorial-step">
-            <div class="step-number">3</div>
-            <i class="fa fa-comments fa-2x"></i>
-            <h3>Start Chatting</h3>
-            <p class="small">Begin private conversations or create group chats.</p>
+        <div class="features-section">
+            <div class="feature-card why-sisyphus">
+                <h2>Why Sisyphus?</h2>
+                <p>Sisyphus represents persistence, pushing forward despite challenges. In a world where privacy is increasingly compromised, we ensure your conversations remain secure from start to finish.</p>
+            </div>
+
+            <div class="steps-container">
+                <h2>Getting Started</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <i class="fas fa-user-plus"></i>
+                            <div class="step-number">1</div>
+                        </div>
+                        <h3>Create Account</h3>
+                        <p>Sign up for a free account to start chatting securely.</p>
+                        <a asp-page="/Account/Register" asp-area="Identity" class="cta-button">Register Now</a>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <i class="fas fa-user-friends"></i>
+                            <div class="step-number">2</div>
+                        </div>
+                        <h3>Add Friends</h3>
+                        <p>Connect with friends using their usernames.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <i class="fas fa-comments"></i>
+                            <div class="step-number">3</div>
+                        </div>
+                        <h3>Start Chatting</h3>
+                        <p>Begin private conversations or create group chats.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 <style>
-.tutorial-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    margin: 2rem 0;
-}
-
-.tutorial-step {
-    flex: 1;
-    min-width: 250px;
-    max-width: 350px;
+.hero-section {
     padding: 2rem;
     text-align: center;
-    position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.hero-logo {
+    width: 150px;
+    height: 150px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
     transition: transform 0.3s ease;
 }
 
-.tutorial-step:hover {
+.hero-logo:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 32px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.welcome-message {
+    margin-bottom: 2rem;
+}
+
+.welcome-text {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.user-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.action-button.primary {
+    background: var(--accent-color);
+    color: white;
+}
+
+.action-button.secondary {
+    background: rgba(var(--accent-color-rgb), 0.1);
+    color: var(--accent-color);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.features-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 32px;
+    padding: 2.5rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.steps-container h2 {
+    text-align: center;
+    margin: 2rem 0 2rem 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.step-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.step-card:hover {
     transform: translateY(-5px);
+}
+
+.step-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: rgba(var(--accent-color-rgb), 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-icon i {
+    font-size: 2rem;
+    color: var(--accent-color);
 }
 
 .step-number {
     position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 30px;
-    background: var(--accent-color, #8c77d0);
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    background: var(--accent-color);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 0.9rem;
 }
 
-.tutorial-step i {
-    color: var(--accent-color, #8c77d0);
-    margin: 1rem 0;
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    color: white;
+    border-radius: 30px;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.3);
 }
 
-.tutorial-step h3 {
-    margin: 1rem 0;
+.cta-button:hover {
+    background: var(--accent-color-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* New styles for logged-in dashboard */
+.app-branding {
+    position: static;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.brand-name {
+    font-size: 2rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dashboard-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+}
+
+.welcome-message h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--text-color) 0%, rgba(var(--text-color-rgb), 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.welcome-message h2.user-name {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0.5rem 0 0 0;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.action-card {
+    display: flex;
+    align-items: center;
+    padding: 1.8rem;
+    border-radius: 24px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.action-card:hover::before {
+    opacity: 1;
+}
+
+.action-card.primary {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    color: white;
+}
+
+.action-card.primary .action-icon {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.action-card.primary .action-content h3,
+.action-card.primary .action-content p,
+.action-card.primary .arrow-icon {
+    color: white;
+}
+
+.action-card.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.action-card.secondary {
+    background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.15) 0%, rgba(var(--accent-color-rgb), 0.08) 100%);
+}
+
+.action-card.tertiary {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+}
+
+.action-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    font-size: 1.6rem;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.5rem;
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-content h3 {
     font-size: 1.2rem;
     font-weight: 600;
+    margin: 0 0 0.25rem 0;
 }
 
-.tutorial-step .btn {
-    margin-top: 1rem;
-    background: var(--accent-color, #8c77d0);
-    border: none;
-    padding: 0.5rem 1.5rem;
-    border-radius: 20px;
-    transition: background 0.3s ease;
+.action-content p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
 }
 
-.tutorial-step .btn:hover {
-    background: var(--accent-color-dark, #7b6bc3);
+.arrow-icon {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: transform 0.3s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.action-card:hover .arrow-icon {
+    transform: translateX(5px);
+}
+
+@@media (max-width: 768px) {
+    .app-branding {
+        position: relative;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .action-card {
+        padding: 1.25rem;
+    }
+
+    .action-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        margin-right: 1rem;
+    }
+}
+
+@@media (max-width: 768px) {
+    .dashboard-container {
+        margin: 2rem auto;
+        padding: 1.5rem;
+    }
 }
 </style>
