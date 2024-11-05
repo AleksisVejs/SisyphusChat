@@ -13,6 +13,7 @@
   --bg-color-rgb: 255, 255, 255;
   --text-color-rgb: 51, 51, 51;
   --accent-color-rgb: 140, 119, 208;
+  --border-color: rgba(0, 0, 0, 0.1); 
 }
 
 body {
