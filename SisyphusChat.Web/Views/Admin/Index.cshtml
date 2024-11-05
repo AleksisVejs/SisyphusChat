@@ -179,7 +179,7 @@
     </div>
 </div>
 
-<style>
+<style scoped>
 .admin-dashboard {
     max-width: 1400px;
     margin: 0 auto;
@@ -445,13 +445,136 @@
     transition: all 0.2s ease;
 }
 
-@@media (max-width: 768px) {
-    .reports-grid {
-        grid-template-columns: 1fr;
-    }
+/* Add these new styles */
+.users-table tr {
+    transition: all 0.2s ease;
+}
 
+.users-table tr:hover {
+    background: rgba(var(--bg-color-rgb), 0.3);
+}
+
+.users-table th {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.users-table td {
+    vertical-align: middle;
+}
+
+.users-controls {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    background: rgba(var(--bg-color-rgb), 0.5);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.1);
+}
+
+.search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+.filter-select {
+    padding: 0.75rem 2rem 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1em;
+    transition: all 0.2s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.1);
+}
+
+.btn-ban, .btn-unban {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-ban:hover, .btn-unban:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-ban i, .btn-unban i {
+    font-size: 0.9rem;
+}
+
+.dropdown-menu {
+    background: rgba(var(--bg-color-rgb), 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    color: var(--text-color);
+}
+
+.dropdown-item:hover {
+    background: rgba(var(--accent-color-rgb), 0.1);
+    color: var(--accent-color);
+}
+
+@@media (max-width: 768px) {
     .users-controls {
         flex-direction: column;
+    }
+    
+    .users-table-container {
+        overflow-x: auto;
+    }
+    
+    .users-table {
+        min-width: 800px;
     }
 }
 </style>
