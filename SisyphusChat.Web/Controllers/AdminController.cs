@@ -80,7 +80,7 @@ namespace SisyphusChat.Web.Controllers
             }
 
             var users = await _userManager.Users
-                .Where(u => u.Id != currentUser.Id && !u.IsDeleted) // Exclude current user and admins
+                .Where(u => u.Id != user.Id && !u.IsDeleted) // Exclude current user and admins
                 .ToListAsync();
             
             var reports = await _context.Reports
