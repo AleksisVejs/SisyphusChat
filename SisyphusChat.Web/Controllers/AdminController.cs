@@ -81,7 +81,7 @@ namespace SisyphusChat.Web.Controllers
 
             var currentUser = await _userManager.GetUserAsync(User);
             var users = await _userManager.Users
-                .Where(u => u.Id != currentUser.Id) // Exclude current user
+                .Where(u => u.Id != currentUser.Id && !u.IsDeleted) // Exclude current user and admins
                 .ToListAsync();
 
             return View(new AdminViewModel { Users = users });

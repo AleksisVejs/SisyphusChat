@@ -71,15 +71,13 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
 
     public async Task<ICollection<User>> GetAllFriendsAsync(string currentUserId)
     {
-        // Fetch friendships that are accepted for the current user
         var friendships = await context.Friends
             .Where(u => (u.ReqSenderId == currentUserId || u.ReqReceiverId == currentUserId) && u.IsAccepted)
-            .Select(f => f.ReqSenderId == currentUserId ? f.ReqReceiverId : f.ReqSenderId) // Get the friend's ID
+            .Select(f => f.ReqSenderId == currentUserId ? f.ReqReceiverId : f.ReqSenderId)
             .ToListAsync();
 
-        // Fetch the users who are in the friendships
         var friends = await context.Users
-            .Where(u => friendships.Contains(u.Id)) // Use Contains for filtering
+            .Where(u => friendships.Contains(u.Id) && !u.IsDeleted)
             .ToListAsync();
 
         return friends;
@@ -89,7 +87,9 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
     {
         var friends = await context.Friends
             .Include(f => f.ReqReceiver)
-            .Where(u => u.ReqSenderId == currentUserId && u.IsAccepted == false)
+            .Where(u => u.ReqSenderId == currentUserId && 
+                       u.IsAccepted == false && 
+                       !u.ReqReceiver.IsDeleted)
             .ToListAsync();
 
         return friends;
@@ -99,7 +99,9 @@ public class FriendRepository(ApplicationDbContext context) : IFriendRepository
     {
         var friends = await context.Friends
             .Include(fr => fr.ReqSender)
-            .Where(u => u.ReqReceiverId == currentUserId && u.IsAccepted == false)
+            .Where(u => u.ReqReceiverId == currentUserId && 
+                       u.IsAccepted == false && 
+                       !u.ReqSender.IsDeleted)
             .ToListAsync();
 
         return friends;
