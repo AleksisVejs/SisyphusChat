@@ -10,7 +10,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 {
     public async Task AddAsync(Chat entity)
     {
-        entity.Id = Guid.NewGuid();
+        entity.Id = Guid.NewGuid().ToString();
         entity.TimeCreated = DateTime.Now;
         entity.IsReported = false;
 
@@ -47,7 +47,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
             .Include(c => c.Messages
             .OrderBy(m => m.TimeCreated))
             .ThenInclude(m => m.Sender)
-            .FirstOrDefaultAsync(g => g.Id.ToString() == id);
+            .FirstOrDefaultAsync(g => g.Id == id);
 
         if (chat == null)
         {

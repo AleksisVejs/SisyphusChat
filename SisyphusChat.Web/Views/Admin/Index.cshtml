@@ -1,4 +1,6 @@
-﻿@{
+﻿@using SisyphusChat.Infrastructure.Entities
+@model AdminViewModel
+@{
     ViewData["Title"] = "Admin Page";
 }
 
@@ -68,6 +70,119 @@
     </div>
 </div>
 
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card admin-card bg-dark text-light">
+            <div class="card-header">
+                <h5 class="mb-0">User Management</h5>
+            </div>
+            <div class="card-body">
+                <!-- Search and Filter Controls -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-light">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" id="userSearch" class="form-control bg-dark text-light" 
+                                   placeholder="Search by username...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="loginFilter" class="form-select bg-dark text-light">
+                            <option value="all">All Users</option>
+                            <option value="today">Logged in today</option>
+                            <option value="week">Logged in this week</option>
+                            <option value="never">Never logged in</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                    <table class="table table-dark table-hover">
+                        <thead class="sticky-top">
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users.Where(u => !u.IsAdmin))
+                            {
+                                <tr class="user-row">
+                                    <td>@user.UserName</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        <span class="badge rounded-pill @(user.IsBanned ? "bg-danger" : "bg-success") px-3">
+                                            @(user.IsBanned ? "Banned" : "Active")
+                                        </span>
+                                    </td>
+                                    <td>@(user.LastLogin?.ToString("g") ?? "Never")</td>
+                                    <td class="text-end">
+                                        @if (!user.IsBanned)
+                                        {
+                                            <div class="dropdown d-inline">
+                                                <button class="btn btn-danger px-3" type="button" 
+                                                        id="banDropdown_@user.Id" 
+                                                        data-bs-toggle="dropdown" 
+                                                        aria-expanded="false">
+                                                    Ban <i class="fas fa-caret-down ms-1"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                                    <li>
+                                                        <form asp-action="BanUser" method="post" class="px-2">
+                                                            <input type="hidden" name="userId" value="@user.Id" />
+                                                            <input type="hidden" name="duration" value="TwentyFourHours" />
+                                                            <button type="submit" class="dropdown-item text-danger">24 Hours</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="BanUser" method="post" class="px-2">
+                                                            <input type="hidden" name="userId" value="@user.Id" />
+                                                            <input type="hidden" name="duration" value="OneWeek" />
+                                                            <button type="submit" class="dropdown-item text-danger">One Week</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="BanUser" method="post" class="px-2">
+                                                            <input type="hidden" name="userId" value="@user.Id" />
+                                                            <input type="hidden" name="duration" value="OneMonth" />
+                                                            <button type="submit" class="dropdown-item text-danger">One Month</button>
+                                                        </form>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider bg-secondary"></li>
+                                                    <li>
+                                                        <form asp-action="BanUser" method="post" class="px-2">
+                                                            <input type="hidden" name="userId" value="@user.Id" />
+                                                            <input type="hidden" name="duration" value="Permanent" />
+                                                            <button type="submit" class="dropdown-item text-danger">Permanent Ban</button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="UnbanUser" method="post" class="d-inline">
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <button type="submit" class="btn btn-success px-3">Unban</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function previewReport(reportType) {
         window.open(`/Admin/PreviewReport?reportType=${reportType}`, '_blank');
@@ -96,6 +211,46 @@
             console.error('Error:', error);
             alert('Failed to send notification');
         }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const userSearch = document.getElementById('userSearch');
+        const loginFilter = document.getElementById('loginFilter');
+        const userRows = document.querySelectorAll('.user-row');
+
+        function filterUsers() {
+            const searchTerm = userSearch.value.toLowerCase();
+            const filterValue = loginFilter.value;
+            const now = new Date();
+
+            userRows.forEach(row => {
+                const username = row.querySelector('td:first-child').textContent.toLowerCase();
+                const lastLogin = row.querySelector('td:nth-child(4)').textContent;
+                let showRow = username.includes(searchTerm);
+
+                if (showRow && filterValue !== 'all') {
+                    const loginDate = lastLogin !== 'Never' ? new Date(lastLogin) : null;
+                    
+                    switch(filterValue) {
+                        case 'today':
+                            showRow = loginDate?.toDateString() === now.toDateString();
+                            break;
+                        case 'week':
+                            const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                            showRow = loginDate && loginDate > weekAgo;
+                            break;
+                        case 'never':
+                            showRow = lastLogin === 'Never';
+                            break;
+                    }
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        userSearch.addEventListener('input', filterUsers);
+        loginFilter.addEventListener('change', filterUsers);
     });
 </script>
 

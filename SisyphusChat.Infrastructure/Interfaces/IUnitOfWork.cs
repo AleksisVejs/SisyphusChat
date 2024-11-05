@@ -1,5 +1,5 @@
 ﻿using SisyphusChat.Infrastructure.Interfaces;
-
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace SisyphusChat.Core.Interfaces
 {
@@ -20,5 +20,6 @@ namespace SisyphusChat.Core.Interfaces
         INotificationRepository NotificationRepository { get; }
         
         Task SaveAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

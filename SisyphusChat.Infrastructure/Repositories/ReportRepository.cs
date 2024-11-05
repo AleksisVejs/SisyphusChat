@@ -104,7 +104,7 @@ namespace SisyphusChat.Infrastructure.Repositories
             var chatParticipationReport = await context.ChatUsers
                 .Select(cu => new ChatParticipationReportDto
                 {
-                    ChatId = cu.ChatId,
+                    ChatId = cu.ChatId.ToString(),
                     ChatTitle = cu.Chat.Name,
                     UserName = cu.User.UserName,
                     UserRole = cu.Chat.OwnerId == cu.UserId ? "Owner" : "Member"

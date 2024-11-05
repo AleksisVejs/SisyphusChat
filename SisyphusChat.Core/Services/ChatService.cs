@@ -12,7 +12,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
     {
         var chatEntity = new Chat
         {
-            Id = model.Id == null ? Guid.NewGuid() : new Guid(model.Id),
+            Id = model.Id,
             Name = model.Name,
             Type = model.Type,
             OwnerId = model.OwnerId,
@@ -165,7 +165,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 
                 chatEntity = new Chat
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.NewGuid().ToString(),
                     Name = $"{currentUser.UserName}",
                     Type = ChatType.Private,
                     ChatUsers = new List<ChatUser>
@@ -192,7 +192,7 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 
                 chatEntity = new Chat
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.NewGuid().ToString(),
                     Name = $"{currentUser.UserName}, {recipientUser.UserName}",
                     Type = ChatType.Private,
                     ChatUsers = new List<ChatUser>
@@ -239,5 +239,20 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
             .Where(c => c.ChatUsers.Any(m => m.UserId == currentUser.Id && c.Type == ChatType.Group)).ToList();
 
         return mapper.Map<ICollection<Chat>, ICollection<ChatModel>>(associatedChats);
+    }
+
+    public async Task<ICollection<UserModel>> GetUsersNotInChatAsync(string chatId)
+    {
+        var chat = await unitOfWork.ChatRepository.GetByIdAsync(chatId);
+        var existingMemberIds = chat.ChatUsers.Select(cm => cm.UserId).ToHashSet();
+
+        var dbUsers = await unitOfWork.UserRepository.GetAllAsync();
+        var availableUsers = dbUsers.Where(u => 
+            !existingMemberIds.Contains(u.Id) && 
+            !u.IsDeleted && // Filter out deleted users
+            u.UserName != "DELETED_USER" // Filter out system deleted user
+        );
+
+        return mapper.Map<ICollection<User>, ICollection<UserModel>>(availableUsers.ToList());
     }
 }

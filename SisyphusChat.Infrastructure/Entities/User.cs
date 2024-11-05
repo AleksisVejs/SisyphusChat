@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +11,13 @@ namespace SisyphusChat.Infrastructure.Entities
         public byte[]? Picture { get; set; }
 
         public bool IsAdmin { get; set; }
+
+        public bool IsBanned { get; set; }
+        public bool IsDeleted { get; set; }
+
+        public DateTime? BanStart { get; set; }
+
+        public DateTime? BanEnd { get; set; }
 
         [Required]
         public bool IsOnline { get; set; }      

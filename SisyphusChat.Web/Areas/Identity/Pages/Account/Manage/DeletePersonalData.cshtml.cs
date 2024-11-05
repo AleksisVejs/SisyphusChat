@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Core.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using SisyphusChat.Web.Hubs;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -18,15 +21,21 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly IUserDeletionService _userDeletionService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         public DeletePersonalDataModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            IUserDeletionService userDeletionService,
+            IHubContext<NotificationHub> hubContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _userDeletionService = userDeletionService;
+            _hubContext = hubContext;
         }
 
         /// <summary>
@@ -77,6 +86,12 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            if (user.IsAdmin)
+            {
+                ModelState.AddModelError(string.Empty, "Admin accounts cannot be deleted.");
+                return Page();
+            }
+
             RequirePassword = await _userManager.HasPasswordAsync(user);
             if (RequirePassword)
             {
@@ -87,18 +102,21 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
+            try
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
+                string userId = user.Id;
+                await _userDeletionService.DeleteUserAndRelatedDataAsync(userId);
+                await _hubContext.Clients.All.SendAsync("UserDeleted", userId, $"DELETED_USER_{userId}");
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+                return Redirect("~/");
             }
-
-            await _signInManager.SignOutAsync();
-
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
-
-            return Redirect("~/");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user {UserId}", user.Id);
+                ModelState.AddModelError(string.Empty, "An error occurred while deleting your account.");
+                return Page();
+            }
         }
     }
 }

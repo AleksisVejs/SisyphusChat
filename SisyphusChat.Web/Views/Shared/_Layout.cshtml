@@ -56,11 +56,12 @@
                             var currentUser = await UserManager.GetUserAsync(User); // Get current user
 
                             <li class="nav-item dropdown" id="notificationDropdown">
-                                <a class="nav-link" href="#" id="notificationLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link" href="#" id="notificationLink" role="button" 
+                                   data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-bell"></i>
                                     <span class="badge badge-danger notification-badge d-none" id="notificationCount">0</span>
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-right notification-menu" aria-labelledby="notificationLink">
+                                <div class="dropdown-menu dropdown-menu-end notification-menu" aria-labelledby="notificationLink">
                                     <div class="notification-header d-flex justify-content-between align-items-center p-2">
                                         <h6 class="mb-0">Notifications</h6>
                                         <div class="notification-header-actions">
@@ -134,7 +135,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     @if (SignInManager.IsSignedIn(User))
     {
         <script src="~/js/signalr/dist/browser/signalr.min.js"></script>

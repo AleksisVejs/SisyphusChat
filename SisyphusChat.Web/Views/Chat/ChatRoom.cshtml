@@ -151,7 +151,9 @@
                       {
                           <img src="~/images/default_pfp.jpg" alt="Default Profile Picture" class="message-profile-pic" />
                       }
-                    <span class="sender-name">@message.Sender.UserName</span>
+                    <span class="sender-name">
+                        @message.Sender.UserName
+                    </span>
                     </div>
                     <p class="message-content">@message.Content</p>
                     <span class="time">
@@ -448,6 +450,36 @@
                 
                 messageContent.textContent = newContent;
                 timeSpan.innerHTML = `${new Date(lastUpdated).toLocaleString()} <span class="edited-indicator">(edited)</span>`;
+            }
+        });
+
+        // Add this after your other connection.on handlers
+        connection.on("UserDeleted", function (userId, newUsername) {
+            // Update usernames in chat list
+            const userItems = document.querySelectorAll('.user-item');
+            userItems.forEach(item => {
+                const usernameSpan = item.querySelector('.text-blue-600');
+                if (usernameSpan && usernameSpan.textContent === newUsername) {
+                    usernameSpan.textContent = newUsername;
+                }
+            });
+
+            // Update usernames in messages
+            const senderNames = document.querySelectorAll('.sender-name');
+            senderNames.forEach(span => {
+                if (span.textContent === newUsername) {
+                    span.textContent = newUsername;
+                }
+            });
+
+            // Update group chat members list if present
+            const groupUsers = document.getElementById('groupUsers');
+            if (groupUsers) {
+                const members = groupUsers.textContent.split(', ');
+                const updatedMembers = members.map(member => 
+                    member === newUsername ? newUsername : member
+                );
+                groupUsers.textContent = updatedMembers.join(', ');
             }
         });
     </script>

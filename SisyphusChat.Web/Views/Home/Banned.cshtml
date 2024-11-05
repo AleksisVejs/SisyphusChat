@@ -1,0 +1,81 @@
+@model SisyphusChat.Web.Models.BannedViewModel
+
+@{
+    var banEndIso = Model.BanEnd.ToString("o");
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-light">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-ban text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-4">Account Temporarily Banned</h2>
+                    <p class="card-text">
+                        Your account has been temporarily suspended by an administrator.
+                    </p>
+                    <div class="alert alert-info">
+                        <p class="mb-0">
+                            Ban will expire in: <br/>
+                            <strong id="banTimer"></strong>
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                            <button type="submit" class="btn btn-outline-light">
+                                <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function updateBanTimer() {
+        try {
+            const banEnd = new Date('@banEndIso');
+            const now = new Date();
+            const diff = banEnd - now;
+
+            if (diff <= 0) {
+                window.location.reload();
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const timerElement = document.getElementById('banTimer');
+            if (timerElement) {
+                timerElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+        } catch (error) {
+            console.error('Error updating ban timer:', error);
+        }
+    }
+
+    setInterval(updateBanTimer, 1000);
+    updateBanTimer();
+</script>
+}
+
+<style>
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.2);
+    border-color: rgba(23, 162, 184, 0.3);
+    color: #9fcdff;
+}
+</style> 

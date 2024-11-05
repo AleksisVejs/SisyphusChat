@@ -5,7 +5,7 @@ namespace SisyphusChat.Infrastructure.Entities;
 public class BaseEntity
 {
     [Key]
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     [Required]
     public DateTime TimeCreated { get; set; }
