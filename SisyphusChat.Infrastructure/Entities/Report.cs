@@ -13,10 +13,10 @@ public class Report : BaseEntity
     [ForeignKey(nameof(ChatId))]
     public Chat Chat { get; set; }
 
-    public string MessageId { get; set; }
+    public string? MessageId { get; set; }
 
     [ForeignKey(nameof(MessageId))]
-    public Message Message { get; set; }
+    public Message? Message { get; set; }
 
     [Required]
     public ReportType Type { get; set; }
