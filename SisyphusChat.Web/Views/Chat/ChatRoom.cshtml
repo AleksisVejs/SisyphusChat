@@ -487,99 +487,108 @@
 
 
 <style scoped>
-    html, body {
-        margin: 0;
-        padding: 0;
-    }
+html, body {
+    margin: 0;
+    padding: 0;
+}
 
-    .container {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
+.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
 
-    .icon-container-large {
-        display: flex;
-        align-items: center; /* Aligns items vertically in the center */
-    }
+.icon-container-large {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the center */
+}
 
-    main[b-fefn0adsrq] {
-        margin: 0;
-    }
+main[b-fefn0adsrq] {
+    margin: 0;
+}
 
-    .sender-name {
-        font-weight: bold;
-    }
+.sender-name {
+    font-weight: bold;
+}
 
-    .gcsettings {
-        margin-left: auto;
-        margin-right: 1%;
-    }
+.gcsettings {
+    margin-left: auto;
+    margin-right: 1%;
+}
 
+/* Message actions */
 .message-actions {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    display: none;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .message:hover .message-actions {
-    display: block;
+  opacity: 1;
 }
 
 .edit-message-btn {
-    background: none;
-    border: none;
-    padding: 2px 5px;
-    cursor: pointer;
-    color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
 }
 
 .edit-message-btn:hover {
-    color: #e0e0e0;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
+/* Edit message form */
 .edit-message-form {
-    margin: 5px 0;
-    padding: 10px;
-    background: #ffffff;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
 }
 
 .edit-message-form input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 5px;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
 }
 
 .edit-actions {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 0.75rem;
 }
 
 .edit-actions button {
-    padding: 5px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .edit-actions button:first-child {
-    background-color: #007bff;
-    color: white;
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+  color: white;
 }
 
 .edit-actions button:last-child {
-    background-color: #dc3545;
-    color: white;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
 }
 
-.edited-indicator {
-    font-size: 0.8em;
-    color: #666;
-    margin-left: 5px;
+.edit-actions button:hover {
+  transform: translateY(-2px);
 }
 </style>

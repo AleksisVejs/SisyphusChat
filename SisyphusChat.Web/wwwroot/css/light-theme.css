@@ -214,17 +214,6 @@ a:focus {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.sent {
-  background-color: #8c77d0;
-  color: white;
-}
-
-/* Received messages */
-.received {
-  background-color: #333333;
-  color: white;
-}
-
 #messageInput {
   background-color: #e4e6eb;
   color: #333333;
