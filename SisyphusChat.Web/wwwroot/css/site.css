@@ -818,3 +818,101 @@ p {
 .notification-item:last-child {
   margin-bottom: 8px; /* Ensure last item has bottom margin */
 }
+
+/* Modern Navbar Styles */
+.navbar {
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.nav-item {
+  margin: 0 0.5rem;
+}
+
+.nav-link {
+  position: relative;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* User section styles */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+#theme-switcher {
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+#theme-switcher:hover {
+  transform: rotate(45deg);
+}
+
+/* Notification styles in navbar */
+#notificationDropdown .nav-link {
+  padding: 0.5rem !important;
+}
+
+.notification-badge {
+  top: 0;
+  right: 0;
+}
+
+/* Mobile menu button */
+.navbar-toggler {
+  border: none;
+  padding: 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.tutorial-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.tutorial-btn:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+  color: var(--accent-color);
+}
+
+.tutorial-btn i {
+  font-size: 1.2rem;
+}
