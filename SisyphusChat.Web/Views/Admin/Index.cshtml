@@ -111,7 +111,21 @@
                                 <td>@user.Email</td>
                                 <td>
                                     <span class="status-badge @(user.IsBanned ? "banned" : "active")">
-                                        @(user.IsBanned ? "Banned" : "Active")
+                                        @if (user.IsBanned)
+                                        {
+                                            if (user.BanEnd.HasValue)
+                                            {
+                                                <span>Banned until @user.BanEnd.Value.ToString("g")</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Permanently Banned</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span>Active</span>
+                                        }
                                     </span>
                                 </td>
                                 <td>@(user.LastLogin?.ToString("g") ?? "Never")</td>
@@ -396,6 +410,8 @@
     border-radius: 20px;
     font-size: 0.875rem;
     font-weight: 500;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .status-badge.active {
@@ -406,6 +422,9 @@
 .status-badge.banned {
     background: rgba(220, 53, 69, 0.1);
     color: #dc3545;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn-ban {

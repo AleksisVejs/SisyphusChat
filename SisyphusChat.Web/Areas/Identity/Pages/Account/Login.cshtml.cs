@@ -91,7 +91,8 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
                 }
                 else if (banResult == Microsoft.AspNetCore.Identity.SignInResult.LockedOut)
                 {
-                    ModelState.AddModelError(string.Empty, "This account is temporarily banned. Please try again later.");
+                    var banEndDate = user?.BanEnd?.ToString("g") ?? "unknown date";
+                    ModelState.AddModelError(string.Empty, $"This account is temporarily banned until {banEndDate}.");
                     return Page();
                 }
                 
