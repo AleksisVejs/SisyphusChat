@@ -1,3 +1,20 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --muted-color: #666666;
+  --accent-color: #8c77d0;
+  --accent-color-dark: #7b6bc3;
+  --error-color: #ff4d4d;
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(0, 0, 0, 0.1);
+  --input-focus-bg: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: rgba(140, 119, 208, 0.1);
+  --bg-color-rgb: 255, 255, 255;
+  --text-color-rgb: 51, 51, 51;
+  --accent-color-rgb: 140, 119, 208;
+}
+
 body {
   background: linear-gradient(135deg, #f9f9f9, #e1e1e1);
   color: #333333;
@@ -410,8 +427,6 @@ a:focus {
 
 /* Light Theme Notification Styles */
 .notification-menu {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 

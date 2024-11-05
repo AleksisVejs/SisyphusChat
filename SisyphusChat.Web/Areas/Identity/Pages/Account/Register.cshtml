@@ -4,64 +4,229 @@
     ViewData["Title"] = "Register";
 }
 
-<h1 class="row justify-content-center">@ViewData["Title"]</h1>
-<div class="row justify-content-center">
-    <!-- Center the row -->
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
+<div class="auth-container">
+    <div class="auth-box">
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Join our community today</p>
+        
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email" class="form-label">Email</label>
+                <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
+            
             <div class="form-floating mb-3">
                 <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
-                <label asp-for="Input.Username" class="form-label">Username</label>
+                <label asp-for="Input.Username">Username</label>
                 <span asp-validation-for="Input.Username" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
+            
+            <div class="form-floating mb-3 position-relative">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" id="password" />
-                <label asp-for="Input.Password" class="form-label">Password</label>
+                <label asp-for="Input.Password">Password</label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
-                <a href="#" id="togglePasswordVisibility" class="toggle-password">
+                <button type="button" id="togglePasswordVisibility" class="toggle-password">
                     <i id="passwordIcon" class="fas fa-eye"></i>
-                </a>
+                </button>
             </div>
+            
             <div class="form-floating mb-3">
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" id="confirmPassword" />
-                <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-primary auth-button">
+                Create Account
+            </button>
         </form>
+
+        <div class="auth-footer-container">
+            <span>Already have an account?</span>
+            <a asp-page="./Login" class="auth-link">Sign in</a>
+        </div>
     </div>
 </div>
+
+<style>
+.auth-container {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-box {
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--muted-color);
+    margin-bottom: 30px;
+}
+
+.form-floating {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.form-floating.mb-3 {
+    margin-bottom: 25px !important;
+}
+
+.form-floating > .form-control {
+    height: 58px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.form-floating > .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(140, 119, 208, 0.25);
+}
+
+.form-floating > label {
+    color: var(--muted-color);
+}
+
+.form-floating.position-relative {
+    display: block;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 0;
+    transform: none;
+    background: none;
+    border: none;
+    color: var(--muted-color);
+    cursor: pointer;
+    padding: 0;
+    z-index: 4;
+    height: 58px;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password i {
+    font-size: 16px;
+}
+
+.form-floating > input[type="password"],
+.form-floating > input[type="text"] {
+    padding-right: 45px !important;
+}
+
+.form-floating > .text-danger {
+    position: static;
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #ff4d4d !important;
+}
+
+.form-floating > .text-danger + .form-floating {
+    margin-top: 20px;
+}
+
+.auth-button {
+    background: var(--accent-color);
+    border: none;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-button:hover {
+    background: var(--accent-color-dark);
+    transform: translateY(-2px);
+}
+
+.auth-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: var(--accent-color-dark);
+}
+
+.auth-footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted-color);
+    position: relative;
+    padding: 20px 0;
+    bottom: 0;
+    margin-top: auto;
+}
+
+.auth-footer-container .auth-link {
+    white-space: nowrap;
+}
+
+div[asp-validation-summary] {
+    margin-bottom: 20px;
+}
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document
-            .getElementById("togglePasswordVisibility")
-            .addEventListener("click", function (e) {
-                e.preventDefault();
-                var confirmPasswordInput = document.getElementById("confirmPassword");
-                var passwordInput = document.getElementById("password");
-                var passwordIcon = document.getElementById("passwordIcon");
+        document.getElementById("togglePasswordVisibility").addEventListener("click", function (e) {
+            e.preventDefault();
+            var confirmPasswordInput = document.getElementById("confirmPassword");
+            var passwordInput = document.getElementById("password");
+            var passwordIcon = document.getElementById("passwordIcon");
 
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    confirmPasswordInput.type = "text";
-                    passwordIcon.classList.remove("fa-eye");
-                    passwordIcon.classList.add("fa-eye-slash");
-                } else {
-                    passwordInput.type = "password";
-                    confirmPasswordInput.type = "password";
-                    passwordIcon.classList.remove("fa-eye-slash");
-                    passwordIcon.classList.add("fa-eye");
-                }
-            });
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                confirmPasswordInput.type = "text";
+                passwordIcon.classList.remove("fa-eye");
+                passwordIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                confirmPasswordInput.type = "password";
+                passwordIcon.classList.remove("fa-eye-slash");
+                passwordIcon.classList.add("fa-eye");
+            }
+        });
     </script>
 }
