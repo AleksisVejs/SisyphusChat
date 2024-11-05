@@ -1,261 +1,533 @@
 ﻿@using SisyphusChat.Infrastructure.Entities
 @model AdminViewModel
 @{
-    ViewData["Title"] = "Admin Page";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<div>
-    <div class="row">
-        @foreach (var report in new[] {
-        new { Title = "Attachments Report", ReportType = "Attachments"},
-        new { Title = "Chats Report", ReportType = "Chats"},
-        new { Title = "Messages Report", ReportType = "Messages"},
-        new { Title = "Users Report", ReportType = "Users"},
-        new { Title = "User Last Message Report", ReportType = "Users With Last Message"},
-        new { Title = "User Activity Report", ReportType = "User Activity"},
-        new { Title = "Attachments Usage Report", ReportType = "Attachments Usage"},
-        new { Title = "Private chats Usage Report", ReportType = "Message Private Chats Activity"},
-        new { Title = "Public chats Usage Report", ReportType = "Message Group Chats Activity"},
-        new { Title = "Chat Participation Reports Usage", ReportType = "Chat Participation"}
-        })
-        {
-            <div class="col-md-6 col-lg-3 mb-3">
-                <div class="dropdown">
-                    <button class="w-100 btn-primary btn-lg dropdown-toggle" type="button" id="@report.ReportType-@Guid.NewGuid()" data-bs-toggle="dropdown" aria-expanded="false">
-                        @report.Title
-                    </button>
-                    <ul class="dropdown-menu w-100" aria-labelledby="@report.ReportType-@Guid.NewGuid()">
-                        <li>
-                            <a class="dropdown-item" href="/Admin/DownloadReport?reportType=@report.ReportType&format=pdf">
-                                <i class="fas fa-download"></i> Download PDF
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/Admin/DownloadReport?reportType=@report.ReportType&format=excel">
-                                <i class="fas fa-download"></i> Download Excel
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="previewReport('@report.ReportType')">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        }
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <p class="text-muted">Manage users and system reports</p>
     </div>
-</div>
 
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card admin-card">
-            <div class="card-header">
-                <h5>Send Admin Notification</h5>
+    <div class="dashboard-tabs">
+        <button class="tab-button active" data-tab="reports">
+            <i class="fas fa-chart-bar"></i> Reports
+        </button>
+        <button class="tab-button" data-tab="notifications">
+            <i class="fas fa-bell"></i> Notifications
+        </button>
+        <button class="tab-button" data-tab="users">
+            <i class="fas fa-users"></i> Users
+        </button>
+    </div>
+
+    <div class="tab-content">
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-pane active">
+            <div class="reports-grid">
+                @foreach (var report in new[] {
+                    new { Title = "Attachments Report", ReportType = "Attachments", Icon = "fa-paperclip"},
+                    new { Title = "Chats Report", ReportType = "Chats", Icon = "fa-comments"},
+                    new { Title = "Messages Report", ReportType = "Messages", Icon = "fa-envelope"},
+                    new { Title = "Users Report", ReportType = "Users", Icon = "fa-users"},
+                    new { Title = "User Last Message Report", ReportType = "Users With Last Message", Icon = "fa-clock"},
+                    new { Title = "User Activity Report", ReportType = "User Activity", Icon = "fa-chart-line"},
+                    new { Title = "Attachments Usage Report", ReportType = "Attachments Usage", Icon = "fa-file"},
+                    new { Title = "Private Chats Usage Report", ReportType = "Message Private Chats Activity", Icon = "fa-user-friends"},
+                    new { Title = "Public Chats Usage Report", ReportType = "Message Group Chats Activity", Icon = "fa-users"},
+                    new { Title = "Chat Participation Report", ReportType = "Chat Participation", Icon = "fa-chart-bar"}
+                })
+                {
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas @report.Icon"></i>
+                        </div>
+                        <h3>@report.Title</h3>
+                        <div class="report-actions">
+                            <button class="btn-action" onclick="previewReport('@report.ReportType')" title="Preview">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <a href="/Admin/DownloadReport?reportType=@report.ReportType&format=pdf" 
+                               class="btn-action" title="Download PDF">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+                            <a href="/Admin/DownloadReport?reportType=@report.ReportType&format=excel" 
+                               class="btn-action" title="Download Excel">
+                                <i class="fas fa-file-excel"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
-            <div class="card-body">
+        </div>
+
+        <!-- Notifications Tab -->
+        <div id="notifications" class="tab-pane">
+            <div class="notification-form">
                 <form id="adminNotificationForm">
-                    <div class="mb-3">
-                        <label for="notificationMessage" class="form-label">Message</label>
+                    <div class="form-group">
                         <textarea class="form-control" id="notificationMessage" rows="3" required 
                             placeholder="Enter your notification message here..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-submit">
                         <i class="fas fa-paper-plane me-2"></i>Send Notification
                     </button>
                 </form>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card admin-card bg-dark text-light">
-            <div class="card-header">
-                <h5 class="mb-0">User Management</h5>
+        <!-- Users Tab -->
+        <div id="users" class="tab-pane">
+            <div class="users-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="userSearch" placeholder="Search by username...">
+                </div>
+                <select id="loginFilter" class="filter-select">
+                    <option value="all">All Users</option>
+                    <option value="today">Logged in today</option>
+                    <option value="week">Logged in this week</option>
+                    <option value="never">Never logged in</option>
+                </select>
             </div>
-            <div class="card-body">
-                <!-- Search and Filter Controls -->
-                <div class="row mb-3">
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <span class="input-group-text bg-dark text-light">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" id="userSearch" class="form-control bg-dark text-light" 
-                                   placeholder="Search by username...">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <select id="loginFilter" class="form-select bg-dark text-light">
-                            <option value="all">All Users</option>
-                            <option value="today">Logged in today</option>
-                            <option value="week">Logged in this week</option>
-                            <option value="never">Never logged in</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- Users Table -->
-                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                    <table class="table table-dark table-hover">
-                        <thead class="sticky-top">
-                            <tr>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Last Login</th>
-                                <th class="text-end">Actions</th>
+            <div class="users-table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users.Where(u => !u.IsAdmin))
+                        {
+                            <tr class="user-row">
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    <span class="status-badge @(user.IsBanned ? "banned" : "active")">
+                                        @(user.IsBanned ? "Banned" : "Active")
+                                    </span>
+                                </td>
+                                <td>@(user.LastLogin?.ToString("g") ?? "Never")</td>
+                                <td class="text-end">
+                                    @if (!user.IsBanned)
+                                    {
+                                        <div class="dropdown">
+                                            <button class="btn-ban dropdown-toggle" type="button" 
+                                                    id="banDropdown_@user.Id" 
+                                                    data-bs-toggle="dropdown" 
+                                                    aria-expanded="false">
+                                                <i class="fas fa-ban"></i> Ban
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                @foreach (var duration in new[] {
+                                                    new { Label = "24 Hours", Value = "TwentyFourHours" },
+                                                    new { Label = "One Week", Value = "OneWeek" },
+                                                    new { Label = "One Month", Value = "OneMonth" },
+                                                    new { Label = "Permanent Ban", Value = "Permanent" }
+                                                })
+                                                {
+                                                    <li>
+                                                        <form asp-action="BanUser" method="post">
+                                                            <input type="hidden" name="userId" value="@user.Id" />
+                                                            <input type="hidden" name="duration" value="@duration.Value" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                @duration.Label
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="UnbanUser" method="post" class="d-inline">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn-unban">
+                                                <i class="fas fa-undo"></i> Unban
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in Model.Users.Where(u => !u.IsAdmin))
-                            {
-                                <tr class="user-row">
-                                    <td>@user.UserName</td>
-                                    <td>@user.Email</td>
-                                    <td>
-                                        <span class="badge rounded-pill @(user.IsBanned ? "bg-danger" : "bg-success") px-3">
-                                            @(user.IsBanned ? "Banned" : "Active")
-                                        </span>
-                                    </td>
-                                    <td>@(user.LastLogin?.ToString("g") ?? "Never")</td>
-                                    <td class="text-end">
-                                        @if (!user.IsBanned)
-                                        {
-                                            <div class="dropdown d-inline">
-                                                <button class="btn btn-danger px-3" type="button" 
-                                                        id="banDropdown_@user.Id" 
-                                                        data-bs-toggle="dropdown" 
-                                                        aria-expanded="false">
-                                                    Ban <i class="fas fa-caret-down ms-1"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                                    <li>
-                                                        <form asp-action="BanUser" method="post" class="px-2">
-                                                            <input type="hidden" name="userId" value="@user.Id" />
-                                                            <input type="hidden" name="duration" value="TwentyFourHours" />
-                                                            <button type="submit" class="dropdown-item text-danger">24 Hours</button>
-                                                        </form>
-                                                    </li>
-                                                    <li>
-                                                        <form asp-action="BanUser" method="post" class="px-2">
-                                                            <input type="hidden" name="userId" value="@user.Id" />
-                                                            <input type="hidden" name="duration" value="OneWeek" />
-                                                            <button type="submit" class="dropdown-item text-danger">One Week</button>
-                                                        </form>
-                                                    </li>
-                                                    <li>
-                                                        <form asp-action="BanUser" method="post" class="px-2">
-                                                            <input type="hidden" name="userId" value="@user.Id" />
-                                                            <input type="hidden" name="duration" value="OneMonth" />
-                                                            <button type="submit" class="dropdown-item text-danger">One Month</button>
-                                                        </form>
-                                                    </li>
-                                                    <li><hr class="dropdown-divider bg-secondary"></li>
-                                                    <li>
-                                                        <form asp-action="BanUser" method="post" class="px-2">
-                                                            <input type="hidden" name="userId" value="@user.Id" />
-                                                            <input type="hidden" name="duration" value="Permanent" />
-                                                            <button type="submit" class="dropdown-item text-danger">Permanent Ban</button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <form asp-action="UnbanUser" method="post" class="d-inline">
-                                                <input type="hidden" name="userId" value="@user.Id" />
-                                                <button type="submit" class="btn btn-success px-3">Unban</button>
-                                            </form>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    function previewReport(reportType) {
-        window.open(`/Admin/PreviewReport?reportType=${reportType}`, '_blank');
+<style>
+.admin-dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Tab Navigation */
+.dashboard-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+}
+
+.tab-button {
+    padding: 1rem 2rem;
+    border: none;
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-button i {
+    font-size: 1.2rem;
+}
+
+.tab-button:hover {
+    background: rgba(var(--accent-color-rgb), 0.1);
+}
+
+.tab-button.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Tab Content */
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Reports Grid */
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.report-card {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    transition: all 0.3s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.report-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--accent-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.report-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.report-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.report-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.notification-form {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+}
+
+.notification-form textarea {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    color: var(--text-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    resize: vertical;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    background: var(--accent-color-dark);
+    transform: translateY(-2px);
+}
+
+.users-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+}
+
+.search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+}
+
+.filter-select {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    background: rgba(var(--bg-color-rgb), 0.5);
+    color: var(--text-color);
+}
+
+.users-table-container {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    overflow: hidden;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table th {
+    background: rgba(var(--bg-color-rgb), 0.8);
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.users-table td {
+    padding: 1rem;
+    border-top: 1px solid rgba(var(--text-color-rgb), 0.1);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.status-badge.banned {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.btn-ban {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    background: #dc3545;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.btn-unban {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    background: #28a745;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+@@media (max-width: 768px) {
+    .reports-grid {
+        grid-template-columns: 1fr;
     }
 
-    document.getElementById('adminNotificationForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const message = document.getElementById('notificationMessage').value;
-        
-        try {
-            const response = await fetch('/Admin/SendNotification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message })
-            });
+    .users-controls {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab Switching
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.dataset.tab;
             
-            if (response.ok) {
-                alert('Notification sent successfully');
-                document.getElementById('notificationMessage').value = '';
-            } else {
-                alert('Failed to send notification');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to send notification');
-        }
+            // Update active states
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            button.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const userSearch = document.getElementById('userSearch');
-        const loginFilter = document.getElementById('loginFilter');
-        const userRows = document.querySelectorAll('.user-row');
+    // Existing user search and filter functionality
+    const userSearch = document.getElementById('userSearch');
+    const loginFilter = document.getElementById('loginFilter');
+    const userRows = document.querySelectorAll('.user-row');
 
-        function filterUsers() {
-            const searchTerm = userSearch.value.toLowerCase();
-            const filterValue = loginFilter.value;
-            const now = new Date();
+    function filterUsers() {
+        const searchTerm = userSearch.value.toLowerCase();
+        const filterValue = loginFilter.value;
+        const now = new Date();
 
-            userRows.forEach(row => {
-                const username = row.querySelector('td:first-child').textContent.toLowerCase();
-                const lastLogin = row.querySelector('td:nth-child(4)').textContent;
-                let showRow = username.includes(searchTerm);
+        userRows.forEach(row => {
+            const username = row.querySelector('td:first-child').textContent.toLowerCase();
+            const lastLogin = row.querySelector('td:nth-child(4)').textContent;
+            let showRow = username.includes(searchTerm);
 
-                if (showRow && filterValue !== 'all') {
-                    const loginDate = lastLogin !== 'Never' ? new Date(lastLogin) : null;
-                    
-                    switch(filterValue) {
-                        case 'today':
-                            showRow = loginDate?.toDateString() === now.toDateString();
-                            break;
-                        case 'week':
-                            const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-                            showRow = loginDate && loginDate > weekAgo;
-                            break;
-                        case 'never':
-                            showRow = lastLogin === 'Never';
-                            break;
-                    }
+            if (showRow && filterValue !== 'all') {
+                const loginDate = lastLogin !== 'Never' ? new Date(lastLogin) : null;
+                
+                switch(filterValue) {
+                    case 'today':
+                        showRow = loginDate?.toDateString() === now.toDateString();
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                        showRow = loginDate && loginDate > weekAgo;
+                        break;
+                    case 'never':
+                        showRow = lastLogin === 'Never';
+                        break;
                 }
+            }
 
-                row.style.display = showRow ? '' : 'none';
-            });
-        }
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
 
+    if (userSearch && loginFilter) {
         userSearch.addEventListener('input', filterUsers);
         loginFilter.addEventListener('change', filterUsers);
-    });
-</script>
-
-<style scoped>
-    .btn-lg {
-        font-size: 1rem;
     }
-</style>
+
+    // Notification form handling
+    const notificationForm = document.getElementById('adminNotificationForm');
+    if (notificationForm) {
+        notificationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = document.getElementById('notificationMessage').value;
+            
+            try {
+                const response = await fetch('/Admin/SendNotification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                if (response.ok) {
+                    alert('Notification sent successfully');
+                    document.getElementById('notificationMessage').value = '';
+                } else {
+                    alert('Failed to send notification');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to send notification');
+            }
+        });
+    }
+});
+
+function previewReport(reportType) {
+    window.open(`/Admin/PreviewReport?reportType=${reportType}`, '_blank');
+}
+</script>
