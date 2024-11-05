@@ -3,11 +3,11 @@
         <button class="btn btn-outline-light skip-tutorial">Skip Tutorial</button>
     </div>
 
-    <div class="tutorial-step-overlay" id="step1">
+    <div class="tutorial-step-overlay d-none" id="step1">
         <div class="tutorial-content">
-            <span class="step-indicator">1/5</span>
+            <span class="step-indicator">1/6</span>
             <h3>Welcome to Sisyphus Chat!</h3>
-            <p>Let's take a quick tour to help you get started. We'll show you how to customize your profile, add friends, and start chatting.</p>
+            <p>Let's take a tour of all the features available to you.</p>
             <div class="tutorial-actions">
                 <button class="btn btn-light next-step">Get Started</button>
             </div>
@@ -17,9 +17,13 @@
     <div class="tutorial-step-overlay d-none" id="step2">
         <div class="tutorial-content">
             <div class="tutorial-arrow-up"></div>
-            <span class="step-indicator">2/5</span>
+            <span class="step-indicator">2/6</span>
             <h3>Your Profile</h3>
-            <p>Click here to logout or customize your profile, change your avatar, and update your settings. Make yourself at home!</p>
+            <p>Click here to access your profile menu. You can:</p>
+            <ul>
+                <li>Access your profile settings</li>
+                <li>Log out</li>
+            </ul>
             <div class="tutorial-actions">
                 <button class="btn btn-outline-light prev-step">Back</button>
                 <button class="btn btn-light next-step">Next</button>
@@ -30,9 +34,9 @@
     <div class="tutorial-step-overlay d-none" id="step3">
         <div class="tutorial-content">
             <div class="tutorial-arrow-up"></div>
-            <span class="step-indicator">3/5</span>
-            <h3>Find Friends</h3>
-            <p>Visit the Friends section to connect with others. You can search for friends and manage your friend requests here.</p>
+            <span class="step-indicator">3/6</span>
+            <h3>Theme Customization</h3>
+            <p>Toggle between light and dark themes using this button. Your preference will be saved automatically for future visits.</p>
             <div class="tutorial-actions">
                 <button class="btn btn-outline-light prev-step">Back</button>
                 <button class="btn btn-light next-step">Next</button>
@@ -43,20 +47,45 @@
     <div class="tutorial-step-overlay d-none" id="step4">
         <div class="tutorial-content">
             <div class="tutorial-arrow-up"></div>
-            <span class="step-indicator">4/5</span>
-            <h3>Start Chatting</h3>
-            <p>Head to the Chat section to start private conversations or create group chats with your friends.</p>
+            <span class="step-indicator">4/6</span>
+            <h3>Friends Section</h3>
+            <p>In the Friends section, you can:</p>
+            <ul>
+                <li>Search for new friends</li>
+                <li>Manage friend requests</li>
+                <li>View your friends list</li>
+                <li>Remove friends</li>
+            </ul>
             <div class="tutorial-actions">
                 <button class="btn btn-outline-light prev-step">Back</button>
                 <button class="btn btn-light next-step">Next</button>
             </div>
         </div>
     </div>
-    
+
     <div class="tutorial-step-overlay d-none" id="step5">
         <div class="tutorial-content">
             <div class="tutorial-arrow-up"></div>
-            <span class="step-indicator">5/5</span>
+            <span class="step-indicator">5/6</span>
+            <h3>Chat Section</h3>
+            <p>Click here to access the chat section. You can:</p>
+            <ul>
+                <li>Send messages to friends</li>
+                <li>View your chat history</li>
+                <li>Create group chats</li>
+                <li>Access chat settings</li>
+            </ul>
+            <div class="tutorial-actions">  
+                <button class="btn btn-outline-light prev-step">Back</button>
+                <button class="btn btn-light next-step">Next</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tutorial-step-overlay d-none" id="step6">
+        <div class="tutorial-content">
+            <div class="tutorial-arrow-up"></div>
+            <span class="step-indicator">6/6</span>
             <h3>Notifications</h3>
             <p>You'll receive notifications here for new messages, friend requests, and important updates. Let's see how they work!</p>
             <div class="tutorial-actions">
@@ -451,20 +480,27 @@ function positionStep(stepIndex, steps) {
             break;
 
         case 2:
-            targetElement = document.querySelector('a[href*="/Friends"]');
+            targetElement = document.getElementById('theme-switcher');
             if (targetElement) {
                 highlightElement(targetElement, step);
             }
             break;
 
         case 3:
-            targetElement = document.querySelector('a[href*="/Chat"]');
+            targetElement = document.querySelector('a[href*="/Friends"]');
             if (targetElement) {
                 highlightElement(targetElement, step);
             }
             break;
 
         case 4:
+            targetElement = document.querySelector('a[href*="/Chat"]');
+            if (targetElement) {
+                highlightElement(targetElement, step);
+            }
+            break;
+
+        case 5:
             targetElement = document.querySelector('#notificationLink');
             if (targetElement) {
                 highlightElement(targetElement, step);
@@ -476,6 +512,7 @@ function positionStep(stepIndex, steps) {
 function highlightElement(element, step) {
     const rect = element.getBoundingClientRect();
     const padding = 5;
+    const windowWidth = window.innerWidth;
 
     if (spotlight) {
         spotlight.style.display = 'block';
@@ -485,9 +522,21 @@ function highlightElement(element, step) {
         spotlight.style.height = `${rect.height + (padding * 2)}px`;
     }
 
+    // Get the tutorial content element and its width
+    const content = step.querySelector('.tutorial-content');
+    const contentWidth = content ? content.offsetWidth : 400; // Default to 400 if not found
+
+    // Calculate left position ensuring the content stays within viewport
+    let leftPos = rect.left + (rect.width / 2);
+    const minLeft = contentWidth / 2;
+    const maxLeft = windowWidth - (contentWidth / 2);
+
+    // Constrain the position within viewport bounds
+    leftPos = Math.max(minLeft, Math.min(maxLeft, leftPos));
+
     step.style.position = 'fixed';
     step.style.top = `${rect.bottom + 20}px`;
-    step.style.left = `${rect.left + (rect.width / 2)}px`;
+    step.style.left = `${leftPos}px`;
     step.style.transform = 'translateX(-50%)';
 
     element.classList.add('tutorial-highlight');
@@ -504,7 +553,7 @@ function nextStep(steps) {
         steps[currentStep].classList.add('d-none');
         removeHighlight();
 
-        if (currentStep === 4) {
+        if (currentStep === 5) {    
             showNotificationTutorial();
             return;
         }
@@ -952,4 +1001,97 @@ function showFinalStep() {
         initializeTutorial();
     });
 }
+
+function initializePageTutorial(pageName) {
+    const pageSteps = {
+        'friends': [
+            {
+                selector: '#friendSearch',
+                title: 'Find Friends',
+                content: 'Search for users by username or email to add them as friends.'
+            },
+            {
+                selector: '#pendingRequests',
+                title: 'Friend Requests',
+                content: 'View and manage incoming friend requests here.'
+            },
+            {
+                selector: '#friendsList',
+                title: 'Friends List',
+                content: 'See all your friends and manage your connections.'
+            }
+        ],
+        'chat': [
+            {
+                selector: '#chatList',
+                title: 'Chat List',
+                content: 'All your conversations appear here. Click on any chat to open it.'
+            },
+            {
+                selector: '#newChatButton',
+                title: 'Start New Chat',
+                content: 'Create a new private chat or group conversation.'
+            },
+            {
+                selector: '#messageInput',
+                title: 'Send Messages',
+                content: 'Type your message here and press Enter or click Send.'
+            }
+        ]
+        // Add more page-specific tutorials as needed
+    };
+
+    if (pageSteps[pageName]) {
+        showPageTutorial(pageSteps[pageName]);
+    }
+}
+
+function showPageTutorial(steps) {
+    let currentStep = 0;
+
+    function showStep(index) {
+        const step = steps[index];
+        const element = document.querySelector(step.selector);
+        
+        if (!element) return;
+
+        // Create and position tooltip
+        const tooltip = createTooltip(step.title, step.content);
+        positionTooltipNearElement(tooltip, element);
+
+        // Add navigation controls
+        addStepNavigation(index, steps.length);
+    }
+
+    function createTooltip(title, content) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tutorial-tooltip';
+        tooltip.innerHTML = `
+            <div class="tutorial-content">
+                <span class="step-indicator">${currentStep + 1}/${steps.length}</span>
+                <h3>${title}</h3>
+                <p>${content}</p>
+            </div>
+        `;
+        document.body.appendChild(tooltip);
+        return tooltip;
+    }
+
+    // Start with first step
+    showStep(0);
+}
+
+// Add event listener for tutorial restart button
+document.getElementById('start-tutorial')?.addEventListener('click', function() {
+    const currentPage = window.location.pathname.split('/')[1].toLowerCase();
+    if (currentPage === 'friends' || currentPage === 'chat') {
+        initializePageTutorial(currentPage);
+    } else {
+        const tutorialOverlay = document.getElementById('tutorial-overlay');
+        if (tutorialOverlay) {
+            tutorialOverlay.classList.remove('d-none');
+            initializeTutorial();
+        }
+    }
+});
 </script>
