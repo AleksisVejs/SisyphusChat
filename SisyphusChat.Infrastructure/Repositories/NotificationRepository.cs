@@ -137,5 +137,19 @@ namespace SisyphusChat.Infrastructure.Repositories
             return context.SaveChangesAsync();
         }
 
+        public async Task MarkAllAsReadAsync(string userId)
+        {
+            var unreadNotifications = await context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ToListAsync();
+
+            foreach (var notification in unreadNotifications)
+            {
+                notification.IsRead = true;
+            }
+
+            await context.SaveChangesAsync();
+        }
+
     }
 }
