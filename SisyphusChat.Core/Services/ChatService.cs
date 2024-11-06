@@ -132,6 +132,11 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
 
         var chatEntity = await unitOfWork.ChatRepository.GetByIdAsync(id);
 
+        // Ensure messages are ordered and status is loaded
+        chatEntity.Messages = chatEntity.Messages
+            .OrderBy(m => m.TimeCreated)
+            .ToList();
+
         return mapper.Map<ChatModel>(chatEntity);
     }
 

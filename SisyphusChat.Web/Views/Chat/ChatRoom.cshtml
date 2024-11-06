@@ -180,6 +180,13 @@
                     {
                         <a href="javascript:void(0);" onclick="openReportModal('@message.Id')" class="text-red-600 hover:underline">Report</a>
                     }
+
+                    @if (message.Sender.Id == Model.UserViewModel.CurrentUser.Id)
+                    {
+                        <div class="message-status status-@message.Status.ToString().ToLower()">
+                            @message.Status.ToString()
+                        </div>
+                    }
                 </div>
             }
         </div>
@@ -347,6 +354,20 @@
 
                 document.querySelector(".chat-messages").appendChild(messageDiv);
                 scrollToBottom();
+
+                // Add status indicator for sent messages
+                if (user === currentUser) {
+                    const statusDiv = document.createElement("div");
+                    statusDiv.classList.add("message-status", "status-sent");
+                    statusDiv.textContent = "Sent";
+                    messageDiv.appendChild(statusDiv);
+                }
+
+                // If this is a received message, mark it as delivered
+                if (user !== currentUser) {
+                    connection.invoke("MarkMessageAsDelivered", messageId)
+                        .catch(err => console.error("Error marking message as delivered:", err));
+                }
             } else {
                 const errorContainer = document.getElementById("errorMessage");
                 const errorMessageText = document.getElementById("errorMessageText");
@@ -362,6 +383,9 @@
                 await connection.start();
                 console.log("SignalR Connected.");
                 await connection.invoke("JoinChat", chatId);
+                
+                // Setup message observer after connection is established
+                setupMessageObserver();
             } catch (err) {
                 console.error("SignalR Connection Error: ", err);
                 setTimeout(() => startConnection(), 5000);
@@ -663,6 +687,74 @@
 
         // Call this when the page loads
         document.addEventListener("DOMContentLoaded", setupMessageInput);
+
+        connection.on("MessageStatusUpdated", (messageId, status) => {
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageElement) {
+                const statusIndicator = messageElement.querySelector('.message-status');
+                if (statusIndicator) {
+                    statusIndicator.textContent = status;
+                    statusIndicator.className = `message-status status-${status.toLowerCase()}`;
+                }
+            }
+        });
+
+        // Modify the setupMessageObserver function to check connection state
+        function setupMessageObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const messageElement = entry.target;
+                        const messageId = messageElement.dataset.messageId;
+                        if (messageId && messageElement.classList.contains('received')) {
+                            // Check connection state before invoking
+                            if (connection.state === signalR.HubConnectionState.Connected) {
+                                connection.invoke("MarkMessageAsSeen", messageId)
+                                    .catch(err => console.error("Error marking message as seen:", err));
+                            }
+                        }
+                    }
+                });
+            }, { threshold: 1.0 });
+
+            // Observe all received messages
+            document.querySelectorAll('.message.received').forEach(message => {
+                observer.observe(message);
+            });
+        }
+
+        // Move the observer setup to after connection is established
+        async function startConnection() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+                await connection.invoke("JoinChat", chatId);
+                
+                // Setup message observer after connection is established
+                setupMessageObserver();
+            } catch (err) {
+                console.error("SignalR Connection Error: ", err);
+                setTimeout(() => startConnection(), 5000);
+            }
+        }
+
+        // Remove the DOMContentLoaded event listener for setupMessageObserver
+        // and instead call it after connection is established
+
+        // Also add reconnection handling
+        connection.onreconnected(async () => {
+            console.log("SignalR Reconnected.");
+            await connection.invoke("JoinChat", chatId);
+            setupMessageObserver(); // Re-setup observer after reconnection
+        });
+
+        connection.onreconnecting(() => {
+            console.log("SignalR Reconnecting...");
+        });
+
+        connection.onclose(() => {
+            console.log("SignalR Connection Closed.");
+        });
     </script>
 }
 
@@ -948,5 +1040,43 @@ main[b-fefn0adsrq] {
 #reportModal .bg-white,
 #chatReportModal .bg-white {
     animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Add to your existing styles */
+.message-status {
+    font-size: 0.7rem;
+    margin-top: 4px;
+    text-align: right;
+    opacity: 0.7;
+}
+
+.status-sent {
+    color: #8c8c8c;
+}
+
+.status-delivered {
+    color: #2196f3;
+}
+
+.status-read {
+    color: #4caf50;
+}
+
+.message-status::before {
+    font-family: "Font Awesome 5 Free";
+    margin-right: 4px;
+}
+
+.status-sent::before {
+    content: "\f00c";  /* checkmark */
+}
+
+.status-delivered::before {
+    content: "\f560";  /* double checkmark */
+}
+
+.status-read::before {
+    content: "\f560";  /* double checkmark in blue */
+    color: #2196f3;
 }
 </style>

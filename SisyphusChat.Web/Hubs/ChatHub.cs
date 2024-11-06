@@ -54,6 +54,7 @@ public class ChatHub(
             SenderId = currentUserModel.Id,
             TimeCreated = DateTime.Now,
             LastUpdated = DateTime.Now,
+            Status = MessageStatus.Sent
         };
 
         await messageService.CreateAsync(messageModel);
@@ -149,6 +150,36 @@ public class ChatHub(
         {
             await Clients.Caller.SendAsync("ReceiveError", "Failed to edit message.");
             throw;
+        }
+    }
+
+    public async Task MarkMessageAsDelivered(string messageId)
+    {
+        var message = await messageService.GetByIdAsync(messageId);
+        if (message != null && message.Status == MessageStatus.Sent)
+        {
+            message.Status = MessageStatus.Delivered;
+            await messageService.UpdateAsync(message);
+            await Clients.Group(message.ChatId).SendAsync("MessageStatusUpdated", messageId, "Delivered");
+        }
+    }
+
+    public async Task MarkMessageAsSeen(string messageId)
+    {
+        try 
+        {
+            var message = await messageService.GetByIdAsync(messageId);
+            if (message != null && message.Status != MessageStatus.Read)
+            {
+                message.Status = MessageStatus.Read;
+                await messageService.UpdateAsync(message);
+                await Clients.Group(message.ChatId).SendAsync("MessageStatusUpdated", messageId, "Read");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error marking message as seen: {MessageId}", messageId);
+            // Don't rethrow - we don't want to break the client connection for this
         }
     }
 }

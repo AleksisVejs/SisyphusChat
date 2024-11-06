@@ -40,21 +40,14 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 
     public async Task<Chat> GetByIdAsync(string id)
     {
-        var chat = await context.Chats
+        return await context.Chats
             .Include(c => c.ChatUsers)
-            .ThenInclude(m => m.User)
-            .Include(c => c.Owner)
+                .ThenInclude(cu => cu.User)
             .Include(c => c.Messages
-            .OrderBy(m => m.TimeCreated))
-            .ThenInclude(m => m.Sender)
-            .FirstOrDefaultAsync(g => g.Id == id);
-
-        if (chat == null)
-        {
-            throw new EntityNotFoundException("Entity not found");
-        }
-
-        return chat;
+                .OrderBy(m => m.TimeCreated))
+                .ThenInclude(m => m.Sender)
+            .FirstOrDefaultAsync(c => c.Id == id)
+            ?? throw new EntityNotFoundException($"Chat with ID {id} not found");
     }
 
     public async Task DeleteByIdAsync(string id)
