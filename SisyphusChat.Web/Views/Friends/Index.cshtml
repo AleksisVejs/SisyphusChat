@@ -269,7 +269,6 @@
         border-color: rgba(140, 119, 208, 0.2);
     }
 
-    /* Keep existing styles from the original Friends/Index.cshtml */
     .friends-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -314,6 +313,8 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
+        max-height: 300px;
+        overflow-y: auto;
     }
 
     .request-card {
@@ -371,6 +372,8 @@
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
         padding: 20px 0;
+        max-height: calc(100vh - 550px);
+        overflow-y: auto;
     }
 
     .friend-card {
@@ -517,5 +520,27 @@
     .add-friend-button:active {
         transform: translateY(-1px);
         box-shadow: 0 4px 15px rgba(140, 119, 208, 0.2);
+    }
+
+    .friends-list::-webkit-scrollbar,
+    .request-list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .friends-list::-webkit-scrollbar-track,
+    .request-list::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+    }
+
+    .friends-list::-webkit-scrollbar-thumb,
+    .request-list::-webkit-scrollbar-thumb {
+        background: rgba(140, 119, 208, 0.3);
+        border-radius: 4px;
+    }
+
+    .friends-list::-webkit-scrollbar-thumb:hover,
+    .request-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(140, 119, 208, 0.5);
     }
 </style>
