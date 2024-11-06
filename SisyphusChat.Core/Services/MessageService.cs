@@ -21,11 +21,14 @@ namespace SisyphusChat.Core.Services
         {
             var message = await unitOfWork.MessageRepository.GetByIdAsync(model.Id);
 
-            message.Content = model.Content;
-            message.LastUpdated = model.LastUpdated;
-
-            await unitOfWork.MessageRepository.UpdateAsync(message);
-            await unitOfWork.SaveAsync();
+            if (message != null)
+            {
+                message.Status = model.Status;
+                message.LastUpdated = DateTime.UtcNow;
+                
+                await unitOfWork.MessageRepository.UpdateAsync(message);
+                await unitOfWork.SaveAsync();
+            }
         }
 
         public async Task<ICollection<MessageModel>> GetAllAsync()
