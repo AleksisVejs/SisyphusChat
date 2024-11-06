@@ -20,6 +20,8 @@ namespace SisyphusChat.Core.Models
         
         public bool IsReported { get; set; }
 
+        public bool IsEdited { get; set; }
+
         public DateTime TimeCreated { get; set; }
 
         public DateTime LastUpdated { get; set; }

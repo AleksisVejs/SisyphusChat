@@ -158,13 +158,9 @@
                     </div>
                     <p class="message-content">@message.Content</p>
                     <span class="time">
-                        @if (message.LastUpdated == DateTime.MinValue || message.LastUpdated == message.TimeCreated)
+                        @message.TimeCreated.ToString("dd/MM/yyyy', ' HH:mm")
+                        @if (message.IsEdited)
                         {
-                            @message.TimeCreated.ToString("dd/MM/yyyy', ' HH:mm")
-                        }
-                        else
-                        {
-                            @message.LastUpdated.ToString("dd/MM/yyyy', ' HH:mm")
                             <span class="edited-indicator">(edited)</span>
                         }
                     </span>
@@ -358,7 +354,7 @@
                     reportLink.textContent = "Report";
                     messageDiv.appendChild(reportLink);
                 }
-                
+
                 document.querySelector(".chat-messages").appendChild(messageDiv);
                 scrollToBottom();
 
@@ -577,14 +573,14 @@
         }
 
         // Add MessageEdited handler
-        connection.on("MessageEdited", (messageId, newContent, lastUpdated) => {
+        connection.on("MessageEdited", (messageId, newContent, lastUpdated, isEdited) => {
             const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
             if (messageDiv) {
                 const messageContent = messageDiv.querySelector('.message-content');
                 const timeSpan = messageDiv.querySelector('.time');
                 
                 messageContent.textContent = newContent;
-                timeSpan.innerHTML = `${new Date(lastUpdated).toLocaleString()} <span class="edited-indicator">(edited)</span>`;
+                timeSpan.innerHTML = `${new Date(lastUpdated).toLocaleString()} ${isEdited ? '<span class="edited-indicator">(edited)</span>' : ''}`;
             }
         });
 

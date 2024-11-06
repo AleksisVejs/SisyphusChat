@@ -26,6 +26,7 @@ namespace SisyphusChat.Core.Services
                 message.Content = model.Content;    
                 message.Status = model.Status;
                 message.LastUpdated = DateTime.UtcNow;
+                message.IsEdited = model.IsEdited;  
                 
                 await unitOfWork.MessageRepository.UpdateAsync(message);
                 await unitOfWork.SaveAsync();

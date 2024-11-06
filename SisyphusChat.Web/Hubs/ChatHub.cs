@@ -133,13 +133,15 @@ public class ChatHub(
 
             message.Content = newContent;
             message.LastUpdated = DateTime.UtcNow;
+            message.IsEdited = true;
 
             await messageService.UpdateAsync(message);
 
             await Clients.Group(chatId).SendAsync("MessageEdited", 
                 messageId, 
                 newContent, 
-                message.LastUpdated.ToString("o"));
+                message.LastUpdated.ToString("o"),
+                message.IsEdited);
         }
         catch (Exception ex)
         {
