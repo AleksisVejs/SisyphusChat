@@ -148,14 +148,91 @@
 </body>
 
 <style scoped>
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto !important;
+    }
+
     .form-container {
         max-width: 800px;
         margin: 2rem auto;
         padding: 2rem;
-        border-radius: 24px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        background: rgba(var(--bg-color-rgb), 0.5);
         backdrop-filter: blur(10px);
+        border-radius: 24px;
+        border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        height: auto;
+        min-height: calc(100vh - 4rem);
+    }
+
+    .user-list {
+        max-height: 250px;
+        overflow-y: auto;
+        border-radius: 16px;
+        background: rgba(var(--bg-color-rgb), 0.2);
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+    }
+
+    /* Custom scrollbar for user lists */
+    .user-list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .user-list::-webkit-scrollbar-track {
+        background: rgba(var(--bg-color-rgb), 0.1);
+        border-radius: 10px;
+    }
+
+    .user-list::-webkit-scrollbar-thumb {
+        background: rgba(var(--accent-color-rgb), 0.3);
+        border-radius: 10px;
+    }
+
+    .user-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(var(--accent-color-rgb), 0.5);
+    }
+
+    hr {
+        margin: 1.5rem 0;
+        border: none;
+        border-top: 1px solid rgba(var(--text-color-rgb), 0.1);
+    }
+
+    .button-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        body {
+            height: auto;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            margin: 1rem;
+            padding: 1.5rem;
+            min-height: auto;
+        }
+
+        .centered-heading {
+            font-size: 2rem;
+        }
+
+        .button-container {
+            flex-direction: column;
+        }
+
+        .button-container button {
+            width: 100%;
+        }
     }
 
     .centered-heading {
@@ -170,7 +247,7 @@
     }
 
     .form-group {
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         position: relative;
     }
 
@@ -257,6 +334,7 @@
         align-items: center;
         gap: 1.25rem;
         flex: 1;
+        min-width: 0;
     }
 
     .user-avatar {
@@ -278,12 +356,16 @@
         display: flex;
         flex-direction: column;
         gap: 0.35rem;
+        flex: 1;
     }
 
     .user-name {
         font-weight: 600;
         color: var(--text-color);
         font-size: 1.1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .user-status {
@@ -292,6 +374,9 @@
         border-radius: 20px;
         display: inline-block;
         font-weight: 500;
+        text-align: center;
+        flex-shrink: 0;
+        max-width: 100px;
     }
 
     .user-status.online {
