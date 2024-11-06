@@ -53,7 +53,6 @@ public class ChatHub(
             Content = message,
             SenderId = currentUserModel.Id,
             TimeCreated = DateTime.Now,
-            LastUpdated = DateTime.Now,
         };
 
         await messageService.CreateAsync(messageModel);
@@ -148,7 +147,7 @@ public class ChatHub(
         catch (Exception ex)
         {
             await Clients.Caller.SendAsync("ReceiveError", "Failed to edit message.");
-            throw;
+            logger.LogError(ex, "Error editing message");
         }
     }
 }

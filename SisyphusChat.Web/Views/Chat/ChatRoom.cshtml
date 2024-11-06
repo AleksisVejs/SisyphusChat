@@ -288,7 +288,7 @@
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
                 messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
-                messageDiv.dataset.messageId = messageId;
+                messageDiv.setAttribute("data-message-id", messageId);
 
                 // Create message header div with flex layout
                 const messageHeader = document.createElement("div");
@@ -463,39 +463,75 @@
 
         function startEditMessage(button) {
             const messageDiv = button.closest('.message');
+            if (!messageDiv) {
+                console.error("Could not find message div");
+                return;
+            }
+            
+            const messageId = messageDiv.getAttribute("data-message-id");
+            if (!messageId) {
+                console.error("No message ID found");
+                return;
+            }
+
+            // Get the message content before setting up edit mode
             const messageContent = messageDiv.querySelector('.message-content');
-            currentEditMessageId = messageDiv.dataset.messageId;
+            if (!messageContent) {
+                console.error("Could not find message content");
+                return;
+            }
+
+            // Store both the ID and the original content
+            currentEditMessageId = messageId;
             originalMessage = messageContent.textContent;
 
             const editForm = document.getElementById('editMessageForm');
             const editInput = document.getElementById('editMessageInput');
             
+            // Set up edit form
             editInput.value = originalMessage;
             editForm.classList.remove('d-none');
+            
+            // Move the edit form after the message content
             messageContent.parentNode.insertBefore(editForm, messageContent.nextSibling);
             messageContent.style.display = 'none';
             editInput.focus();
+
+            // Add data attribute to track which message is being edited
+            editForm.setAttribute('data-editing-message-id', messageId);
         }
 
         function saveEditMessage() {
+            const editForm = document.getElementById('editMessageForm');
             const editInput = document.getElementById('editMessageInput');
+            const messageId = editForm.getAttribute('data-editing-message-id');
             const newContent = editInput.value.trim();
+            
+            if (!messageId) {
+                console.error("No message ID found for editing");
+                return;
+            }
             
             if (newContent === '' || newContent === originalMessage) {
                 cancelEditMessage();
                 return;
             }
 
-            try {
-                connection.invoke("EditMessage", currentEditMessageId, newContent, chatId);
-            } catch (err) {
-                console.error("Error editing message:", err);
-                const errorContainer = document.getElementById("errorMessage");
-                errorContainer.textContent = "Failed to edit message";
-                errorContainer.classList.remove("d-none");
-            }
-
-            cancelEditMessage();
+            connection.invoke("EditMessage", messageId, newContent, chatId)
+                .then(() => {
+                    cancelEditMessage();
+                })
+                .catch(err => {
+                    console.error("Error editing message:", err);
+                    const errorContainer = document.getElementById("errorMessage");
+                    const errorMessageText = document.getElementById("errorMessageText");
+                    errorMessageText.textContent = "Failed to edit message";
+                    errorContainer.classList.remove("d-none");
+                    
+                    setTimeout(() => {
+                        errorContainer.classList.add("d-none");
+                    }, 5000);
+                });
         }
 
         function cancelEditMessage() {
