@@ -34,32 +34,41 @@ namespace SisyphusChat.Infrastructure.Repositories
 
         public async Task<List<Notification>> GetNotificationsByUserId(string userId)
         {
-            // Get all notifications for the user
+            // Get all notifications for the user with related data
             var notifications = await context.Notifications
-                .Where(n => n.UserId == userId)
+                .Include(n => n.User)
+                .Where(n => n.UserId == userId && !n.IsDeleted)
+                .OrderByDescending(n => n.TimeCreated)
                 .ToListAsync();
 
-            // Filter out direct message notifications from non-friends
             var filteredNotifications = new List<Notification>();
             
             foreach (var notification in notifications)
             {
-                // Always include non-message notifications and group messages
-                if (notification.Type != NotificationType.Message || notification.Message.StartsWith("["))
+                // Always include admin messages and group messages
+                if (notification.Type == NotificationType.AdminMessage || 
+                    notification.Type == NotificationType.FriendRequest ||
+                    (notification.Type == NotificationType.Message && notification.Message.StartsWith("[")))
                 {
                     filteredNotifications.Add(notification);
                     continue;
                 }
 
                 // For direct messages, check if users are friends
-                var friendship1 = await context.Friends
-                    .FirstOrDefaultAsync(f => 
-                        (f.ReqSenderId == userId && f.ReqReceiverId == notification.SenderUsername) || 
-                        (f.ReqReceiverId == userId && f.ReqSenderId == notification.SenderUsername));
-
-                if (friendship1 != null && friendship1.IsAccepted)
+                var sender = await context.Users
+                    .FirstOrDefaultAsync(u => u.UserName == notification.SenderUsername);
+                    
+                if (sender != null)
                 {
-                    filteredNotifications.Add(notification);
+                    var areFriends = await context.Friends
+                        .AnyAsync(f => 
+                            (f.ReqSenderId == userId && f.ReqReceiverId == sender.Id && f.IsAccepted) ||
+                            (f.ReqReceiverId == userId && f.ReqSenderId == sender.Id && f.IsAccepted));
+
+                    if (areFriends)
+                    {
+                        filteredNotifications.Add(notification);
+                    }
                 }
             }
 

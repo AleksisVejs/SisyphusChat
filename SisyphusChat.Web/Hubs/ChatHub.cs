@@ -97,21 +97,17 @@ public class ChatHub(
                         Id = Guid.NewGuid().ToString(),
                         UserId = member.UserId,
                         SenderUsername = currentUserModel.UserName,
-                        Message = chat.Type == ChatType.Group ? $"[{chat.Name}] {message}" : message,
+                        Message = chat.Type == ChatType.Group ? 
+                            $"[{chat.Name}] {message}" : message,
                         TimeCreated = DateTime.UtcNow,
                         IsRead = false,
                         Type = NotificationType.Message,
                         RelatedEntityId = chatId
                     };
 
-                    logger.LogInformation($"Attempting to save notification: {notification.Id} to database");
                     await notificationService.CreateAsync(notification);
-                    logger.LogInformation($"✅ Successfully saved notification {notification.Id} to database");
-
-                    logger.LogInformation($"Attempting to send notification to user {member.UserId}");
                     await notificationHubContext.Clients.User(member.UserId)
                         .SendAsync("ReceiveNotification", notification);
-                    logger.LogInformation($"✅ Successfully sent notification to user {member.UserId}");
                 }
             }
             catch (Exception ex)
