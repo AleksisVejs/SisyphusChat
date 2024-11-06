@@ -408,11 +408,12 @@ p {
 }
 
 .notification-time {
-  color: #adb5bd; /* Lighter color for notification time */
+  color: var(--text-color); 
   font-size: 0.85rem; /* Smaller font size for time */
 }
 
 .notification-message {
+  color: var(--text-color);
   margin: 0;
   flex-grow: 1;
   overflow-wrap: break-word; /* Allow long words to break */
@@ -443,7 +444,7 @@ p {
 
 /* Notification Container */
 .notification-menu {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--notification-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);

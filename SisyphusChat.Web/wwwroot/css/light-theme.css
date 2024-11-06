@@ -14,6 +14,7 @@
   --text-color-rgb: 51, 51, 51 !important;
   --accent-color-rgb: 140, 119, 208 !important;
   --border-color: rgba(0, 0, 0, 0.1) !important; 
+  --notification-bg: rgba(255, 255, 255, 0.61) !important;
 }
 
 body {
@@ -448,14 +449,6 @@ a:focus {
 
 .notification-sender {
     color: #1a1a1a;
-}
-
-.notification-time {
-    color: #65676b;
-}
-
-.notification-message {
-    color: #4a5568;
 }
 
 .mark-read {
