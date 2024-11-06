@@ -65,20 +65,22 @@ button#theme-switcher {
 /* Chat */
 #chatPageContainer {
   display: flex;
-  height: calc(100vh - 75px); /* Adjust for navbar height */
+  height: calc(100vh - 75px);
   width: 100vw;
   gap: 1rem;
+  overflow: hidden;
 }
 
 #sidebar {
   width: 300px;
-  height: calc(100% - 2rem); /* Account for margins */
+  height: calc(100vh - 107px);
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
   border-radius: 12px;
   margin: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 #chatContainer {
@@ -94,6 +96,8 @@ button#theme-switcher {
 
 .user-item {
   list-style-type: none;
+  flex-shrink: 0;
+  min-height: 60px;
 }
 
 .user-item a {
@@ -109,7 +113,6 @@ button#theme-switcher {
 }
 
 .user-item a:hover {
-  transform: scale(1.02); /* Slight scale effect on hover */
   text-decoration: none;
 }
 
@@ -147,6 +150,10 @@ button#theme-switcher {
 .search-container {
   padding: 0.5rem;
   border-radius: 10px;
+  background: inherit;
+  z-index: 1;
+  flex-shrink: 0;
+  margin-bottom: 1rem;
 }
 
 .search-input {
@@ -254,7 +261,32 @@ button#theme-switcher {
 }
 
 #chatList {
-  padding-left: 0 !important;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: scroll !important;
+  max-height: calc(100vh - 250px);
+  min-height: 0;
+}
+
+/* Webkit scrollbar styles (Chrome, Safari, Edge) */
+#chatList::-webkit-scrollbar {
+  width: 4px !important;
+  display: block !important;
+}
+
+#chatList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chatList::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.3);
+  border-radius: 4px;
+}
+
+#chatList:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 119, 208, 0.5);
 }
 
 p {
