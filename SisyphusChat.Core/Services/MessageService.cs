@@ -23,6 +23,7 @@ namespace SisyphusChat.Core.Services
 
             if (message != null)
             {
+                message.Content = model.Content;    
                 message.Status = model.Status;
                 message.LastUpdated = DateTime.UtcNow;
                 
