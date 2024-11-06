@@ -248,6 +248,9 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .dashboard-header {
@@ -449,7 +452,9 @@
     backdrop-filter: blur(10px);
     border-radius: 16px;
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
 .users-table {
@@ -614,6 +619,8 @@
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     padding: 0.5rem;
+    z-index: 9999;
+    position: absolute;
 }
 
 .dropdown-item {
@@ -737,6 +744,56 @@
 .bg-secondary {
     background: rgba(var(--text-color-rgb), 0.2) !important;
     color: var(--text-color) !important;
+}
+
+/* Add/modify these styles */
+.dropdown {
+    position: static;
+}
+
+.dropdown-menu {
+    background: rgba(var(--bg-color-rgb), 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    z-index: 9999;
+    position: absolute;
+}
+
+.users-table-container {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
+
+/* Add this new style */
+.user-row {
+    position: relative;
+}
+
+/* Add custom scrollbar styling */
+.admin-dashboard::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-dashboard::-webkit-scrollbar-track {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    border-radius: 4px;
+}
+
+.admin-dashboard::-webkit-scrollbar-thumb {
+    background: rgba(var(--accent-color-rgb), 0.3);
+    border-radius: 4px;
+}
+
+.admin-dashboard::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--accent-color-rgb), 0.5);
 }
 </style>
 
