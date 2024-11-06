@@ -81,5 +81,12 @@ namespace SisyphusChat.Core.Services
             await unitOfWork.NotificationRepository.MarkAsRead(notificationId);
             await unitOfWork.SaveAsync();
         }
+
+        public async Task MarkAllAsReadAsync(string userId)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(userId);
+            await unitOfWork.NotificationRepository.MarkAllAsReadAsync(userId);
+            await unitOfWork.SaveAsync();
+        }
     }
 }

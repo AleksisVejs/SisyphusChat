@@ -12,5 +12,6 @@ namespace SisyphusChat.Core.Interfaces
         Task<List<NotificationModel>> GetNotificationsByUserId(string userId);
         Task<List<NotificationModel>> GetUnreadNotificationsByUserId(string userId);
         Task MarkAsRead(string notificationId);
+        Task MarkAllAsReadAsync(string userId);
     }
 }

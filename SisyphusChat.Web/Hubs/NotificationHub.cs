@@ -120,12 +120,7 @@ public class NotificationHub : Hub
                 return;
             }
 
-            var notifications = await _notificationService.GetUnreadNotificationsByUserId(currentUser.Id);
-            foreach (var notification in notifications)
-            {
-                await _notificationService.MarkAsRead(notification.Id);
-            }
-
+            await _notificationService.MarkAllAsReadAsync(currentUser.Id);
             await Clients.User(currentUser.Id).SendAsync("NotificationsUpdated");
             _logger.LogInformation("✅ Successfully marked all notifications as read");
         }

@@ -96,25 +96,25 @@ namespace SisyphusChat.Infrastructure.Data
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
             
-            // Ensure migrations are applied
+            
             await context.Database.MigrateAsync();
             
-            // Check if there are any users
+            
             if (await userManager.Users.AnyAsync())
             {
                 logger.LogInformation("Database already seeded");
-                return; // DB has been seeded
+                return;
             }
 
             logger.LogInformation("Starting database seeding...");
 
-            // Create admin users
+            
             var adminUsers = new[]
             {
                 new User
                 {
-                    UserName = "admin1@example.com",
-                    Email = "admin1@example.com",
+                    UserName = "admin.jones",
+                    Email = "admin.jones@example.com",
                     EmailConfirmed = true,
                     IsAdmin = true,
                     TimeCreated = DateTime.UtcNow,
@@ -122,8 +122,8 @@ namespace SisyphusChat.Infrastructure.Data
                 },
                 new User
                 {
-                    UserName = "admin2@example.com",
-                    Email = "admin2@example.com",
+                    UserName = "admin.smith",
+                    Email = "admin.smith@example.com",
                     EmailConfirmed = true,
                     IsAdmin = true,
                     TimeCreated = DateTime.UtcNow,
@@ -132,37 +132,50 @@ namespace SisyphusChat.Infrastructure.Data
             };
 
             // Create regular users
-            var regularUsers = new[]
+            var regularUsers = new User[]
             {
-                new User
-                {
-                    UserName = "user1@example.com",
-                    Email = "user1@example.com",
-                    EmailConfirmed = true,
-                    TimeCreated = DateTime.UtcNow,
-                    LastUpdated = DateTime.UtcNow
-                },
-                new User
-                {
-                    UserName = "user2@example.com",
-                    Email = "user2@example.com",
-                    EmailConfirmed = true,
-                    TimeCreated = DateTime.UtcNow,
-                    LastUpdated = DateTime.UtcNow
-                },
-                new User
-                {
-                    UserName = "user3@example.com",
-                    Email = "user3@example.com",
-                    EmailConfirmed = true,
-                    TimeCreated = DateTime.UtcNow,
-                    LastUpdated = DateTime.UtcNow
-                }
-            };
+                new User { UserName = "john.doe", Email = "john.doe@example.com" },
+                new User { UserName = "sarah.wilson", Email = "sarah.wilson@example.com" },
+                new User { UserName = "mike.brown", Email = "mike.brown@example.com" },
+                new User { UserName = "emma.davis", Email = "emma.davis@example.com" },
+                new User { UserName = "james.miller", Email = "james.miller@example.com" },
+                new User { UserName = "olivia.taylor", Email = "olivia.taylor@example.com" },
+                new User { UserName = "william.anderson", Email = "william.anderson@example.com" },
+                new User { UserName = "sophia.thomas", Email = "sophia.thomas@example.com" },
+                new User { UserName = "lucas.jackson", Email = "lucas.jackson@example.com" },
+                new User { UserName = "ava.white", Email = "ava.white@example.com" },
+                new User { UserName = "henry.martin", Email = "henry.martin@example.com" },
+                new User { UserName = "mia.thompson", Email = "mia.thompson@example.com" },
+                new User { UserName = "alexander.moore", Email = "alexander.moore@example.com" },
+                new User { UserName = "charlotte.lee", Email = "charlotte.lee@example.com" },
+                new User { UserName = "daniel.clark", Email = "daniel.clark@example.com" },
+                new User { UserName = "amelia.walker", Email = "amelia.walker@example.com" },
+                new User { UserName = "joseph.hall", Email = "joseph.hall@example.com" },
+                new User { UserName = "victoria.green", Email = "victoria.green@example.com" },
+                new User { UserName = "david.baker", Email = "david.baker@example.com" },
+                new User { UserName = "grace.adams", Email = "grace.adams@example.com" },
+                new User { UserName = "christopher.hill", Email = "christopher.hill@example.com" },
+                new User { UserName = "zoe.campbell", Email = "zoe.campbell@example.com" },
+                new User { UserName = "andrew.mitchell", Email = "andrew.mitchell@example.com" },
+                new User { UserName = "natalie.roberts", Email = "natalie.roberts@example.com" },
+                new User { UserName = "ryan.cooper", Email = "ryan.cooper@example.com" },
+                new User { UserName = "hannah.morgan", Email = "hannah.morgan@example.com" },
+                new User { UserName = "justin.phillips", Email = "justin.phillips@example.com" },
+                new User { UserName = "lily.turner", Email = "lily.turner@example.com" },
+                new User { UserName = "kevin.parker", Email = "kevin.parker@example.com" },
+                new User { UserName = "rachel.evans", Email = "rachel.evans@example.com" }
+            }.Select(u => {
+                u.EmailConfirmed = true;
+                u.TimeCreated = DateTime.UtcNow;
+                u.LastUpdated = DateTime.UtcNow;
+                return u;
+            }).ToArray();
 
             const string defaultPassword = "Test123!";
 
-            foreach (var user in adminUsers.Concat(regularUsers))
+            // Create all users
+            var allUsers = adminUsers.Concat(regularUsers).ToList();
+            foreach (var user in allUsers)
             {
                 var result = await userManager.CreateAsync(user, defaultPassword);
                 if (!result.Succeeded)
@@ -170,6 +183,26 @@ namespace SisyphusChat.Infrastructure.Data
                     throw new Exception($"Failed to create user {user.Email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                 }
             }
+
+            var random = new Random();
+            foreach (var user in allUsers)
+            {
+                var otherUsers = allUsers.Where(u => u.Id != user.Id).ToList();
+                var friendCount = Math.Min(20, otherUsers.Count);
+                var friends = otherUsers.OrderBy(x => random.Next()).Take(friendCount);
+
+                foreach (var friend in friends)
+                {
+                    var friendship = new Friend
+                    {
+                        ReqSender = user,
+                        ReqReceiver = friend,
+                        IsAccepted = true
+                    };
+                    context.Friends.Add(friendship);
+                }
+            }
+            await context.SaveChangesAsync();
 
             // Create system deleted user if it doesn't exist
             var deletedUser = await userManager.FindByNameAsync("DELETED_USER");

@@ -11,8 +11,6 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 {
     public async Task AddAsync(Message entity)
     {
-        entity.Id = Guid.NewGuid().ToString();
-        entity.TimeCreated = DateTime.Now;
         entity.Status = MessageStatus.Sent;
 
         await context.Messages.AddAsync(entity);
@@ -26,11 +24,12 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 
     public async Task<Message> GetByIdAsync(string id)
     {
-        var message = await context.Messages.FirstOrDefaultAsync(g => g.Id.ToString() == id);
+        var message = await context.Messages
+            .FirstOrDefaultAsync(m => m.Id == id);
 
         if (message == null)
         {
-            throw new EntityNotFoundException("Entity not found");
+            throw new EntityNotFoundException($"Message with ID {id} not found");
         }
 
         return message;

@@ -9,10 +9,19 @@ function initializeNotifications(connection) {
   setupNotificationFilters();
 
   connection.on("NotificationsUpdated", () => {
+    console.log("Notifications updated");
     updateNotifications();
   });
 
+  connection.on("ReceiveNotification", (notification) => {
+    console.log("Received notification:", notification);
+    if (notification) {
+      updateNotificationUI([notification]);
+    }
+  });
+
   connection.on("ReceiveNotifications", (notifications) => {
+    console.log("Received notifications:", notifications);
     if (Array.isArray(notifications)) {
       updateNotificationUI(notifications);
     } else {
@@ -21,6 +30,7 @@ function initializeNotifications(connection) {
     }
   });
 
+  // Initial fetch
   updateNotifications();
 }
 
@@ -400,7 +410,6 @@ function updateFilterButtonText() {
         <span>${showingUnreadOnly ? "Show Read" : "Hide Read"}</span>
     `;
 }
-
 // Initialize when the page loads
 document.addEventListener("DOMContentLoaded", () => {
   updateFilterButtonText();
