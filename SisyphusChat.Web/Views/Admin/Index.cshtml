@@ -110,7 +110,7 @@
                     <tbody>
                         @foreach (var user in Model.Users.Where(u => !u.IsAdmin))
                         {
-                            <tr class="user-row">
+                            <tr class="user-row" data-user-id="@user.Id">
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
                                 <td>
@@ -159,7 +159,7 @@
                                                 })
                                                 {
                                                     <li>
-                                                        <form asp-action="BanUser" method="post">
+                                                        <form onsubmit="return banUser(this);">
                                                             <input type="hidden" name="userId" value="@user.Id" />
                                                             <input type="hidden" name="duration" value="@duration.Value" />
                                                             <button type="submit" class="dropdown-item">
@@ -173,7 +173,7 @@
                                     }
                                     else
                                     {
-                                        <form asp-action="UnbanUser" method="post" class="d-inline">
+                                        <form onsubmit="return unbanUser(this);" class="d-inline">
                                             <input type="hidden" name="userId" value="@user.Id" />
                                             <button type="submit" class="btn-unban">
                                                 <i class="fas fa-undo"></i> Unban
@@ -891,5 +891,128 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function previewReport(reportType) {
     window.open(`/Admin/PreviewReport?reportType=${reportType}`, '_blank');
+}
+
+// Add this function after the existing JavaScript
+function banUser(form) {
+    const formData = new FormData(form);
+    
+    fetch('/Admin/BanUser', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the user row UI
+            const userId = formData.get('userId');
+            const duration = formData.get('duration');
+            updateUserRowAfterBan(userId, data.banEnd, duration === 'Permanent');
+        } else {
+            alert('Failed to ban user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to ban user');
+    });
+    
+    return false;
+}
+
+function updateUserRowAfterBan(userId, banEnd, isPermanent) {
+    const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+    if (!userRow) return;
+    
+    // Update status badge
+    const statusBadge = userRow.querySelector('.status-badge');
+    statusBadge.classList.remove('active');
+    statusBadge.classList.add('banned');
+    statusBadge.innerHTML = isPermanent ? 
+        '<span>Permanently Banned</span>' : 
+        `<span>Banned until ${new Date(banEnd).toLocaleString()}</span>`;
+    
+    // Replace ban button with unban button
+    const actionCell = userRow.querySelector('td:last-child');
+    actionCell.innerHTML = `
+        <form onsubmit="return unbanUser(this);" class="d-inline">
+            <input type="hidden" name="userId" value="${userId}" />
+            <button type="submit" class="btn-unban">
+                <i class="fas fa-undo"></i> Unban
+            </button>
+        </form>
+    `;
+}
+
+function unbanUser(form) {
+    const formData = new FormData(form);
+    const userId = formData.get('userId');
+    
+    fetch('/Admin/UnbanUser', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateUserRowAfterUnban(userId);
+        } else {
+            alert('Failed to unban user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to unban user');
+    });
+    
+    return false;
+}
+
+function updateUserRowAfterUnban(userId) {
+    const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+    if (!userRow) return;
+    
+    // Update status badge
+    const statusBadge = userRow.querySelector('.status-badge');
+    statusBadge.classList.remove('banned');
+    statusBadge.classList.add('active');
+    statusBadge.innerHTML = '<span>Active</span>';
+    
+    // Replace unban button with ban dropdown
+    const actionCell = userRow.querySelector('td:last-child');
+    actionCell.innerHTML = `
+        <div class="dropdown">
+            <button class="btn-ban dropdown-toggle" type="button" 
+                    id="banDropdown_${userId}" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false">
+                <i class="fas fa-ban"></i> Ban
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                ${getBanDurationOptions(userId)}
+            </ul>
+        </div>
+    `;
+}
+
+function getBanDurationOptions(userId) {
+    const durations = [
+        { Label: "24 Hours", Value: "TwentyFourHours" },
+        { Label: "One Week", Value: "OneWeek" },
+        { Label: "One Month", Value: "OneMonth" },
+        { Label: "Permanent Ban", Value: "Permanent" }
+    ];
+    
+    return durations.map(duration => `
+        <li>
+            <form onsubmit="return banUser(this);">
+                <input type="hidden" name="userId" value="${userId}" />
+                <input type="hidden" name="duration" value="${duration.Value}" />
+                <button type="submit" class="dropdown-item">
+                    ${duration.Label}
+                </button>
+            </form>
+        </li>
+    `).join('');
 }
 </script>

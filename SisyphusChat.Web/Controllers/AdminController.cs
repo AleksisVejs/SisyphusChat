@@ -160,23 +160,14 @@ namespace SisyphusChat.Web.Controllers
             var admin = await _userManager.GetUserAsync(User);
             if (admin == null || !admin.IsAdmin)
             {
-                return Forbid();
+                return Json(new { success = false, message = "Unauthorized" });
             }
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null || user.IsAdmin)
             {
-                return BadRequest("Cannot ban administrators");
+                return Json(new { success = false, message = "Cannot ban administrators" });
             }
-
-            var banMessage = duration switch
-            {
-                BanDuration.TwentyFourHours => "24 hours",
-                BanDuration.OneWeek => "one week",
-                BanDuration.OneMonth => "one month",
-                BanDuration.Permanent => "permanently",
-                _ => throw new ArgumentException("Invalid ban duration")
-            };
 
             var banStart = DateTime.UtcNow;
             DateTime? banEnd = duration switch
@@ -184,7 +175,7 @@ namespace SisyphusChat.Web.Controllers
                 BanDuration.TwentyFourHours => banStart.AddHours(24),
                 BanDuration.OneWeek => banStart.AddDays(7),
                 BanDuration.OneMonth => banStart.AddMonths(1),
-                BanDuration.Permanent => null, // Null indicates permanent ban
+                BanDuration.Permanent => null,
                 _ => throw new ArgumentException("Invalid ban duration")
             };
 
@@ -192,7 +183,7 @@ namespace SisyphusChat.Web.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 UserId = userId,
-                Message = $"Your account has been banned for {banMessage}.",
+                Message = $"Your account has been banned for {duration}.",
                 Type = NotificationType.AdminMessage,
                 TimeCreated = DateTime.UtcNow,
                 IsRead = false,
@@ -208,8 +199,11 @@ namespace SisyphusChat.Web.Controllers
             user.BanEnd = banEnd;
             await _userManager.UpdateAsync(user);
 
-            TempData["SuccessMessage"] = $"User {user.UserName} has been banned for {banMessage}.";
-            return RedirectToAction(nameof(Index));
+            return Json(new { 
+                success = true, 
+                banEnd = banEnd?.ToString("o"),
+                message = $"User {user.UserName} has been banned successfully."
+            });
         }
 
         [HttpPost]
@@ -218,13 +212,13 @@ namespace SisyphusChat.Web.Controllers
             var admin = await _userManager.GetUserAsync(User);
             if (admin == null || !admin.IsAdmin)
             {
-                return Forbid();
+                return Json(new { success = false, message = "Unauthorized" });
             }
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "User not found" });
             }
 
             var unbanNotification = new NotificationModel
@@ -247,8 +241,10 @@ namespace SisyphusChat.Web.Controllers
             user.BanEnd = null;
             await _userManager.UpdateAsync(user);
 
-            TempData["SuccessMessage"] = $"User {user.UserName} has been unbanned.";
-            return RedirectToAction(nameof(Index));
+            return Json(new { 
+                success = true, 
+                message = $"User {user.UserName} has been unbanned successfully."
+            });
         }
 
         [HttpPost]
