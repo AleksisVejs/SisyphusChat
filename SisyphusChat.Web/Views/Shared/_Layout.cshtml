@@ -157,9 +157,17 @@
                     .withAutomaticReconnect()
                     .build();
 
-                connection.on("ReceiveNotification", function(notification) {
+                connection.on("NotificationsUpdated", () => {
+                    console.log("Notifications updated");
+                    updateNotifications();
+                });
+
+                connection.on("ReceiveNotification", (notification) => {
+                    console.log("Received notification:", notification);
                     if (notification) {
-                        updateNotificationUI([notification]);
+                        updateNotificationUI([notification], true);
+                        // Also update the full list in the background
+                        updateNotifications();
                     }
                 });
 

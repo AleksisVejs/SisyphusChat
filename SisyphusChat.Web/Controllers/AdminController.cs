@@ -169,7 +169,7 @@ namespace SisyphusChat.Web.Controllers
                 return Json(new { success = false, message = "Cannot ban administrators" });
             }
 
-            var banStart = DateTime.UtcNow;
+            var banStart = DateTime.Now;
             DateTime? banEnd = duration switch
             {
                 BanDuration.TwentyFourHours => banStart.AddHours(24),
@@ -185,7 +185,7 @@ namespace SisyphusChat.Web.Controllers
                 UserId = userId,
                 Message = $"Your account has been banned for {duration}.",
                 Type = NotificationType.AdminMessage,
-                TimeCreated = DateTime.UtcNow,
+                TimeCreated = DateTime.Now,
                 IsRead = false,
                 RelatedEntityId = userId,
                 SenderUsername = "System"
@@ -229,7 +229,7 @@ namespace SisyphusChat.Web.Controllers
                 UserId = userId,
                 Message = "Your account has been unbanned by an administrator. You can now access the system again.",
                 Type = NotificationType.AdminMessage,
-                TimeCreated = DateTime.UtcNow,
+                TimeCreated = DateTime.Now,
                 IsRead = false,
                 RelatedEntityId = userId,
                 SenderUsername = "System"
