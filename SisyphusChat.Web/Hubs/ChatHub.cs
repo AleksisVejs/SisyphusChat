@@ -108,7 +108,7 @@ public class ChatHub(
 
                     await notificationService.CreateAsync(notification);
                     await notificationHubContext.Clients.User(member.UserId)
-                        .SendAsync("ReceiveNotification", notification);
+                        .SendAsync("NotificationsUpdated", notification);
                 }
             }
             catch (Exception ex)
