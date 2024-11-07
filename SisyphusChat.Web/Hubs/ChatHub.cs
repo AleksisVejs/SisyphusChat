@@ -100,7 +100,7 @@ public class ChatHub(
                         SenderUsername = currentUserModel.UserName,
                         Message = chat.Type == ChatType.Group ? 
                             $"[{chat.Name}] {message}" : message,
-                        TimeCreated = DateTime.UtcNow,
+                        TimeCreated = DateTime.Now,
                         IsRead = false,
                         Type = NotificationType.Message,
                         RelatedEntityId = chatId
