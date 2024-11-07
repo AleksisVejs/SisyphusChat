@@ -199,6 +199,8 @@ namespace SisyphusChat.Web.Controllers
             user.BanEnd = banEnd;
             await _userManager.UpdateAsync(user);
 
+            await _notificationHubContext.Clients.User(userId).SendAsync("UserBanned", duration == BanDuration.Permanent);
+
             return Json(new { 
                 success = true, 
                 banEnd = banEnd?.ToString("o"),

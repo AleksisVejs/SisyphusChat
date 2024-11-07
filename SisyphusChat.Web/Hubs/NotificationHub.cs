@@ -161,5 +161,10 @@ public class NotificationHub : Hub
         }
     }
 
+    public async Task BanUser(string userId, bool isPermanent)
+    {
+        await Clients.User(userId).SendAsync("UserBanned", isPermanent);
+    }
+
     
 }

@@ -17,7 +17,8 @@ namespace SisyphusChat.Web.Middleware
         public async Task InvokeAsync(HttpContext context, UserManager<User> userManager)
         {
             if (context.Request.Path.StartsWithSegments("/Identity/Account/Logout") ||
-                context.Request.Path.StartsWithSegments("/Home/Error"))
+               // context.Request.Path.StartsWithSegments("/Home/Error") ||
+                context.Request.Path.StartsWithSegments("/notificationHub"))
             {
                 await _next(context);
                 return;

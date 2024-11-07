@@ -163,6 +163,14 @@
                     }
                 });
 
+                connection.on("UserBanned", function(isPermanent) {
+                    if (isPermanent) {
+                        window.location.href = '/Home/PermanentlyBanned';
+                    } else {
+                        window.location.href = '/Home/Banned';
+                    }
+                });
+
                 async function startConnection() {
                     try {
                         await connection.start();
