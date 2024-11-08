@@ -1,5 +1,6 @@
 @using SisyphusChat.Infrastructure.Entities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.ComponentModel.DataAnnotations
 @model ChatPageViewModel
 
 @{
@@ -215,9 +216,16 @@
             <div class="mb-4">
                 <label for="Type" class="block text-sm font-medium">Report Type:</label>
                 <select id="reportType" name="type" class="form-select mt-1 block w-full">
-                    @foreach (var reportType in Enum.GetValues(typeof(ReportType)))
+                    @foreach (var reportType in Enum.GetValues(typeof(ReportType)).Cast<ReportType>())
                     {
-                        <option value="@reportType">@reportType</option>
+                        var displayAttribute = reportType.GetType()
+                        .GetField(reportType.ToString())
+                        .GetCustomAttributes(typeof(DisplayAttribute), false)
+                        .FirstOrDefault() as DisplayAttribute;
+
+                        var displayName = displayAttribute != null ? displayAttribute.Name : reportType.ToString();
+
+                        <option value="@reportType">@displayName</option>
                     }
                 </select>
             </div>
@@ -246,9 +254,16 @@
             <div class="mb-4">
                 <label for="reportType" class="block text-sm font-medium">Report Type:</label>
                 <select id="reportChatType" name="type" class="form-select mt-1 block w-full">
-                    @foreach (var reportType in Enum.GetValues(typeof(ReportType)))
+                    @foreach (var reportType in Enum.GetValues(typeof(ReportType)).Cast<ReportType>())
                     {
-                        <option value="@reportType">@reportType</option>
+                        var displayAttribute = reportType.GetType()
+                        .GetField(reportType.ToString())
+                        .GetCustomAttributes(typeof(DisplayAttribute), false)
+                        .FirstOrDefault() as DisplayAttribute;
+
+                        var displayName = displayAttribute != null ? displayAttribute.Name : reportType.ToString();
+
+                        <option value="@reportType">@displayName</option>
                     }
                 </select>
             </div>

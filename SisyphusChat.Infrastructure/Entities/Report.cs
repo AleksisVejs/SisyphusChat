@@ -28,6 +28,5 @@ public class Report : BaseEntity
     [Required]
     public ReportType Type { get; set; }
     
-    [Required]
     public string Reason { get; set; }
 }
