@@ -3,6 +3,7 @@ using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Core.Models;
 using Microsoft.Extensions.Logging;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Core.Services;
 
 namespace SisyphusChat.Web.Hubs;
 
@@ -178,5 +179,26 @@ public class ChatHub(
             logger.LogError(ex, "Error marking message as seen: {MessageId}", messageId);
             // Don't rethrow - we don't want to break the client connection for this
         }
+    }
+
+    public async Task DeleteMessage(string messageId)
+    {
+        var currentUser = await userService.GetCurrentContextUserAsync();
+        var message = await messageService.GetByIdAsync(messageId);
+
+        if (message == null)
+        {
+            logger.LogWarning("Message not found: {MessageId}", messageId);
+            return;
+        }
+
+        if (message.SenderId != currentUser.Id)
+        {
+            logger.LogWarning("User {UserId} attempted to delete a message they did not send: {MessageId}", currentUser.Id, messageId);
+            return;
+        }
+
+        await messageService.DeleteByIdAsync(messageId);
+        await Clients.Group(message.ChatId).SendAsync("MessageDeleted", messageId);
     }
 }
