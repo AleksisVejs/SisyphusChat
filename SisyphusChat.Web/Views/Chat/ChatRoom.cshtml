@@ -171,6 +171,11 @@
                             <button class="edit-message-btn" onclick="startEditMessage(this)">
                                 <i class="fas fa-edit"></i>
                             </button>
+
+                            <!-- Delete Button -->
+                            <button class="delete-message-btn" onclick="deleteMessage('@message.Id')">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     }
                     else
@@ -313,18 +318,13 @@
                 messageHeader.classList.add("message-header");
                 messageHeader.style.display = "flex";
                 messageHeader.style.alignItems = "center";
-                messageHeader.style.gap = "8px";  // Add some spacing between image and name
+                messageHeader.style.gap = "8px";
 
                 // Create and set up profile picture
                 const profileImg = document.createElement("img");
                 profileImg.classList.add("message-profile-pic");
-                if (profilePicture) {
-                    profileImg.src = `data:image/jpeg;base64,${profilePicture}`;
-                    profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
-                } else {
-                    profileImg.src = "/images/default_pfp.jpg";
-                    profileImg.alt = "Default Profile Picture";
-                }
+                profileImg.src = profilePicture ? `data:image/jpeg;base64,${profilePicture}` : "/images/default_pfp.jpg";
+                profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
 
                 // Create sender name span
                 const senderNameSpan = document.createElement("span");
@@ -346,25 +346,34 @@
                 timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
                 messageDiv.appendChild(timestampSpan);
 
-                // Add edit button for own messages
+                // Add edit and delete buttons for own messages
                 if (user === currentUser) {
                     const messageActions = document.createElement("div");
                     messageActions.classList.add("message-actions");
-                    
+
+                    // Edit button
                     const editButton = document.createElement("button");
                     editButton.classList.add("edit-message-btn");
-                    editButton.onclick = function() { startEditMessage(this); };
-                    
+                    editButton.onclick = function () { startEditMessage(this); };
                     const editIcon = document.createElement("i");
                     editIcon.classList.add("fas", "fa-edit");
                     editButton.appendChild(editIcon);
-                    
+
+                    // Delete button
+                    const deleteButton = document.createElement("button");
+                    deleteButton.classList.add("delete-message-btn");
+                    deleteButton.onclick = function () { deleteMessage(messageId); };
+                    const deleteIcon = document.createElement("i");
+                    deleteIcon.classList.add("fas", "fa-trash");
+                    deleteButton.appendChild(deleteIcon);
+
                     messageActions.appendChild(editButton);
+                    messageActions.appendChild(deleteButton);
                     messageDiv.appendChild(messageActions);
                 } else {
                     const reportLink = document.createElement("a");
                     reportLink.href = "javascript:void(0);";
-                    reportLink.onclick = function() { openReportModal(messageId); };
+                    reportLink.onclick = function () { openReportModal(messageId); };
                     reportLink.classList.add("text-red-600", "hover:underline");
                     reportLink.textContent = "Report";
                     messageDiv.appendChild(reportLink);
@@ -395,6 +404,7 @@
                 document.getElementById("sendMessageButton").disabled = true;
             }
         });
+
 
         async function startConnection() {
             try {
@@ -587,6 +597,14 @@
             originalMessage = null;
         }
 
+        function deleteMessage(messageId) {
+            if (confirm("Are you sure you want to delete this message?")) {
+                connection.invoke("DeleteMessage", messageId)
+                    .catch(err => console.error("Failed to delete message:", err));
+            }
+        }
+
+
         // Add MessageEdited handler
         connection.on("MessageEdited", (messageId, newContent, lastUpdated, isEdited) => {
             const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
@@ -628,6 +646,14 @@
                 groupUsers.textContent = updatedMembers.join(', ');
             }
         });
+
+        connection.on("MessageDeleted", (messageId) => {
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageElement) {
+                messageElement.remove();
+            }
+        });
+
 
         // Open and close the modal
         function openReportModal(messageId) {
