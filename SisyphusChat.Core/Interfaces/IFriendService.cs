@@ -1,5 +1,4 @@
 using SisyphusChat.Core.Models;
-using SisyphusChat.Infrastructure.Entities;
 
 
 namespace SisyphusChat.Core.Interfaces

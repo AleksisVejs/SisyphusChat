@@ -5,12 +5,13 @@ using SisyphusChat.Infrastructure.Entities;
 using SisyphusChat.Core.Models;
 using SisyphusChat.Web.Models;
 using SisyphusChat.Infrastructure.Exceptions;
+using SisyphusChat.Core.Services;
 
 
 namespace SisyphusChat.Web.Controllers
 {
     [Authorize]
-    public class ChatController(IChatService chatService, IUserService userService,
+    public class ChatController(IAttachmentService attachmentService, IChatService chatService, IUserService userService,
                                 IFriendService friendService, IReportService reportService) : Controller
     {
         public async Task<IActionResult> Index()
@@ -126,5 +127,38 @@ namespace SisyphusChat.Web.Controllers
             return RedirectToAction("ChatRoom", new { chatId = chat.Id });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadAttachment(IFormFile file, string messageId)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            // Convert file to byte array
+            byte[] fileContent;
+            using (var ms = new MemoryStream())
+            {
+                await file.CopyToAsync(ms);
+                fileContent = ms.ToArray();
+            }
+
+            var attachment = new AttachmentModel
+            {
+                MessageId = messageId,
+                FileName = file.FileName,
+                Content = fileContent
+            };
+
+            await attachmentService.CreateAsync(attachment);
+
+            return Ok(new { success = true });
+        }
+
+        public async Task<IActionResult> DownloadAttachment(string attachmentId)
+        {
+            var attachment = await attachmentService.GetByIdAsync(attachmentId);
+            if (attachment == null) return NotFound();
+
+            return File(attachment.Content, "application/octet-stream", attachment.FileName);
+        }
     }
 }

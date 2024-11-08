@@ -25,5 +25,7 @@ namespace SisyphusChat.Core.Models
         public DateTime TimeCreated { get; set; }
 
         public DateTime LastUpdated { get; set; }
+
+        public ICollection<AttachmentModel> Attachments { get; set; }
     }
 }
