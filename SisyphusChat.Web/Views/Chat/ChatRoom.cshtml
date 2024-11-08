@@ -876,6 +876,8 @@ main[b-fefn0adsrq] {
   right: 0.5rem;
   opacity: 0;
   transition: opacity 0.2s ease;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .message:hover .message-actions {
@@ -1183,5 +1185,30 @@ main[b-fefn0adsrq] {
     opacity: 0.7;
     transform: translateY(0);
     transition: all 0.2s ease;
+}
+
+/* Add these new styles */
+.delete-message-btn {
+  background: rgba(220, 53, 69, 0.1);
+  border: none;
+  padding: 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #dc3545;
+  transition: all 0.2s ease;
+}
+
+.delete-message-btn:hover {
+  background: rgba(220, 53, 69, 0.2);
+  transform: scale(1.05);
+}
+
+/* Optional: Add animation for delete action */
+.delete-message-btn i {
+  transition: transform 0.2s ease;
+}
+
+.delete-message-btn:hover i {
+  transform: rotate(12deg);
 }
 </style>
