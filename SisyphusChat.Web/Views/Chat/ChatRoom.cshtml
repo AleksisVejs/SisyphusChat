@@ -22,7 +22,7 @@
     <div id="sidebar">
         <!-- Search bar with button-->
         <div class="search-container flex items-center gap-2">
-            <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" />
+            <input type="text" id="searchInput" placeholder="Search for users or groups..." class="search-input" autocomplete="off" />
         </div>
         <a href="@Url.Action("Index", "GroupChat")" id="createGroupChatButton" type="button" class="btn btn-primary w-100">
             <i class="fas fa-comments"></i>
@@ -194,14 +194,14 @@
         </div>
         <!-- Add edit message form -->
         <div id="editMessageForm" class="edit-message-form d-none">
-            <input type="text" id="editMessageInput" />
+            <input type="text" id="editMessageInput" autocomplete="off" />
             <div class="edit-actions">
                 <button onclick="saveEditMessage()">Save</button>
                 <button onclick="cancelEditMessage()">Cancel</button>
             </div>
         </div>
         <div class="chat-footer">
-            <input type="text" id="messageInput" placeholder="Type a message..." />
+            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" />
             <button id="sendMessageButton">
                 <i class="fas fa-paper-plane"></i>
             </button>
