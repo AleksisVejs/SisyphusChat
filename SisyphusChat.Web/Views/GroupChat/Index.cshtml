@@ -45,9 +45,9 @@
             <ul id="userList" class="user-list">
                 @foreach (var user in Model.Users.Where(u => !u.IsDeleted && u.UserName != "DELETED_USER"))
                 {
-                    <li class="user-item" onclick="toggleCheckbox(this)">
+                    <li class="user-item">
                         <div class="user-info">
-                            <input type="checkbox" class="user-checkbox" value="@user.UserName" />
+                            <input type="checkbox" class="user-checkbox" value="@user.UserName" onclick="event.stopPropagation();" />
                             <div class="user-avatar">
                                 @if (user.Picture != null && user.Picture.Length > 0)
                                 {
@@ -337,6 +337,14 @@
                 } else {
                     item.style.display = 'none';
                 }
+            });
+        });
+
+        // Add click handler for user items
+        document.querySelectorAll('.user-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const checkbox = this.querySelector('.user-checkbox');
+                checkbox.checked = !checkbox.checked;
             });
         });
     </script>
