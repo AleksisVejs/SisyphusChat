@@ -455,6 +455,8 @@
     overflow: visible;
     position: relative;
     z-index: 1;
+    max-height: calc(100vh - 550px);
+    overflow-y: auto;
 }
 
 .users-table {
@@ -654,7 +656,11 @@
     backdrop-filter: blur(10px);
     border-radius: 16px;
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+    max-height: calc(100vh - 550px);
+    overflow-y: auto;
 }
 
 .reports-table {
@@ -796,6 +802,48 @@
 
 .admin-dashboard::-webkit-scrollbar-thumb:hover {
     background: rgba(var(--accent-color-rgb), 0.5);
+}
+
+/* Update these table container styles */
+.users-table-container, .reports-table-container {
+    background: rgba(var(--bg-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+    max-height: calc(100vh - 550px);
+    overflow-y: auto;
+}
+
+/* Add these new styles for sticky headers */
+.users-table thead tr,
+.reports-table thead tr {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #1a1a1a !important;
+}
+
+.users-table thead th,
+.reports-table thead th {
+    background: #1a1a1a !important;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 1px 0 rgba(var(--text-color-rgb), 0.1);
+}
+
+/* Optional: Add a subtle transition when scrolling */
+.users-table thead th,
+.reports-table thead th {
+    transition: background-color 0.2s ease;
+}
+
+.users-table thead th:hover,
+.reports-table thead th:hover {
+    background: #1a1a1a !important;
 }
 </style>
 

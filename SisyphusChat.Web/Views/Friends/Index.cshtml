@@ -77,6 +77,13 @@
 
     <hr class="section-divider" />
 
+    <!-- Add the search bar here -->
+    <div class="friends-search-section">
+        <div class="search-container">
+            <input type="text" id="friendSearch" placeholder="Search friends..." class="search-input">
+        </div>
+    </div>
+
     <!-- Friends List Section -->
     <div class="friends-list">
         @foreach (var friend in Model.Friends)
@@ -269,13 +276,6 @@
         border-color: rgba(140, 119, 208, 0.2);
     }
 
-    .friends-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        padding: 20px 0;
-    }
-
     .friend-request-container {
         max-width: 800px;
         margin: 0 auto;
@@ -372,7 +372,7 @@
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
         padding: 20px 0;
-        max-height: calc(100vh - 550px);
+        max-height: calc(100vh - 630px);
         overflow-y: auto;
     }
 
@@ -543,4 +543,52 @@
     .request-list::-webkit-scrollbar-thumb:hover {
         background: rgba(140, 119, 208, 0.5);
     }
+
+    /* Search styles */
+    .friends-search-section {
+        margin-bottom: 20px;
+    }
+
+    .search-container {
+        position: relative;
+        max-width: 300px;
+    }
+
+    .search-input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 12px 40px 12px 16px;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--accent-color);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(140, 119, 208, 0.2);
+    }
+
+    .search-input::placeholder {
+        color: var(--muted-color);
+    }
 </style>
+
+<script>
+    document.getElementById('friendSearch').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const friendCards = document.querySelectorAll('.friend-card');
+        
+        friendCards.forEach(card => {
+            const friendName = card.querySelector('.friend-name').textContent.toLowerCase();
+            if (friendName.includes(searchTerm)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>

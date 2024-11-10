@@ -993,7 +993,7 @@ main[b-fefn0adsrq] {
 
 #reportModal select,
 #chatReportModal select {
-    background: rgba(var(--bg-color-rgb), 0.3);
+    background: var(--bg-color);
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
     color: var(--text-color);
     transition: all 0.3s ease;
@@ -1007,11 +1007,23 @@ main[b-fefn0adsrq] {
     background-position: right 1rem center;
     background-size: 1.5em;
     cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+#reportModal select option,
+#chatReportModal select option {
+    background: var(--bg-color);
+    color: var(--text-color);
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 #reportModal textarea,
 #chatReportModal textarea {
-    background: rgba(var(--bg-color-rgb), 0.3);
+    background: var(--bg-color);
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
     color: var(--text-color);
     transition: all 0.3s ease;
@@ -1203,7 +1215,6 @@ main[b-fefn0adsrq] {
   transform: scale(1.05);
 }
 
-/* Optional: Add animation for delete action */
 .delete-message-btn i {
   transition: transform 0.2s ease;
 }
