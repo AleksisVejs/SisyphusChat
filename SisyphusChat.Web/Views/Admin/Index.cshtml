@@ -93,6 +93,12 @@
                     <option value="week">Logged in this week</option>
                     <option value="never">Never logged in</option>
                 </select>
+                <select id="reportFilter" class="filter-select">
+                    <option value="all">All Reports</option>
+                    <option value="hasReports">Has Reports</option>
+                    <option value="noReports">No Reports</option>
+                    <option value="highReports">High Reports (5+)</option>
+                </select>
             </div>
 
             <div class="users-table-container">
@@ -138,7 +144,11 @@
                                         var reportCount = Model.UserReportCounts.ContainsKey(user.Id) ? Model.UserReportCounts[user.Id] : 0;
                                         var badgeClass = reportCount > 0 ? "bg-danger" : "bg-secondary";
                                     }
-                                    <span class="badge rounded-pill @badgeClass">@reportCount</span>
+                                    <span class="badge rounded-pill @badgeClass clickable-badge" 
+                                          onclick="showUserReports('@user.UserName')" 
+                                          title="Click to view reports">
+                                        @reportCount
+                                    </span>
                                 </td>
                                 <td class="text-end">
                                     @if (!user.IsBanned)
@@ -190,6 +200,30 @@
 
         <!-- Reports List Tab -->
         <div id="reports-list" class="tab-pane">
+            <div class="reports-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="reportSearch" placeholder="Search by reported user...">
+                </div>
+                <select id="reportTypeFilter" class="filter-select">
+                    <option value="all">All Types</option>
+                    <option value="spam">Spam</option>
+                    <option value="scam">Scam</option>
+                    <option value="harassment-or-bullying">Harassment or Bullying</option>
+                    <option value="hate-speech-or-offensive-language">Hate Speech or Offensive Language</option>
+                    <option value="violence-or-threats">Violence or Threats</option>
+                    <option value="inappropriate-content">Inappropriate Content</option>
+                    <option value="misinformation">Misinformation</option>
+                    <option value="unauthorized-sharing-of-personal-information">Unauthorized Sharing of Personal Information</option>
+                    <option value="other">Other</option>
+                </select>
+                <select id="reportDateFilter" class="filter-select">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
             <div class="reports-table-container">
                 <table class="reports-table">
                     <thead>
@@ -208,7 +242,7 @@
                         {
                            <tr class="report-row">
                                 <td>
-                                    <span class="report-type-badge @report.Type.ToString().ToLower()">
+                                    <span class="report-type-badge @(report.Type.ToString())">
                                         @report.Type
                                     </span>
                                 </td>
@@ -439,14 +473,6 @@
     color: var(--text-color);
 }
 
-.filter-select {
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    background: rgba(var(--bg-color-rgb), 0.5);
-    color: var(--text-color);
-}
-
 .users-table-container {
     background: rgba(var(--bg-color-rgb), 0.5);
     backdrop-filter: blur(10px);
@@ -581,7 +607,7 @@
     padding: 0.75rem 2rem 0.75rem 1rem;
     border-radius: 8px;
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    background: rgba(var(--bg-color-rgb), 0.5);
+    background: var(--bg-color);    
     color: var(--text-color);
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -691,19 +717,49 @@
     display: inline-block;
 }
 
-.report-type-badge.racist {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
+.report-type-badge.spam {
+    background: rgba(255, 159, 67, 0.1);
+    color: #ff9f43;
 }
 
-.report-type-badge.sexist {
-    background: rgba(255, 193, 7, 0.1);
-    color: #ffc107;
+.report-type-badge.scam {
+    background: rgba(238, 82, 83, 0.1);
+    color: #ee5253;
 }
 
-.report-type-badge.ableist {
-    background: rgba(111, 66, 193, 0.1);
-    color: #6f42c1;
+.report-type-badge.harassment {
+    background: rgba(255, 87, 51, 0.1);
+    color: #ff5733;
+}
+
+.report-type-badge.hate-speech {
+    background: rgba(179, 55, 113, 0.1);
+    color: #b33771;
+}
+
+.report-type-badge.threatening {
+    background: rgba(68, 189, 50, 0.1);
+    color: #44bd32;
+}
+
+.report-type-badge.inappropriate {
+    background: rgba(87, 75, 144, 0.1);
+    color: #574b90;
+}
+
+.report-type-badge.misinformation {
+    background: rgba(16, 172, 132, 0.1);
+    color: #10ac84;
+}
+
+.report-type-badge.personal-info {
+    background: rgba(108, 92, 231, 0.1);
+    color: #6c5ce7;
+}
+
+.report-type-badge.other {
+    background: rgba(128, 128, 128, 0.1);
+    color: #808080;
 }
 
 .message-preview {
@@ -752,13 +808,12 @@
     color: var(--text-color) !important;
 }
 
-/* Add/modify these styles */
 .dropdown {
     position: static;
 }
 
 .dropdown-menu {
-    background: rgba(var(--bg-color-rgb), 0.95);
+    background: var(--bg-color);    
     backdrop-filter: blur(10px);
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
     border-radius: 8px;
@@ -823,19 +878,18 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    background: #1a1a1a !important;
+    background: var(--bg-color);    
 }
 
 .users-table thead th,
 .reports-table thead th {
-    background: #1a1a1a !important;
+    background: var(--bg-color);    
     position: sticky;
     top: 0;
     z-index: 2;
     box-shadow: 0 1px 0 rgba(var(--text-color-rgb), 0.1);
 }
 
-/* Optional: Add a subtle transition when scrolling */
 .users-table thead th,
 .reports-table thead th {
     transition: background-color 0.2s ease;
@@ -843,7 +897,97 @@
 
 .users-table thead th:hover,
 .reports-table thead th:hover {
-    background: #1a1a1a !important;
+    background: var(--bg-color);    
+}
+
+.reports-controls {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    background: var(--bg-color);    
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--text-color-rgb), 0.1);
+}
+
+.clickable-badge {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-badge:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+@@media (max-width: 768px) {
+    .reports-controls {
+        flex-direction: column;
+    }
+}
+
+/* Update these report type badge styles */
+.report-type-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* Add all possible report types and their colors */
+.report-type-badge.Spam,
+.report-type-badge.spam {
+    background: rgba(255, 159, 67, 0.1);
+    color: #ff9f43;
+}
+
+.report-type-badge.Scam,
+.report-type-badge.scam {
+    background: rgba(238, 82, 83, 0.1);
+    color: #ee5253;
+}
+
+.report-type-badge.HarassmentOrBullying,
+.report-type-badge.harassment-or-bullying {
+    background: rgba(255, 87, 51, 0.1);
+    color: #ff5733;
+}
+
+.report-type-badge.HateSpeechOrOffensiveLanguage,
+.report-type-badge.hate-speech-or-offensive-language {
+    background: rgba(179, 55, 113, 0.1);
+    color: #b33771;
+}
+
+.report-type-badge.ViolenceOrThreats,
+.report-type-badge.violence-or-threats {
+    background: rgba(68, 189, 50, 0.1);
+    color: #44bd32;
+}
+
+.report-type-badge.InappropriateContent,
+.report-type-badge.inappropriate-content {
+    background: rgba(87, 75, 144, 0.1);
+    color: #574b90;
+}
+
+.report-type-badge.Misinformation,
+.report-type-badge.misinformation {
+    background: rgba(16, 172, 132, 0.1);
+    color: #10ac84;
+}
+
+.report-type-badge.UnauthorizedSharingOfPersonalInformation,
+.report-type-badge.unauthorized-sharing-of-personal-information {
+    background: rgba(108, 92, 231, 0.1);
+    color: #6c5ce7;
+}
+
+.report-type-badge.Other,
+.report-type-badge.other {
+    background: rgba(128, 128, 128, 0.1);
+    color: #808080;
 }
 </style>
 
@@ -869,18 +1013,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Existing user search and filter functionality
     const userSearch = document.getElementById('userSearch');
     const loginFilter = document.getElementById('loginFilter');
+    const reportFilter = document.getElementById('reportFilter');
     const userRows = document.querySelectorAll('.user-row');
 
     function filterUsers() {
         const searchTerm = userSearch.value.toLowerCase();
         const filterValue = loginFilter.value;
+        const reportValue = reportFilter.value;
         const now = new Date();
 
         userRows.forEach(row => {
             const username = row.querySelector('td:first-child').textContent.toLowerCase();
             const lastLogin = row.querySelector('td:nth-child(4)').textContent;
+            const reportCount = parseInt(row.querySelector('.badge').textContent);
+            
             let showRow = username.includes(searchTerm);
 
+            // Login filter
             if (showRow && filterValue !== 'all') {
                 const loginDate = lastLogin !== 'Never' ? new Date(lastLogin) : null;
                 
@@ -898,13 +1047,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            // Report filter
+            if (showRow && reportValue !== 'all') {
+                switch(reportValue) {
+                    case 'hasReports':
+                        showRow = reportCount > 0;
+                        break;
+                    case 'noReports':
+                        showRow = reportCount === 0;
+                        break;
+                    case 'highReports':
+                        showRow = reportCount >= 5;
+                        break;
+                }
+            }
+
             row.style.display = showRow ? '' : 'none';
         });
     }
 
-    if (userSearch && loginFilter) {
+    if (userSearch && loginFilter && reportFilter) {
         userSearch.addEventListener('input', filterUsers);
         loginFilter.addEventListener('change', filterUsers);
+        reportFilter.addEventListener('change', filterUsers);
     }
 
     // Notification form handling
@@ -934,6 +1099,66 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Failed to send notification');
             }
         });
+    }
+
+    // Reports filtering
+    const reportSearch = document.getElementById('reportSearch');
+    const reportTypeFilter = document.getElementById('reportTypeFilter');
+    const reportDateFilter = document.getElementById('reportDateFilter');
+    const reportRows = document.querySelectorAll('.report-row');
+
+    function filterReports() {
+        const searchTerm = reportSearch.value.toLowerCase();
+        const typeFilter = reportTypeFilter.value;
+        const dateFilter = reportDateFilter.value;
+        const now = new Date();
+
+        reportRows.forEach(row => {
+            const username = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+            const reason = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            const type = row.querySelector('.report-type-badge').textContent.trim();
+            const dateStr = row.querySelector('td:nth-child(6)').textContent;
+            const reportDate = new Date(dateStr);
+
+            let showRow = (username.includes(searchTerm) || reason.includes(searchTerm));
+
+            // Type filter
+            if (showRow && typeFilter !== 'all') {
+                // Convert PascalCase to kebab-case for comparison
+                const reportType = type
+                    .replace(/([A-Z])/g, '-$1')     // Add hyphen before capitals
+                    .toLowerCase()                   // Convert to lowercase
+                    .replace(/^-/, '')              // Remove leading hyphen
+                    .replace(/\s+/g, '-');          // Replace any spaces with hyphens
+                
+                showRow = reportType === typeFilter;
+            }
+
+            // Date filter
+            if (showRow && dateFilter !== 'all') {
+                switch(dateFilter) {
+                    case 'today':
+                        showRow = reportDate.toDateString() === now.toDateString();
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                        showRow = reportDate > weekAgo;
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+                        showRow = reportDate > monthAgo;
+                        break;
+                }
+            }
+
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+
+    if (reportSearch && reportTypeFilter && reportDateFilter) {
+        reportSearch.addEventListener('input', filterReports);
+        reportTypeFilter.addEventListener('change', filterReports);
+        reportDateFilter.addEventListener('change', filterReports);
     }
 });
 
@@ -1062,5 +1287,19 @@ function getBanDurationOptions(userId) {
             </form>
         </li>
     `).join('');
+}
+
+// Function to show user reports
+function showUserReports(username) {
+    // Switch to reports tab
+    const reportsTabButton = document.querySelector('[data-tab="reports-list"]');
+    reportsTabButton.click();
+
+    // Set the search field to the username
+    const reportSearch = document.getElementById('reportSearch');
+    reportSearch.value = username;
+    
+    // Trigger the filter
+    reportSearch.dispatchEvent(new Event('input'));
 }
 </script>
