@@ -148,12 +148,14 @@
     }
 
     .requests-section {
-        margin-bottom: 40px;
+        margin-bottom: 20px;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 20px;
-        padding: 25px;
+        padding: 20px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(8px);
+        max-height: 300px;
+        overflow: hidden;
     }
 
     .requests-container {
@@ -168,10 +170,6 @@
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         transition: transform 0.3s ease;
-    }
-
-    .request-column:hover {
-        transform: translateY(-5px);
     }
 
     .request-column h3 {
@@ -197,22 +195,26 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
+        max-height: 150px;
+        overflow-y: auto;
+        padding-right: 10px;
+        scrollbar-width: thin;
     }
 
     .request-card {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
+        padding: 10px 15px;
         border-radius: 12px;
         background: rgba(255, 255, 255, 0.03);
         backdrop-filter: blur(4px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.3s ease;
+        min-height: 50px;
     }
 
     .request-card:hover {
-        transform: translateX(5px);
         background: rgba(255, 255, 255, 0.05);
     }
 
@@ -313,16 +315,23 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
-        max-height: 300px;
+        max-height: 150px;
         overflow-y: auto;
+        padding-right: 10px;
+        scrollbar-width: thin;
     }
 
     .request-card {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
-        border-radius: 8px;
+        padding: 10px 15px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        min-height: 50px;
     }
 
     .request-info {
@@ -372,7 +381,7 @@
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
         padding: 20px 0;
-        max-height: calc(100vh - 630px);
+        max-height: calc(100vh - 660px);
         overflow-y: auto;
     }
 
@@ -574,6 +583,48 @@
 
     .search-input::placeholder {
         color: var(--muted-color);
+    }
+
+    /* Add smooth scrolling behavior */
+    .request-list {
+        scroll-behavior: smooth;
+    }
+
+    /* Style scrollbar for webkit browsers */
+    .request-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .request-list::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 3px;
+    }
+
+    .request-list::-webkit-scrollbar-thumb {
+        background: rgba(140, 119, 208, 0.3);
+        border-radius: 3px;
+    }
+
+    .request-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(140, 119, 208, 0.5);
+    }
+
+    /* Make request cards more compact */
+    .request-card {
+        padding: 10px 15px;
+        min-height: 50px;
+    }
+
+    /* Adjust the request column height */
+    .request-column {
+        max-height: 250px;
+        overflow: hidden;
+    }
+
+    /* Adjust the friends list position */
+    .friends-list {
+        height: calc(100vh - 400px);
+        min-height: 400px;
     }
 </style>
 
