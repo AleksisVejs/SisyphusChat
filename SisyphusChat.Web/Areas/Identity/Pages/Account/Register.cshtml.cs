@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Web.Attributes;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 {
@@ -62,6 +63,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Username")]
+            [NoProfanity(ErrorMessage = "Username contains inappropriate content.")]
             [RegularExpression(@"^[^@\s]+$", ErrorMessage = "Username cannot be an email address or contain spaces.")]
             [StringLength(32, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             public string Username { get; set; }

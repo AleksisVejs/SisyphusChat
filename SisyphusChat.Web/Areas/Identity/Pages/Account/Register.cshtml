@@ -258,6 +258,7 @@ div[asp-validation-summary] {
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/validation.js"></script>
+    <script src="~/js/profanityFilterServer.js"></script>
     <script>
         document.getElementById("togglePasswordVisibility").addEventListener("click", function (e) {
             e.preventDefault();
@@ -277,5 +278,16 @@ div[asp-validation-summary] {
                 passwordIcon.classList.add("fa-eye");
             }
         });
+
+        $.validator.addMethod('noprofanity', 
+            function (value, element, params) {
+                if (!value) return true;
+                
+                // Use the same profanity list from profanityFilterServer.js
+                const profanityFilter = window.ProfanityFilterServer;
+                return !profanityFilter.checkWord(value);
+            });
+
+        $.validator.unobtrusive.adapters.addBool('noprofanity');
     </script>
 }

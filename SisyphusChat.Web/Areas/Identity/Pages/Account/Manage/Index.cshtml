@@ -63,9 +63,22 @@
                 <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
                 <label asp-for="Username" class="form-label"></label>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.NewUsername" class="form-control" placeholder="Please enter new username." />
+            <div class="form-group mb-3">
                 <label asp-for="Input.NewUsername" class="form-label"></label>
+                <input asp-for="Input.NewUsername" class="form-control" placeholder="New Username" autocomplete="off" />
+                <span asp-validation-for="Input.NewUsername" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <div class="form-check form-switch">
+                    <input asp-for="Input.IsProfanityEnabled" class="form-check-input" type="checkbox" />
+                    <label asp-for="Input.IsProfanityEnabled" class="form-check-label">
+                        Enable Profanity Filter
+                    </label>
+                    <span class="form-text text-muted">
+                        When enabled, profanity in messages will be automatically censored
+                    </span>
+                </div>
             </div>
 
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
@@ -190,10 +203,30 @@
         z-index: 1050;
         background: rgba(0, 0, 0, 0.5);
     }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .text-danger {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .form-control.input-validation-error {
+        border-color: var(--danger-color);
+    }
+
+    .form-control.input-validation-error:focus {
+        box-shadow: 0 0 0 2px rgba(var(--danger-color-rgb), 0.25);
+    }
 </style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/profanityFilterServer.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const uploadBtn = document.getElementById('uploadBtn-overlay');
@@ -264,6 +297,26 @@
                     });
                 });
             }
+        });
+
+        $(document).ready(function() {
+            $.validator.addMethod('noprofanity', 
+                function (value, element, params) {
+                    if (!value) return true;
+                    const profanityFilter = window.ProfanityFilterServer;
+                    return !profanityFilter.checkWord(value);
+                },
+                'Username contains inappropriate content.'
+            );
+
+            $.validator.unobtrusive.adapters.addBool('noprofanity');
+
+            var $form = $("form");
+            $form.removeData('validator');
+            $form.removeData('unobtrusiveValidation');
+            $.validator.unobtrusive.parse($form);
+
+            $("#Input_NewUsername").attr("placeholder", "New Username");
         });
     </script>
 }
