@@ -288,6 +288,7 @@
 
 
 @section Scripts {
+     <script src="~/js/profanityFilter.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
     <script>
         const connection = new signalR.HubConnectionBuilder()
@@ -296,6 +297,7 @@
 
         const chatId = "@Model.ChatId";
         const currentUser = "@Model.UserViewModel.CurrentUser.UserName";
+        const isProfanityEnabled = "@Model.UserViewModel.CurrentUser.IsProfanityEnabled" === "True";
 
         // To show new messages when chat is opened
         function scrollToBottom() {
@@ -307,7 +309,7 @@
             scrollToBottom();
         });
 
-        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt, messageId, profilePicture) => {
+        connection.on("ReceiveMessage", async (user, message, chatMembersUserNames, sentAt, messageId, profilePicture) => {
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
                 messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
@@ -338,7 +340,14 @@
 
                 const messageContent = document.createElement("p");
                 messageContent.classList.add("message-content");
-                messageContent.textContent = message;
+                
+                // Only filter if user has enabled profanity filter
+                if (isProfanityEnabled) {
+                    messageContent.textContent = ProfanityFilter.filterMessage(message);
+                } else {
+                    messageContent.textContent = message;
+                }
+                
                 messageDiv.appendChild(messageContent);
 
                 const timestampSpan = document.createElement("span");
@@ -834,6 +843,19 @@
 
         connection.onclose(() => {
             console.log("SignalR Connection Closed.");
+        });
+
+        // Add this to filter existing messages when page loads
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (isProfanityEnabled) {
+                const messageContents = document.querySelectorAll('.message-content');
+                messageContents.forEach(content => {
+                    const originalText = content.textContent;
+                    content.textContent = ProfanityFilter.filterMessage(originalText);
+                });
+            }
+            scrollToBottom();
+            setupMessageInput();
         });
     </script>
 }

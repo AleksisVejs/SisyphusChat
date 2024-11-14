@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
@@ -46,6 +46,9 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             public byte[] Picture { get; set; }
             public IFormFile ProfilePicture { get; set; }
             public string CroppedImage { get; set; }
+
+            [Display(Name = "Profanity Filter")]
+            public bool IsProfanityEnabled { get; set; }
         }
 
         private async Task LoadAsync(User user)
@@ -54,7 +57,8 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             Username = userName;
             Input = new InputModel {
                 NewUsername = "",
-                Picture = user.Picture ?? GetDefaultAvatar()
+                Picture = user.Picture ?? GetDefaultAvatar(),
+                IsProfanityEnabled = user.IsProfanityEnabled
             };
         }
         
@@ -118,6 +122,8 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                     user.Picture = memoryStream.ToArray();
                 }
             }
+
+            user.IsProfanityEnabled = Input.IsProfanityEnabled;
 
             if (!ModelState.IsValid)
             {

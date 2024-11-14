@@ -29,6 +29,7 @@ namespace SisyphusChat.Infrastructure.Entities
         public DateTime LastUpdated { get; set; }
 
         public DateTime? LastLogin { get; set; }
+        public bool IsProfanityEnabled { get; set; } = true;
 
         // Navigation properties for EF Core
 

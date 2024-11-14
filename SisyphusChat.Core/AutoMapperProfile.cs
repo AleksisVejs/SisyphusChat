@@ -24,6 +24,7 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.LastLogin))
                 .ForMember(dest => dest.Picture, opt => opt.MapFrom(src => 
                     src.IsDeleted ? null : src.Picture))
+                .ForMember(dest => dest.IsProfanityEnabled, opt => opt.MapFrom(src => src.IsProfanityEnabled))
                 .ReverseMap();
 
             CreateMap<Chat, ChatModel>()

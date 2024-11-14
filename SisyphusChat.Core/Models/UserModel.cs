@@ -24,6 +24,7 @@ namespace SisyphusChat.Core.Models
         public DateTime LastUpdated { get; set; }
 
         public DateTime? LastLogin { get; set; }
+        public bool IsProfanityEnabled { get; set; }
 
         public byte[]? Picture { get; set; }
 
