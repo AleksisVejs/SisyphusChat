@@ -1,4 +1,4 @@
-﻿﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SisyphusChat.Infrastructure.Entities;
+using SisyphusChat.Web.Attributes;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -41,6 +42,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
             [Display(Name = "New Username")]
             [StringLength(32, MinimumLength = 6, ErrorMessage = "Username should be between 6 and 32 characters.")]
             [RegularExpression(@"^[a-zA-Z0-9._-]+$", ErrorMessage = "Username can only contain letters, digits, hyphens, underscores, and periods.")]
+            [NoProfanity(ErrorMessage = "Username contains inappropriate content.")]
             public string NewUsername { get; set; }
 
             public byte[] Picture { get; set; }
@@ -87,18 +89,22 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            // Check if NewUsername is provided and validate uniqueness
+            if (!ModelState.IsValid)
+            {
+                await LoadAsync(user);
+                return Page();
+            }
+
             if (!string.IsNullOrWhiteSpace(Input.NewUsername))
             {
                 var taken = await _userManager.FindByNameAsync(Input.NewUsername);
-                if (taken != null && taken.Id != user.Id) // Ensure it's not the same user
+                if (taken != null && taken.Id != user.Id)
                 {
                     ModelState.AddModelError(string.Empty, $"Username '{Input.NewUsername}' is already taken.");
-                    await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                    await LoadAsync(user);
                     return Page();
                 }
 
-                // Update the username if it's unique
                 user.UserName = Input.NewUsername;
             }
 
@@ -113,7 +119,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 if (Input.ProfilePicture.Length > 2 * 1024 * 1024)
                 {
                     ModelState.AddModelError(string.Empty, "The profile picture size cannot exceed 2MB.");
-                    await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                    await LoadAsync(user);
                     return Page();
                 }
                 using (var memoryStream = new MemoryStream())
@@ -125,12 +131,6 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
 
             user.IsProfanityEnabled = Input.IsProfanityEnabled;
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
-                return Page();
-            }
-
             var result = await _userManager.UpdateAsync(user);
             user.LastUpdated = DateTime.Now;
 
@@ -140,7 +140,7 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account.Manage
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                await LoadAsync(user); // Reload the user data to ensure the profile picture is loaded
+                await LoadAsync(user);
                 return Page();
             }
 
