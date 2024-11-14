@@ -119,6 +119,7 @@ button#theme-switcher {
 
 .icon-container {
   min-width: 40px;
+  width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
@@ -126,6 +127,7 @@ button#theme-switcher {
   border-radius: 50%;
   overflow: hidden;
   margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .icon-container img,
@@ -316,10 +318,11 @@ p {
 }
 
 .profile-pic {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .message-profile-pic {
