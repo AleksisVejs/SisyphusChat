@@ -217,41 +217,69 @@ const ProfanityFilter = {
     // Russian word patterns (for Latin alphabet attempts)
     /\bsuk[aа]+\b/i,
     /\bb+l+[yi]+[aа]+[dt]+\b/i,
-  ],
+  ].map((p) => new RegExp(p, "i")),
+
+  messageCache: new Map(),
+  wordCache: new Map(),
 
   // Check if a single word contains profanity
   checkWord(word) {
     const cleanWord = word.toLowerCase().trim();
+    if (this.wordCache.has(cleanWord)) return this.wordCache.get(cleanWord);
 
-    if (this.words.has(cleanWord)) return true;
-
-    return this.patterns.some((pattern) => pattern.test(cleanWord));
+    const isProfane =
+      this.words.has(cleanWord) || this.patterns.some((p) => p.test(cleanWord));
+    this.wordCache.set(cleanWord, isProfane);
+    return isProfane;
   },
 
   // Filter a message
-  filterMessage(message) {
-    let filteredMessage = message;
+  filterMessage(message, messageId) {
+    if (messageId && this.messageCache.has(messageId))
+      return this.messageCache.get(messageId);
 
     const words = message.split(/\s+/);
-    words.forEach((word) => {
-      if (this.checkWord(word)) {
-        const replacement = "*".repeat(word.length);
-        const regex = new RegExp(`\\b${word}\\b`, "gi");
-        filteredMessage = filteredMessage.replace(regex, replacement);
-      }
+    const profaneIndices = [];
+
+    for (let i = 0; i < words.length; i++) {
+      if (this.checkWord(words[i])) profaneIndices.push(i);
+    }
+
+    if (!profaneIndices.length) {
+      messageId && this.messageCache.set(messageId, message);
+      return message;
+    }
+
+    const filteredWords = [...words];
+    profaneIndices.forEach((i) => {
+      filteredWords[i] = "*".repeat(words[i].length);
     });
 
-    this.patterns.forEach((pattern) => {
-      filteredMessage = filteredMessage.replace(pattern, (match) =>
-        "*".repeat(match.length)
-      );
-    });
-
-    return filteredMessage;
+    const filtered = filteredWords.join(" ");
+    messageId && this.messageCache.set(messageId, filtered);
+    return filtered;
   },
 
   // Add custom words to the filter
   addWords(newWords) {
     newWords.forEach((word) => this.words.add(word.toLowerCase().trim()));
+  },
+
+  clearCache() {
+    this.messageCache.clear();
+    this.wordCache.clear();
+  },
+
+  limitCacheSize(maxSize = 1000) {
+    if (this.messageCache.size > maxSize) {
+      const entries = Array.from(this.messageCache.entries());
+      const toRemove = entries.slice(0, entries.length - maxSize);
+      toRemove.forEach(([key]) => this.messageCache.delete(key));
+    }
+    if (this.wordCache.size > maxSize) {
+      const entries = Array.from(this.wordCache.entries());
+      const toRemove = entries.slice(0, entries.length - maxSize);
+      toRemove.forEach(([key]) => this.wordCache.delete(key));
+    }
   },
 };

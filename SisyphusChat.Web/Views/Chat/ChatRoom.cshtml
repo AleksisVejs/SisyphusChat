@@ -309,111 +309,58 @@
             scrollToBottom();
         });
 
-        connection.on("ReceiveMessage", async (user, message, chatMembersUserNames, sentAt, messageId, profilePicture) => {
-            if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
-                const messageDiv = document.createElement("div");
-                messageDiv.classList.add("message", user === currentUser ? "sent" : "received");
-                messageDiv.setAttribute("data-message-id", messageId);
-
-                // Create message header div with flex layout
-                const messageHeader = document.createElement("div");
-                messageHeader.classList.add("message-header");
-                messageHeader.style.display = "flex";
-                messageHeader.style.alignItems = "center";
-                messageHeader.style.gap = "8px";
-
-                // Create and set up profile picture
-                const profileImg = document.createElement("img");
-                profileImg.classList.add("message-profile-pic");
-                profileImg.src = profilePicture ? `data:image/jpeg;base64,${profilePicture}` : "/images/default_pfp.jpg";
-                profileImg.alt = user === currentUser ? "Your Avatar" : "User Avatar";
-
-                // Create sender name span
-                const senderNameSpan = document.createElement("span");
-                senderNameSpan.classList.add("sender-name");
-                senderNameSpan.textContent = user;
-
-                // Append elements in correct order
-                messageHeader.appendChild(profileImg);
-                messageHeader.appendChild(senderNameSpan);
-                messageDiv.appendChild(messageHeader);
-
-                const messageContent = document.createElement("p");
-                messageContent.classList.add("message-content");
+        function filterChatMessages() {
+            if (!isProfanityEnabled) return;
+            
+            const messages = document.querySelectorAll('.message-content:not([data-filtered])');
+            if (!messages.length) return;
+            
+            const batchSize = 50;
+            let currentBatch = 0;
+            
+            function processBatch() {
+                const start = currentBatch * batchSize;
+                const end = Math.min(start + batchSize, messages.length);
                 
-                // Only filter if user has enabled profanity filter
-                if (isProfanityEnabled) {
-                    messageContent.textContent = ProfanityFilter.filterMessage(message);
-                } else {
-                    messageContent.textContent = message;
+                for (let i = start; i < end; i++) {
+                    const content = messages[i];
+                    const messageId = content.closest('.message').dataset.messageId;
+                    content.textContent = ProfanityFilter.filterMessage(content.textContent, messageId);
+                    content.dataset.filtered = 'true';
                 }
                 
-                messageDiv.appendChild(messageContent);
-
-                const timestampSpan = document.createElement("span");
-                timestampSpan.classList.add("time");
-                timestampSpan.textContent = new Date(sentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-                messageDiv.appendChild(timestampSpan);
-
-                // Add edit and delete buttons for own messages
-                if (user === currentUser) {
-                    const messageActions = document.createElement("div");
-                    messageActions.classList.add("message-actions");
-
-                    // Edit button
-                    const editButton = document.createElement("button");
-                    editButton.classList.add("edit-message-btn");
-                    editButton.onclick = function () { startEditMessage(this); };
-                    const editIcon = document.createElement("i");
-                    editIcon.classList.add("fas", "fa-edit");
-                    editButton.appendChild(editIcon);
-
-                    // Delete button
-                    const deleteButton = document.createElement("button");
-                    deleteButton.classList.add("delete-message-btn");
-                    deleteButton.onclick = function () { deleteMessage(messageId); };
-                    const deleteIcon = document.createElement("i");
-                    deleteIcon.classList.add("fas", "fa-trash");
-                    deleteButton.appendChild(deleteIcon);
-
-                    messageActions.appendChild(editButton);
-                    messageActions.appendChild(deleteButton);
-                    messageDiv.appendChild(messageActions);
+                currentBatch++;
+                if (currentBatch * batchSize < messages.length) {
+                    requestIdleCallback(() => processBatch());
                 } else {
-                    const reportLink = document.createElement("a");
-                    reportLink.href = "javascript:void(0);";
-                    reportLink.onclick = function () { openReportModal(messageId); };
-                    reportLink.classList.add("text-red-600", "hover:underline");
-                    reportLink.textContent = "Report";
-                    messageDiv.appendChild(reportLink);
+                    ProfanityFilter.limitCacheSize(500);
                 }
-
-                document.querySelector(".chat-messages").appendChild(messageDiv);
-                scrollToBottom();
-
-                // Add status indicator for sent messages
-                if (user === currentUser) {
-                    const statusDiv = document.createElement("div");
-                    statusDiv.classList.add("message-status", "status-sent");
-                    statusDiv.textContent = "Sent";
-                    messageDiv.appendChild(statusDiv);
-                }
-
-                // If this is a received message, mark it as delivered
-                if (user !== currentUser) {
-                    connection.invoke("MarkMessageAsDelivered", messageId)
-                        .catch(err => console.error("Error marking message as delivered:", err));
-                }
-            } else {
-                const errorContainer = document.getElementById("errorMessage");
-                const errorMessageText = document.getElementById("errorMessageText");
-                errorMessageText.textContent = "You are no longer a member of this chat.";
-                errorContainer.classList.remove("d-none");
-                document.getElementById("messageInput").disabled = true;
-                document.getElementById("sendMessageButton").disabled = true;
             }
+            
+            requestIdleCallback(() => processBatch());
+        }
+
+        connection.on("ReceiveMessage", (user, message, chatMembersUserNames, sentAt, messageId) => {
+            if (!document.baseURI.includes(chatId) || !chatMembersUserNames.includes(currentUser)) return;
+            
+            const messageContent = document.createElement("p");
+            messageContent.classList.add("message-content");
+            
+            messageContent.textContent = isProfanityEnabled ? 
+                ProfanityFilter.filterMessage(message, messageId) : 
+                message;
+            messageContent.dataset.filtered = 'true';
         });
 
+        connection.on("MessageEdited", (messageId, newContent) => {
+            const messageContent = document.querySelector(`[data-message-id="${messageId}"] .message-content`);
+            if (messageContent) {
+                messageContent.textContent = isProfanityEnabled ? 
+                    ProfanityFilter.filterMessage(newContent, messageId) : 
+                    newContent;
+                messageContent.dataset.filtered = 'true';
+            }
+        });
 
         async function startConnection() {
             try {
