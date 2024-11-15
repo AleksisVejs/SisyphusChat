@@ -201,4 +201,11 @@ public class ChatHub(
         await messageService.DeleteByIdAsync(messageId);
         await Clients.Group(message.ChatId).SendAsync("MessageDeleted", messageId);
     }
+
+    public async Task<string> GetOriginalMessage(string messageId)
+    {
+        // Fetch and return the original uncensored message from your database
+        var message = await messageService.GetByIdAsync(messageId);
+        return message.Content;
+    }
 }

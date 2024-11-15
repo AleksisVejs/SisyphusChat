@@ -194,10 +194,20 @@
         </div>
         <!-- Add edit message form -->
         <div id="editMessageForm" class="edit-message-form d-none">
-            <input type="text" id="editMessageInput" autocomplete="off" />
+            <div class="message-input-container">
+                <textarea 
+                    id="editMessageInput" 
+                    maxlength="1000" 
+                    rows="1"
+                    autocomplete="off"
+                    placeholder="Edit message..."
+                    class="message-input"
+                ></textarea>
+                <span class="char-counter">0/1000</span>
+            </div>
             <div class="edit-actions">
-                <button onclick="saveEditMessage()">Save</button>
-                <button onclick="cancelEditMessage()">Cancel</button>
+                <button class="save-btn" onclick="saveEditMessage()">Save</button>
+                <button class="cancel-btn" onclick="cancelEditMessage()">Cancel</button>
             </div>
         </div>
         <div class="chat-footer">
@@ -524,43 +534,66 @@
 
         function startEditMessage(button) {
             const messageDiv = button.closest('.message');
-            if (!messageDiv) {
-                console.error("Could not find message div");
-                return;
-            }
+            if (!messageDiv) return;
             
             const messageId = messageDiv.getAttribute("data-message-id");
-            if (!messageId) {
-                console.error("No message ID found");
-                return;
-            }
+            if (!messageId) return;
 
-            // Get the message content before setting up edit mode
-            const messageContent = messageDiv.querySelector('.message-content');
-            if (!messageContent) {
-                console.error("Could not find message content");
-                return;
-            }
+            // Get the original message from the server
+            connection.invoke("GetOriginalMessage", messageId)
+                .then(originalContent => {
+                    currentEditMessageId = messageId;
+                    originalMessage = originalContent;
 
-            // Store both the ID and the original content
-            currentEditMessageId = messageId;
-            originalMessage = messageContent.textContent;
+                    const editForm = document.getElementById('editMessageForm');
+                    const editInput = document.getElementById('editMessageInput');
+                    const counter = editForm.querySelector('.char-counter');
+                    
+                    // Set the original content and update counter
+                    editInput.value = originalContent;
+                    const currentLength = originalContent.length;
+                    counter.textContent = `${currentLength}/1000`;
+                    
+                    // Apply appropriate counter styling based on length
+                    counter.classList.remove("near-limit", "over-limit");
+                    if (currentLength > 900) {
+                        counter.classList.add("near-limit");
+                    }
+                    if (currentLength > 1000) {
+                        counter.classList.add("over-limit");
+                    }
 
-            const editForm = document.getElementById('editMessageForm');
-            const editInput = document.getElementById('editMessageInput');
-            
-            // Set up edit form
-            editInput.value = originalMessage;
-            editForm.classList.remove('d-none');
-            
-            // Move the edit form after the message content
-            messageContent.parentNode.insertBefore(editForm, messageContent.nextSibling);
-            messageContent.style.display = 'none';
-            editInput.focus();
-
-            // Add data attribute to track which message is being edited
-            editForm.setAttribute('data-editing-message-id', messageId);
+                    // Auto-resize the textarea for initial content
+                    autoResizeTextarea(editInput);
+                    
+                    editForm.classList.remove('d-none');
+                    const messageContent = messageDiv.querySelector('.message-content');
+                    messageContent.style.display = 'none';
+                    editForm.setAttribute('data-editing-message-id', messageId);
+                    editInput.focus();
+                })
+                .catch(err => console.error("Error getting original message:", err));
         }
+
+        // Add input event listener for edit textarea
+        document.getElementById('editMessageInput').addEventListener('input', function() {
+            autoResizeTextarea(this);
+            
+            // Existing character counter code
+            const charCount = this.value.length;
+            const counter = this.parentElement.querySelector('.char-counter');
+            const MAX_CHARS = 1000;
+            const WARN_THRESHOLD = 900;
+            
+            counter.textContent = `${charCount}/${MAX_CHARS}`;
+            counter.classList.remove("near-limit", "over-limit");
+            if (charCount > WARN_THRESHOLD) {
+                counter.classList.add("near-limit");
+            }
+            if (charCount > MAX_CHARS) {
+                counter.classList.add("over-limit");
+            }
+        });
 
         function saveEditMessage() {
             const editForm = document.getElementById('editMessageForm');
@@ -614,19 +647,35 @@
         }
 
 
-        // Add MessageEdited handler
-        connection.on("MessageEdited", (messageId, newContent, lastUpdated, isEdited) => {
+        
+        connection.on("MessageEdited", (messageId, newContent, lastUpdated, isEdited, senderId) => {
             const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
             if (messageDiv) {
                 const messageContent = messageDiv.querySelector('.message-content');
                 const timeSpan = messageDiv.querySelector('.time');
                 
-                messageContent.textContent = newContent;
-                timeSpan.innerHTML = `${new Date(lastUpdated).toLocaleString()} ${isEdited ? '<span class="edited-indicator">(edited)</span>' : ''}`;
+                // Show uncensored version to message author, censored to others
+                if (senderId === currentUser) {
+                    messageContent.textContent = newContent;
+                } else if (isProfanityEnabled) {
+                    messageContent.textContent = ProfanityFilter.filterMessage(newContent);
+                } else {
+                    messageContent.textContent = newContent;
+                }
+                
+                // Format time to show only hours and minutes
+                const date = new Date(lastUpdated);
+                const timeString = date.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                timeSpan.innerHTML = `${timeString} ${isEdited ? '(edited)' : ''}`;
             }
         });
 
-        // Add this after your other connection.on handlers
+      
         connection.on("UserDeleted", function (userId, newUsername) {
             // Update usernames in chat list
             const userItems = document.querySelectorAll('.user-item');
@@ -856,6 +905,32 @@
             }
             scrollToBottom();
             setupMessageInput();
+        });
+
+        // Add this auto-resize function
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
+        }
+
+        // Add event listener for the textarea
+        document.getElementById('editMessageInput').addEventListener('input', function() {
+            autoResizeTextarea(this);
+            
+            // Existing character counter code
+            const charCount = this.value.length;
+            const counter = this.parentElement.querySelector('.char-counter');
+            const MAX_CHARS = 1000;
+            const WARN_THRESHOLD = 900;
+            
+            counter.textContent = `${charCount}/${MAX_CHARS}`;
+            counter.classList.remove("near-limit", "over-limit");
+            if (charCount > WARN_THRESHOLD) {
+                counter.classList.add("near-limit");
+            }
+            if (charCount > MAX_CHARS) {
+                counter.classList.add("over-limit");
+            }
         });
     </script>
 }
@@ -1243,5 +1318,98 @@ main[b-fefn0adsrq] {
 
 .delete-message-btn:hover i {
   transform: rotate(12deg);
+}
+
+.edit-message-form {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px 0;
+}
+
+.edit-input-container {
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.edit-input-container textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px;
+    padding-right: 70px; /* Space for counter */
+    resize: none;
+    overflow-y: auto;
+    min-height: 44px;
+    max-height: 150px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.edit-input-container textarea:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.char-counter {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-actions button {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-btn {
+    background: #7c5cff;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #6a4eff;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.message-input-container textarea {
+    resize: none;
+    border: none;
+    background: transparent;
+    overflow-y: auto;
+    min-height: 60px;
+    max-height: 300px;
+    width: 100%;
+    padding: 12px;
+    line-height: 1.5;
+}
+
+/* Ensure the container can handle the larger textarea */
+.message-input-container {
+    min-height: 60px;
+    max-height: 300px;
+    width: 100%;
+    position: relative;
 }
 </style>
