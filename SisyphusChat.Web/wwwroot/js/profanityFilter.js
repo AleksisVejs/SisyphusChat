@@ -202,19 +202,17 @@ const ProfanityFilter = {
   // Special patterns that need more complex matching
   patterns: [
     // N-word variations
-    /\bn[i1l|]+g+[e3]+r+s?\b/i, // Catches variations like n1gger, nigger, etc.
-    /\bn[i1l|]+g+[a@]+s?\b/i, // Catches variations like n1gga, nigga, etc.
-    /\bn[i1l|]+g+[e3]+r+\w*/i, // Captures variations like n1ggerdog, niggers
-    /\bn[i1l|]+g+[a@]+s?\w*/i, // Captures variations like n1gga, niggadog
-    /\bn[i1l|]+g+[z@s]+\b/i, // Catches variations like n1gz, niggs, etc.
+    /\bn[i1l|]+g+[e3]+r+s?\b/i,
+    /\bn[i1l|]+g+[a@]+s?\b/i,
+    /\bn[i1l|]+g+[e3]+r+\w*/i,
+    /\bn[i1l|]+g+[a@]+s?\w*/i,
+    /\bn[i1l|]+g+[z@s]+\b/i,
 
     // Common letter substitutions for offensive words
-    /\bf+u+c+k+\w*\b/i, // Catches fuck variations
-    /\bb+i+t+c+h+\w*\b/i, // Catches bitch variations
-    /\bc+u+n+t+\w*\b/i, // Catches cunt variations
-    /\bp+u+s+s+y+\w*\b/i, // Catches pussy variations
-
-    // Russian word patterns (for Latin alphabet attempts)
+    /\bf+u+c+k+\w*\b/i,
+    /\bb+i+t+c+h+\w*\b/i,
+    /\bc+u+n+t+\w*\b/i,
+    /\bp+u+s+s+y+\w*\b/i,
     /\bsuk[aа]+\b/i,
     /\bb+l+[yi]+[aа]+[dt]+\b/i,
   ],
