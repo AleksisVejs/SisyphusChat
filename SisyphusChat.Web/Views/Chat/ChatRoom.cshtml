@@ -746,7 +746,7 @@
                 return;
             }
 
-            // Rest of your existing send message code...
+           
         }
 
         function showCharacterLimitError(currentLength, maxLength) {
@@ -767,13 +767,11 @@
             }, 5000);
         }
 
-        // Add this to provide real-time feedback
         function setupMessageInput() {
             const messageInput = document.getElementById("messageInput");
             const MAX_CHARS = 1000;
-            const WARN_THRESHOLD = 900; // Show warning color at 90% capacity
+            const WARN_THRESHOLD = 900; 
             
-            // Wrap input in container if not already wrapped
             if (!messageInput.parentElement.classList.contains('message-input-container')) {
                 const wrapper = document.createElement('div');
                 wrapper.classList.add('message-input-container');
@@ -781,7 +779,6 @@
                 wrapper.appendChild(messageInput);
             }
             
-            // Create counter if it doesn't exist
             if (!document.getElementById("charCounter")) {
                 const counter = document.createElement("div");
                 counter.id = "charCounter";
@@ -793,28 +790,22 @@
                 const charCount = this.value.length;
                 const counter = document.getElementById("charCounter");
                 
-                // Update counter text
                 counter.textContent = `${charCount}/${MAX_CHARS}`;
                 
-                // Reset classes
                 counter.classList.remove("near-limit", "over-limit");
                 messageInput.classList.remove("input-error");
                 
-                // Apply appropriate styling based on character count
                 if (charCount > MAX_CHARS) {
                     counter.classList.add("over-limit");
                     messageInput.classList.add("input-error");
                 } else if (charCount > WARN_THRESHOLD) {
                     counter.classList.add("near-limit");
                 }
-                
-                // Show/hide counter based on content
                 if (charCount > 0) {
                     counter.style.opacity = "1";
                 }
             });
             
-            // Hide counter when input is empty and not focused
             messageInput.addEventListener("blur", function() {
                 const counter = document.getElementById("charCounter");
                 if (this.value.length === 0) {
@@ -823,7 +814,6 @@
             });
         }
 
-        // Call this when the page loads
         document.addEventListener("DOMContentLoaded", setupMessageInput);
 
         connection.on("MessageStatusUpdated", (messageId, status) => {
@@ -837,7 +827,6 @@
             }
         });
 
-        // Modify the setupMessageObserver function to check connection state
         function setupMessageObserver() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -876,10 +865,6 @@
             }
         }
 
-        // Remove the DOMContentLoaded event listener for setupMessageObserver
-        // and instead call it after connection is established
-
-        // Also add reconnection handling
         connection.onreconnected(async () => {
             console.log("SignalR Reconnected.");
             await connection.invoke("JoinChat", chatId);
@@ -894,7 +879,6 @@
             console.log("SignalR Connection Closed.");
         });
 
-        // Add this to filter existing messages when page loads
         document.addEventListener("DOMContentLoaded", async () => {
             if (isProfanityEnabled) {
                 const messageContents = document.querySelectorAll('.message-content');
@@ -907,13 +891,11 @@
             setupMessageInput();
         });
 
-        // Add this auto-resize function
         function autoResizeTextarea(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
         }
 
-        // Add event listener for the textarea
         document.getElementById('editMessageInput').addEventListener('input', function() {
             autoResizeTextarea(this);
             
