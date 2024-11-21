@@ -106,7 +106,6 @@
     bottom: 0;
     z-index: 9999;
     pointer-events: auto;
-    background: rgba(0, 0, 0, 0.45);
 }
 
 /* Modern content styling */
@@ -727,58 +726,7 @@ function showDemoNotification() {
 }
 
 function showNotificationTutorial() {
-    showDemoNotification();
-    // Hide all previous steps
-    const steps = document.querySelectorAll('.tutorial-step-overlay');
-    steps.forEach(step => {
-        step.classList.add('d-none');
-        const content = step.querySelector('.tutorial-content');
-        if (content) content.style.display = 'none';
-    });
-    
-    // Remove any existing spotlights
-    if (spotlight) {
-        spotlight.style.display = 'none';
-    }
-
-    // Remove any existing navigation controls or backdrops
-    const existingControls = document.querySelector('.tutorial-nav-controls');
-    if (existingControls) existingControls.remove();
-    
-    const existingBackdrop = document.querySelector('.tutorial-backdrop');
-    if (existingBackdrop) existingBackdrop.remove();
-
-    // Ensure the notification dropdown is visible
-    const notificationLink = document.getElementById('notificationLink');
-    if (notificationLink) {
-        $(notificationLink).dropdown('show');
-    }
-    
-    // Add semi-transparent backdrop
-    const backdrop = document.createElement('div');
-    backdrop.className = 'tutorial-backdrop';
-    backdrop.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: transparent;
-        z-index: 9999;
-        pointer-events: none;
-    `;
-    document.body.appendChild(backdrop);
-
-    // Create navigation controls
-    const navControls = document.createElement('div');
-    navControls.className = 'tutorial-nav-controls';
-    navControls.innerHTML = `
-        <button class="btn btn-outline-light prev-filter" style="display: none;">Previous</button>
-        <button class="btn btn-light next-filter">Next</button>
-    `;
-    document.body.appendChild(navControls);
-
-    // Define tutorial steps
+    // Define tutorial steps first
     const filterSteps = [
         {
             elementId: 'showUnreadOnly',
@@ -804,19 +752,12 @@ function showNotificationTutorial() {
         // Remove any existing tooltips and highlights
         removeFilterHighlights();
         
-        // Update navigation buttons
-        const prevBtn = document.querySelector('.prev-filter');
-        const nextBtn = document.querySelector('.next-filter');
-        
-        prevBtn.style.display = stepIndex > 0 ? 'block' : 'none';
-        nextBtn.textContent = stepIndex === filterSteps.length - 1 ? 'Finish' : 'Next';
-
         const step = filterSteps[stepIndex];
         if (step.elementId) {
             highlightFilterControl(step.elementId, step.message);
         } else if (step.elements) {
-            const elements = document.querySelectorAll(step.elements);
-            highlightElements(elements, step.message);
+            // Pass the selector string directly, not the result of querySelectorAll
+            highlightElements(step.elements, step.message);
         }
     }
 
@@ -826,90 +767,23 @@ function showNotificationTutorial() {
         existingTooltips.forEach(tooltip => tooltip.remove());
         
         // Remove animation and z-index from all potential elements
-        const allControls = document.querySelectorAll('#showUnreadOnly, #markAllRead, .filter-btn');
+        const allControls = document.querySelectorAll('#showUnreadOnly, #markAllRead, .filter-btn, [data-notification-id="demo"]');
         allControls.forEach(element => {
-            element.style.animation = '';
-            element.style.zIndex = '';
-            element.style.position = '';
+            if (element) {
+                element.style.animation = '';
+                element.style.zIndex = '';
+                element.style.position = '';
+            }
         });
     }
 
-    function highlightFilterControl(elementId, message) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-
-        // Ensure the notification menu stays above the backdrop
-        const notificationMenu = document.querySelector('.notification-menu');
-        if (notificationMenu) {
-            notificationMenu.style.zIndex = '10001';
-        }
-
-        // Create tooltip with higher z-index
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tutorial-tooltip';
-        tooltip.style.zIndex = '10002';
-        tooltip.innerHTML = `
-            <div class="tutorial-content" style="max-width: 300px; padding: 1rem;">
-                <p style="margin: 0;">${message}</p>
-            </div>
-        `;
-        
-        // Position tooltip
-        const rect = element.getBoundingClientRect();
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = `${rect.bottom + 10}px`;
-        tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
-        tooltip.style.transform = 'translateX(-50%)';
-        
-        // Add highlight effect
-        element.style.position = 'relative';
-        element.style.zIndex = '10001';
-        element.style.animation = 'pulse 1s infinite';
-        
-        document.body.appendChild(tooltip);
-    }
-
-    function highlightElements(elements, message) {
-        elements.forEach(element => {
-            element.style.position = 'relative';
-            element.style.zIndex = '10001';
-            element.style.animation = 'pulse 1s infinite';
-        });
-
-        // Create single tooltip for the group
-        const firstElement = elements[0];
-        if (!firstElement) return;
-
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tutorial-tooltip';
-        tooltip.style.zIndex = '10002';
-        tooltip.innerHTML = `
-            <div class="tutorial-content" style="max-width: 300px; padding: 1rem;">
-                <p style="margin: 0;">${message}</p>
-            </div>
-        `;
-        
-        const rect = firstElement.getBoundingClientRect();
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = `${rect.bottom + 10}px`;
-        tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
-        tooltip.style.transform = 'translateX(-50%)';
-        
-        document.body.appendChild(tooltip);
-    }
-
-    // Add event listeners for navigation
-    navControls.querySelector('.next-filter').addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
+    function handleNextStep() {
         if (currentFilterStep < filterSteps.length - 1) {
             currentFilterStep++;
             showFilterStep(currentFilterStep);
         } else {
             // Clean up notification tutorial
             removeFilterHighlights();
-            navControls.remove();
             
             // Remove the demo notification
             const demoNotification = document.querySelector('[data-notification-id="demo"]');
@@ -931,17 +805,144 @@ function showNotificationTutorial() {
             
             showFinalStep();
         }
-    });
+    }
 
-    navControls.querySelector('.prev-filter').addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();  // Prevent event bubbling
-        
+    function handlePrevStep() {
         if (currentFilterStep > 0) {
             currentFilterStep--;
             showFilterStep(currentFilterStep);
         }
+    }
+
+    function highlightFilterControl(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        // Create tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tutorial-tooltip';
+        tooltip.style.zIndex = '10002';
+        tooltip.innerHTML = `
+            <div class="tutorial-content" style="max-width: 300px; padding: 1rem;">
+                <p style="margin: 0 0 1rem 0;">${message}</p>
+                <div class="tutorial-actions" style="margin-top: 1rem;">
+                    ${currentFilterStep > 0 ? 
+                        '<button class="btn btn-outline-light prev-filter">Previous</button>' : 
+                        ''}
+                    <button class="btn btn-light next-filter">
+                        ${currentFilterStep === filterSteps.length - 1 ? 'Finish' : 'Next'}
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Position tooltip
+        const rect = element.getBoundingClientRect();
+        tooltip.style.position = 'fixed';
+        tooltip.style.top = `${rect.bottom + 10}px`;
+        tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+        tooltip.style.transform = 'translateX(-50%)';
+        
+        // Add highlight effect
+        element.style.position = 'relative';
+        element.style.zIndex = '10001';
+        element.style.animation = 'pulse 1s infinite';
+        
+        document.body.appendChild(tooltip);
+
+        // Add click handlers
+        const nextBtn = tooltip.querySelector('.next-filter');
+        const prevBtn = tooltip.querySelector('.prev-filter');
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleNextStep();
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handlePrevStep();
+            });
+        }
+    }
+
+    function highlightElements(selector, message) {
+        const elementsList = document.querySelectorAll(selector);
+        if (!elementsList.length) return;
+
+        elementsList.forEach(element => {
+            element.style.position = 'relative';
+            element.style.zIndex = '10001';
+            element.style.animation = 'pulse 1s infinite';
+        });
+
+        const firstElement = elementsList[0];
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tutorial-tooltip';
+        tooltip.style.zIndex = '10002';
+        tooltip.innerHTML = `
+            <div class="tutorial-content" style="max-width: 300px; padding: 1rem;">
+                <p style="margin: 0 0 1rem 0;">${message}</p>
+                <div class="tutorial-actions" style="margin-top: 1rem;">
+                    ${currentFilterStep > 0 ? 
+                        '<button class="btn btn-outline-light prev-filter">Previous</button>' : 
+                        ''}
+                    <button class="btn btn-light next-filter">
+                        ${currentFilterStep === filterSteps.length - 1 ? 'Finish' : 'Next'}
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        const rect = firstElement.getBoundingClientRect();
+        tooltip.style.position = 'fixed';
+        tooltip.style.top = `${rect.bottom + 10}px`;
+        tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+        tooltip.style.transform = 'translateX(-50%)';
+        
+        document.body.appendChild(tooltip);
+
+        // Add click handlers
+        const nextBtn = tooltip.querySelector('.next-filter');
+        const prevBtn = tooltip.querySelector('.prev-filter');
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleNextStep();
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handlePrevStep();
+            });
+        }
+    }
+
+    // Start the tutorial
+    showDemoNotification();
+    
+    // Hide all previous steps
+    const steps = document.querySelectorAll('.tutorial-step-overlay');
+    steps.forEach(step => {
+        step.classList.add('d-none');
+        const content = step.querySelector('.tutorial-content');
+        if (content) content.style.display = 'none';
     });
+    
+    // Remove any existing spotlights
+    if (spotlight) {
+        spotlight.style.display = 'none';
+    }
 
     // Show first step
     showFilterStep(0);
