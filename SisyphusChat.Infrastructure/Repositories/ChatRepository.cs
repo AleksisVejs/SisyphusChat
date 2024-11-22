@@ -12,7 +12,6 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
     {
         entity.Id = Guid.NewGuid().ToString();
         entity.TimeCreated = DateTime.Now;
-        entity.IsReported = false;
 
         // Attach users to prevent tracking issues
         foreach (var chatUser in entity.ChatUsers)

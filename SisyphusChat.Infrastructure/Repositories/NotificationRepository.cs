@@ -37,7 +37,7 @@ namespace SisyphusChat.Infrastructure.Repositories
             // Get all notifications for the user with related data
             var notifications = await context.Notifications
                 .Include(n => n.User)
-                .Where(n => n.UserId == userId && !n.IsDeleted)
+                .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.TimeCreated)
                 .ToListAsync();
 
