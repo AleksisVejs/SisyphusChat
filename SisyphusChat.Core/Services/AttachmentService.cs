@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +10,7 @@ namespace SisyphusChat.Core.Services
 {
     public class AttachmentService(IUnitOfWork unitOfWork, IMapper mapper) : IAttachmentService
     {
-        public async Task CreateAsync(Attachment model)
+        public async Task CreateAsync(AttachmentModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
 
@@ -19,15 +19,16 @@ namespace SisyphusChat.Core.Services
             await unitOfWork.AttachmentRepository.AddAsync(attachmentEntity);
             await unitOfWork.SaveAsync();
         }
-        public async Task<Attachment> GetByIdAsync(string id)
+        public async Task<AttachmentModel> GetByIdAsync(string id)
         {
             ArgumentException.ThrowIfNullOrEmpty(id);
 
             var attachmentEntity = await unitOfWork.AttachmentRepository.GetByIdAsync(id);
-            return attachmentEntity;
+
+            return mapper.Map<AttachmentModel>(attachmentEntity);
         }
 
-        public async Task UpdateAsync(Attachment model)
+        public async Task UpdateAsync(AttachmentModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
 
@@ -38,19 +39,20 @@ namespace SisyphusChat.Core.Services
         }
 
 
-        public async Task<ICollection<Attachment>> GetAllByMessageIdAsync(string messageId)
+        public async Task<ICollection<AttachmentModel>> GetAllByMessageIdAsync(string messageId)
         {
             ArgumentException.ThrowIfNullOrEmpty(messageId);
 
             var attachmentEntities = await unitOfWork.AttachmentRepository.GetAllByMessageIdAsync(messageId);
 
-            return mapper.Map<ICollection<Attachment>, ICollection<Attachment>>(attachmentEntities);
+            return mapper.Map<ICollection<Attachment>, ICollection<AttachmentModel>>(attachmentEntities);
         }
-        public async Task<ICollection<Attachment>> GetAllAsync()
+
+        public async Task<ICollection<AttachmentModel>> GetAllAsync()
         {
             var attachmentEntities = await unitOfWork.AttachmentRepository.GetAllAsync();
 
-            return mapper.Map<ICollection<Attachment>, ICollection<Attachment>>(attachmentEntities);
+            return mapper.Map<ICollection<Attachment>, ICollection<AttachmentModel>>(attachmentEntities);
         }
 
         public async Task DeleteByIdAsync(string id)

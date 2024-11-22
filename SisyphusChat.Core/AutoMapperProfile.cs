@@ -87,7 +87,6 @@ namespace SisyphusChat.Core
                 .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead))
                 .ForMember(dest => dest.RelatedEntityId, opt => opt.MapFrom(src => src.RelatedEntityId))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
-                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
                 .ReverseMap();
 
         }

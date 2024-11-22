@@ -154,59 +154,66 @@ namespace SisyphusChat.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> BanUser(string userId, BanDuration duration)
+    [HttpPost]
+    public async Task<IActionResult> BanUser(string userId, BanDuration duration)
+    {
+        // Verify if the current user is an admin
+        var admin = await _userManager.GetUserAsync(User);
+        if (admin == null || !admin.IsAdmin)
         {
-            var admin = await _userManager.GetUserAsync(User);
-            if (admin == null || !admin.IsAdmin)
-            {
-                return Json(new { success = false, message = "Unauthorized" });
-            }
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null || user.IsAdmin)
-            {
-                return Json(new { success = false, message = "Cannot ban administrators" });
-            }
-
-            var banStart = DateTime.Now;
-            DateTime? banEnd = duration switch
-            {
-                BanDuration.TwentyFourHours => banStart.AddHours(24),
-                BanDuration.OneWeek => banStart.AddDays(7),
-                BanDuration.OneMonth => banStart.AddMonths(1),
-                BanDuration.Permanent => null,
-                _ => throw new ArgumentException("Invalid ban duration")
-            };
-
-            var banNotification = new NotificationModel
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = userId,
-                Message = $"Your account has been banned for {duration}.",
-                Type = NotificationType.AdminMessage,
-                TimeCreated = DateTime.Now,
-                IsRead = false,
-                RelatedEntityId = userId,
-                SenderUsername = "System"
-            };
-
-            await _notificationService.CreateAsync(banNotification);
-            await _notificationHubContext.Clients.User(userId).SendAsync("ReceiveNotification", banNotification);
-
-            user.IsBanned = true;
-            user.BanStart = banStart;
-            user.BanEnd = banEnd;
-            await _userManager.UpdateAsync(user);
-
-            await _notificationHubContext.Clients.User(userId).SendAsync("UserBanned", duration == BanDuration.Permanent);
-
-            return Json(new { 
-                success = true, 
-                banEnd = banEnd?.ToString("o"),
-                message = $"User {user.UserName} has been banned successfully."
-            });
+            return Json(new { success = false, message = "Unauthorized" });
         }
+
+        // Prevent banning of other administrators to maintain system security
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null || user.IsAdmin)
+        {
+            return Json(new { success = false, message = "Cannot ban administrators" });
+        }
+
+        var banStart = DateTime.Now;
+        // Different ban durations for different severity of violations
+        DateTime? banEnd = duration switch
+        {
+            BanDuration.TwentyFourHours => banStart.AddHours(24),
+            BanDuration.OneWeek => banStart.AddDays(7),
+            BanDuration.OneMonth => banStart.AddMonths(1),
+            BanDuration.Permanent => null,  // Permanent bans have no end date
+            _ => throw new ArgumentException("Invalid ban duration")
+        };
+
+        // Notify user about their ban status immediately
+        var banNotification = new NotificationModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = userId,
+            Message = $"Your account has been banned for {duration}.",
+            Type = NotificationType.AdminMessage,
+            TimeCreated = DateTime.Now,
+            IsRead = false,
+            RelatedEntityId = userId,
+            SenderUsername = "System"
+        };
+
+        // Send notification and update user's ban status
+        await _notificationService.CreateAsync(banNotification);
+        await _notificationHubContext.Clients.User(userId).SendAsync("ReceiveNotification", banNotification);
+
+        // Update user record to reflect ban status for system-wide enforcement
+        user.IsBanned = true;
+        user.BanStart = banStart;
+        user.BanEnd = banEnd;
+        await _userManager.UpdateAsync(user);
+
+        // Trigger immediate UI update for banned user
+        await _notificationHubContext.Clients.User(userId).SendAsync("UserBanned", duration == BanDuration.Permanent);
+
+        return Json(new { 
+            success = true, 
+            banEnd = banEnd?.ToString("o"),
+            message = $"User {user.UserName} has been banned successfully."
+        });
+    }
 
         [HttpPost]
         public async Task<IActionResult> UnbanUser(string userId)

@@ -25,9 +25,6 @@ public class Message : BaseEntity
 
     [Required]
     public MessageStatus Status { get; set; }
-    
-    [Required]
-    public bool IsReported { get; set; }
 
     [Required]
     public bool IsEdited { get; set; }

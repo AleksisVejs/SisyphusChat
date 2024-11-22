@@ -15,6 +15,5 @@ namespace SisyphusChat.Core.Models
         public DateTime TimeCreated { get; set; }
         public bool IsRead { get; set; }
         public string RelatedEntityId { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace SisyphusChat.Infrastructure.Entities
     public class Notification
     {
         [Key]
-        public string Id { get; set; } // Primary key
+        public string Id { get; set; }
 
         [Required]
         public string UserId { get; set; }
@@ -32,9 +32,6 @@ namespace SisyphusChat.Infrastructure.Entities
         public bool IsRead { get; set; } = false;
 
         [StringLength(450)]
-        public string RelatedEntityId { get; set; } // ID of related entity (e.g., MessageId, FriendRequestId)
-
-
-        public bool IsDeleted { get; set; } = false; // Soft delete
+        public string RelatedEntityId { get; set; }
     }
 }

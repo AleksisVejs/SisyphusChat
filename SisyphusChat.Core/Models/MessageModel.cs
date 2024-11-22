@@ -17,8 +17,6 @@ namespace SisyphusChat.Core.Models
         public string Content { get; set; }
 
         public MessageStatus Status { get; set; }
-        
-        public bool IsReported { get; set; }
 
         public bool IsEdited { get; set; }
 

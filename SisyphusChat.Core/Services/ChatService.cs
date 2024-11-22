@@ -16,7 +16,6 @@ public class ChatService(IUnitOfWork unitOfWork, IMapper mapper) : IChatService
             Name = model.Name,
             Type = model.Type,
             OwnerId = model.OwnerId,
-            IsReported = model.IsReported,
             TimeCreated = model.TimeCreated,
             LastUpdated = model.LastUpdated,
             ChatUsers = new List<ChatUser>()

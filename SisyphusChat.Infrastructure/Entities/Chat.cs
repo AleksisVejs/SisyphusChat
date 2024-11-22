@@ -20,9 +20,6 @@ namespace SisyphusChat.Infrastructure.Entities
         [ForeignKey(nameof(OwnerId))]
         public User Owner { get; set; }
 
-        [Required]
-        public bool IsReported { get; set; }
-
         public ICollection<ChatUser> ChatUsers { get; set; } = new List<ChatUser>();
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();

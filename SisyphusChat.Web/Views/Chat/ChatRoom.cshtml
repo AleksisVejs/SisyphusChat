@@ -315,10 +315,6 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            scrollToBottom();
-        });
-
         connection.on("ReceiveMessage", async (user, message, chatMembersUserNames, sentAt, messageId, profilePicture) => {
             if (document.baseURI.includes(chatId) && chatMembersUserNames.includes(currentUser)) {
                 const messageDiv = document.createElement("div");
@@ -745,8 +741,6 @@
                 messageInput.classList.add("input-error");
                 return;
             }
-
-           
         }
 
         function showCharacterLimitError(currentLength, maxLength) {
