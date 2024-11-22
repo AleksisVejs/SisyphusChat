@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SisyphusChat.Core.Interfaces;
 using SisyphusChat.Infrastructure.Entities;
-using SisyphusChat.Web.Attributes;
 
 namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 {
@@ -63,7 +62,6 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Username")]
-            [NoProfanity(ErrorMessage = "Username contains inappropriate content.")]
             [RegularExpression(@"^[^@\s]+$", ErrorMessage = "Username cannot be an email address or contain spaces.")]
             [StringLength(32, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             public string Username { get; set; }
@@ -114,15 +112,6 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
 
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Set tutorial flag in TempData
-                    TempData["ShowTutorial"] = true;
-
-#if DEBUG
-                    // Skip email verification in development
-                    await _userManager.ConfirmEmailAsync(user, await _userManager.GenerateEmailConfirmationTokenAsync(user));
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-#else
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -135,9 +124,15 @@ namespace SisyphusChat.Web.Areas.Identity.Pages.Account
                     await _emailService.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-#endif
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
                 }
                 foreach (var error in result.Errors)
                 {

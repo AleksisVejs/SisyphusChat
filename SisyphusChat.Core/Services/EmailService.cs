@@ -26,7 +26,7 @@ namespace SisyphusChat.Core.Services
             };
 
             // Prepare the email message
-            var emailMessage = new EmailMessage("DoNotReply@981c6472-13ca-4cc7-b24c-e2f87e9554d4.azurecomm.net", recipientEmail, emailContent);
+            var emailMessage = new EmailMessage("DoNotReply@7133782b-12ef-47f6-a4cf-9ca5cd12b288.azurecomm.net", recipientEmail, emailContent);
 
             // Send the email asynchronously
             await _emailClient.SendAsync(Azure.WaitUntil.Completed, emailMessage);
