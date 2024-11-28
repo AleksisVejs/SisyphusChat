@@ -40,7 +40,7 @@
 
                 <form method="post" asp-action="RemoveFriend" asp-controller="Friends">
                     <input type="hidden" name="friendId" value="@Model.UserId" />
-                    <button type="submit" class="remove-friend-button">
+                    <button type="button" class="remove-friend-button" onclick="confirmRemoveFriend(this, '@Model.Username')">
                         <i class="fas fa-user-minus"></i>
                         Remove Friend
                     </button>
@@ -207,3 +207,15 @@
         background-color: #747f8d;
     }
 </style>
+
+<script>
+    function confirmRemoveFriend(button, username) {
+        showConfirmationModal(
+            "Remove Friend",
+            `Are you sure you want to remove ${username} from your friends list?`,
+            () => {
+                button.closest('form').submit();
+            }
+        );
+    }
+</script>

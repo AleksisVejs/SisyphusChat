@@ -4,6 +4,10 @@
 
 @model SisyphusChat.Core.Models.FRequestModel
 
+@section Scripts {
+    <script src="~/js/confirmation.js"></script>
+}
+
 <div class="friends-page-container">
     <div class="friends-header">
         <h2>Friends</h2>
@@ -111,9 +115,9 @@
                     </p>
                 </div>
 
-                <form method="post" asp-action="RemoveFriend" asp-controller="Friends">
+                <form method="post" asp-action="RemoveFriend" asp-controller="Friends" onsubmit="return false;">
                     <input type="hidden" name="friendId" value="@friend.Id" />
-                    <button type="submit" class="btn remove-button">Remove</button>
+                    <button type="button" class="btn remove-button" onclick="confirmRemoveFriend(this, '@friend.UserName')">Remove</button>
                 </form>
             </div>
         }
@@ -643,4 +647,14 @@
             }
         });
     });
+
+    function confirmRemoveFriend(button, username) {
+        showConfirmationModal(
+            "Remove Friend",
+            `Are you sure you want to remove ${username} from your friends list?`,
+            () => {
+                button.closest('form').submit();
+            }
+        );
+    }
 </script>
