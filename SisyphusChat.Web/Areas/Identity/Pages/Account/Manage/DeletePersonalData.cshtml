@@ -28,7 +28,7 @@
             {
                 <div class="form-floating position-relative mb-3">
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" 
-                           aria-required="true" placeholder="Please enter your password." />
+                           aria-required="true" />
                     <label asp-for="Input.Password" class="form-label"></label>
                     <button type="button" id="togglePasswordVisibility" class="toggle-password">
                         <i id="passwordIcon" class="fas fa-eye"></i>
@@ -102,17 +102,19 @@
 .form-control {
     background: rgba(var(--bg-color-rgb), 0.5);
     border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    color: var(--text-color);
+    color: var(--text-color) !important;
     border-radius: 12px;
     padding: 1rem;
     height: auto;
     transition: all 0.3s ease;
+    -webkit-text-fill-color: var(--text-color);
 }
 
 .form-control:focus {
     background: rgba(var(--bg-color-rgb), 0.7);
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+    color: var(--text-color) !important;
 }
 
 .toggle-password {
@@ -166,7 +168,7 @@
     <script>
         document.getElementById("togglePasswordVisibility")?.addEventListener("click", function(e) {
             e.preventDefault();
-            var passwordInput = document.getElementById("password");
+            var passwordInput = document.getElementById("Input_Password");
             var passwordIcon = document.getElementById("passwordIcon");
             
             if (passwordInput.type === "password") {
