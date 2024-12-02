@@ -54,8 +54,9 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         var currentUser = await UserManager.GetUserAsync(User);
+                        var isProfanityEnabled = currentUser?.IsProfanityEnabled ?? false;
                         <div class="user-section">
-                            <div class="nav-item dropdown" id="notificationDropdown">
+                            <div class="nav-item dropdown" id="notificationDropdown" data-profanity-enabled="@isProfanityEnabled">
                                 <a class="nav-link" href="#" id="notificationLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-bell"></i>
                                     <span class="badge badge-danger notification-badge d-none" id="notificationCount">0</span>
@@ -144,6 +145,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+        <script src="~/js/profanityFilter.js"></script>
         <script src="~/js/notifications.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {

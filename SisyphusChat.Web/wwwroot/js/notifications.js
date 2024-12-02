@@ -1,11 +1,28 @@
 let showingUnreadOnly = true;
 let currentFilter = "all"; // 'all', 'group', 'direct'
 let notificationConnection = null;
+let isProfanityEnabled = false;
 
 // Initialize notifications
 function initializeNotifications(connection) {
   notificationConnection = connection;
+
+  // Get profanity setting from the dropdown element
+  const dropdown = document.getElementById("notificationDropdown");
+  isProfanityEnabled = dropdown.dataset.profanityEnabled === "True";
+
   setupNotificationFilters();
+
+  // Get initial profanity setting
+  fetch("/api/User/GetProfanitySettings")
+    .then((response) => response.json())
+    .then((data) => {
+      isProfanityEnabled = data.profanityEnabled;
+      updateNotifications(); // Initial load with correct setting
+    })
+    .catch((error) =>
+      console.error("Error fetching profanity settings:", error)
+    );
 
   connection.on("NotificationsUpdated", () => {
     console.log("Notifications updated");
@@ -15,7 +32,14 @@ function initializeNotifications(connection) {
   connection.on("ReceiveNotification", (notification) => {
     console.log("Received notification:", notification);
     if (notification) {
-      updateNotificationUI([notification]);
+      if (isProfanityEnabled && notification.message) {
+        notification.message = ProfanityFilter.filterMessage(
+          notification.message
+        );
+      }
+      updateNotificationUI([notification], true);
+      // Also update the full list in the background
+      updateNotifications();
     }
   });
 
@@ -257,10 +281,13 @@ function createNotificationGroupElement(group) {
         <div class="notification-group-content">
             ${group.notifications
               .map((notification) => {
-                const message = notification.message.replace(
-                  /^\[(.*?)\]\s*/,
-                  ""
-                );
+                let message = notification.message.replace(/^\[(.*?)\]\s*/, "");
+
+                // Apply profanity filter if enabled and not an admin message
+                if (isProfanityEnabled && notification.type !== 2) {
+                  message = ProfanityFilter.filterMessage(message);
+                }
+
                 return `
                     <div class="notification-item ${adminClass} ${
                   notification.isRead ? "read" : "unread"
