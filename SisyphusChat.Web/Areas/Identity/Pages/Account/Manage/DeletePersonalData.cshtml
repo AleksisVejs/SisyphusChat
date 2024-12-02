@@ -11,37 +11,35 @@
         <p class="text-muted">This action is permanent and cannot be undone.</p>
     </div>
 
-    <div class="delete-account-content">
-        <div class="alert alert-danger" role="alert">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p>
-                <strong>Warning:</strong> Deleting your account will permanently remove all your data, including:
-            </p>
-            <ul>
-                <li>Your profile information</li>
-            </ul>
-        </div>
-
-        <form id="delete-user" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            @if (Model.RequirePassword)
-            {
-                <div class="form-floating position-relative mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" 
-                           aria-required="true" />
-                    <label asp-for="Input.Password" class="form-label"></label>
-                    <button type="button" id="togglePasswordVisibility" class="toggle-password">
-                        <i id="passwordIcon" class="fas fa-eye"></i>
-                    </button>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-            }
-            <button class="btn-delete" type="submit">
-                <i class="fas fa-trash-alt me-2"></i>
-                Delete my account permanently
-            </button>
-        </form>
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>
+            <strong>Warning:</strong> Deleting your account will permanently remove all your data, including:
+        </p>
+        <ul>
+            <li>Your profile information</li>
+        </ul>
     </div>
+
+    <form id="delete-user" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        @if (Model.RequirePassword)
+        {
+            <div class="form-floating position-relative mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" 
+                        aria-required="true" />
+                <label asp-for="Input.Password" class="form-label"></label>
+                <button type="button" id="togglePasswordVisibility" class="toggle-password">
+                    <i id="passwordIcon" class="fas fa-eye"></i>
+                </button>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+        }
+        <button class="btn-delete" type="submit">
+            <i class="fas fa-trash-alt me-2"></i>
+            Delete my account permanently
+        </button>
+    </form>
 </div>
 
 <style scoped>
@@ -60,14 +58,6 @@
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-}
-
-.delete-account-content {
-    background: rgba(var(--bg-color-rgb), 0.5);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 2rem;
-    border: 1px solid rgba(var(--text-color-rgb), 0.1);
 }
 
 .alert-danger {
@@ -100,21 +90,18 @@
 }
 
 .form-control {
-    background: rgba(var(--bg-color-rgb), 0.5);
-    border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    color: var(--text-color) !important;
-    border-radius: 12px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 8px;
     padding: 1rem;
-    height: auto;
     transition: all 0.3s ease;
-    -webkit-text-fill-color: var(--text-color);
 }
 
 .form-control:focus {
-    background: rgba(var(--bg-color-rgb), 0.7);
+    background-color: var(--input-focus-bg);
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
-    color: var(--text-color) !important;
+    box-shadow: 0 0 0 2px var(--accent-color-dark);
 }
 
 .toggle-password {

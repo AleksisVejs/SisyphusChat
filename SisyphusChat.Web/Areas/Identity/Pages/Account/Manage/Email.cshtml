@@ -43,69 +43,19 @@
     <partial name="_ValidationScriptsPartial" />
 }
 
-<style>
-    .form-container {
-        background: rgba(var(--bg-color-rgb), 0.3);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 2rem;
-        border: 1px solid rgba(var(--text-color-rgb), 0.1);
-    }
-
-    .form-floating {
-        margin-bottom: 1.5rem;
-        position: relative;
-    }
-
+<style scoped>
     .form-control {
-        background: rgba(var(--bg-color-rgb), 0.5);
-        border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
         color: var(--text-color);
-        border-radius: 12px;
-        padding: 1.25rem 1rem;
-        height: auto;
-        backdrop-filter: blur(5px);
+        border-radius: 8px;
+        padding: 1rem;
         transition: all 0.3s ease;
     }
 
     .form-control:focus {
-        background: rgba(var(--bg-color-rgb), 0.7);
+        background-color: var(--input-focus-bg);
         border-color: var(--accent-color);
-        box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
-    }
-
-    .input-group-text {
-        background: var(--accent-color);
-        border: none;
-        color: white;
-        border-radius: 0 12px 12px 0;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--accent-color), var(--accent-color-dark));
-        border: none;
-        border-radius: 12px;
-        padding: 1rem 2rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.4);
-    }
-
-    .btn-link {
-        color: var(--accent-color);
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        transition: all 0.3s ease;
-        border-radius: 8px;
-    }
-
-    .btn-link:hover {
-        background: rgba(var(--accent-color-rgb), 0.1);
-        color: var(--accent-color);
+        box-shadow: 0 0 0 2px var(--accent-color-dark);
     }
 </style>
