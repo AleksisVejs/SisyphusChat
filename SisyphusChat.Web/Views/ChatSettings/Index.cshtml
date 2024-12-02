@@ -60,7 +60,7 @@
             </div>
             @if (Model.CurrentUser == Model.ChatOwner)
             {
-                <button asp-action="DeleteUserFromChat" asp-route-userId="@user.Id" asp-route-chatId="@Model.ChatId" class="btn ml-2 delete-button">
+                <button type="button" class="btn ml-2 delete-button" onclick="confirmDeleteUser('@user.Id', '@Model.ChatId')">
                     Delete
                 </button>
             }

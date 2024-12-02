@@ -13,26 +13,45 @@ public class ChatSettingsController(IUserService userService, IChatService chatS
 {
     public async Task<IActionResult> Index(string chatId)
     {
-        var currentUser = await userService.GetCurrentContextUserAsync();
-        var chat = await chatService.GetByIdAsync(chatId);
-        var chatOwner = chat.Owner.UserName;
-        var chatUsers = chat.ChatUsers.Select(it => it.User).Where(c => c.Id != chat.Owner.Id);
-        var users = await friendService.GetAllFriendsAsync(chat.OwnerId);
-        var usersNotInChat = users
-            .Where(user => chat.ChatUsers
-                .Select(m => m.User)
-                .All(chatUser => chatUser.Id != user.Id && user.Id != chat.Owner.Id)).ToList();
-
-        var viewModel = new ChatSettingsViewModel
+        if (string.IsNullOrEmpty(chatId))
         {
-            CurrentUser = currentUser.UserName,
-            ChatName = chat.Name,
-            ChatOwner = chatOwner,
-            ChatUsers = chatUsers.ToList(),
-            NotChatUsers = usersNotInChat
-        };
+            return RedirectToAction("Index", "Chat");
+        }
 
-        return View(viewModel);
+        try 
+        {
+            var currentUser = await userService.GetCurrentContextUserAsync();
+            var chat = await chatService.GetByIdAsync(chatId);
+            
+            if (chat == null)
+            {
+                return RedirectToAction("Index", "Chat");
+            }
+
+            var chatOwner = chat.Owner.UserName;
+            var chatUsers = chat.ChatUsers.Select(it => it.User).Where(c => c.Id != chat.Owner.Id);
+            var users = await friendService.GetAllFriendsAsync(chat.OwnerId);
+            var usersNotInChat = users
+                .Where(user => chat.ChatUsers
+                    .Select(m => m.User)
+                    .All(chatUser => chatUser.Id != user.Id && user.Id != chat.Owner.Id)).ToList();
+
+            var viewModel = new ChatSettingsViewModel
+            {
+                ChatId = chatId,
+                CurrentUser = currentUser.UserName,
+                ChatName = chat.Name,
+                ChatOwner = chatOwner,
+                ChatUsers = chatUsers.ToList(),
+                NotChatUsers = usersNotInChat
+            };
+
+            return View(viewModel);
+        }
+        catch (Exception ex)
+        {
+            return RedirectToAction("Index", "Chat");
+        }
     }
 
     [HttpPost]
